@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "id": "chassis",
+  "version": "${version}",
+  "name": "Chassis",
+  "description": "WIP",
+  "authors": [
+    "Libra"
+  ],
+  "contact": {},
+  "license": "MIT",
+  "icon": "icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "client": [
+      "evergoodteam.chassis.client.ChassisClient"
+    ],
+    "main": [
+      "evergoodteam.chassis.Chassis"
+    ]
+  },
+  "mixins": [
+    "chassis.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.13.3",
+    "fabric": "*",
+    "minecraft": "1.18.1"
+  }
+}
