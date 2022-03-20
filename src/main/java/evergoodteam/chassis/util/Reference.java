@@ -19,5 +19,5 @@ public class Reference {
     public static List<Item> ITEMS = new ArrayList<Item>();
 
     // Blocks with specifc texture layouts
-    public static List<String> COLUMNS = new ArrayList<String>(Arrays.asList("basalt", "deepslate", "blackstone"));
+    public static List<String> COLUMNS = new ArrayList<String>();
 }
