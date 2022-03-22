@@ -1,11 +1,11 @@
 package evergoodteam.chassis.util;
 
+import com.google.gson.JsonObject;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
+import net.minecraft.util.Identifier;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 public class Reference {
 
@@ -20,4 +20,8 @@ public class Reference {
 
     // Blocks with specifc texture layouts
     public static List<String> COLUMNS = new ArrayList<String>();
+
+    // Associative array of mods and their recipes
+    public static Map<Identifier, List<JsonObject>> RECIPES = new HashMap<Identifier, List<JsonObject>>();
+
 }

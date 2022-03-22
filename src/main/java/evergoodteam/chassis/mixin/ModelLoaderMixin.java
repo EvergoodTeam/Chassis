@@ -1,6 +1,6 @@
 package evergoodteam.chassis.mixin;
 
-import evergoodteam.chassis.objects.assets.JsonAssets;
+import evergoodteam.chassis.objects.assets.ModelJson;
 
 import net.minecraft.client.render.model.ModelLoader;
 import net.minecraft.client.render.model.json.JsonUnbakedModel;
@@ -10,7 +10,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import static evergoodteam.chassis.objects.assets.JsonAssets.makeBlockModelJson;
+import static evergoodteam.chassis.objects.assets.ModelJson.makeBlockModelJson;
 import static evergoodteam.chassis.util.GetInfo.getIdFromIdentifier;
 import static evergoodteam.chassis.util.GetInfo.getTypeFromIdentifier;
 import static evergoodteam.chassis.util.Reference.COLUMNS;
@@ -49,7 +49,7 @@ public class ModelLoaderMixin {
 
         else if("item".equals(getTypeFromIdentifier(id))){
 
-            modelJson = JsonAssets.makeItemModelJson(modId, "block", getIdFromIdentifier(id));
+            modelJson = ModelJson.makeItemModelJson(modId, "block", getIdFromIdentifier(id));
         }
 
         else return;

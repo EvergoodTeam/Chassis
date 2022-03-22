@@ -1,6 +1,6 @@
 package evergoodteam.chassis.objects.assets;
 
-public class JsonAssets {
+public class ModelJson {
 
     public static String makeItemModelJson(String modId, String type, String textureName) {
 
