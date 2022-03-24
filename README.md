@@ -1,5 +1,9 @@
 # Chassis <a href=https://www.curseforge.com/minecraft/mc-mods/chassis> <img src="http://cf.way2muchnoise.eu/596615.svg"> </a>
 
+Making model and/or recipe json files is EXTREMELY boring, generate them instead with ✨code✨
+
+Chassis is a library providing utilities for dynamic model generation, recipe generation and speeding up mod making
+
 ## Adding to your own project
 
 ### Gradle
