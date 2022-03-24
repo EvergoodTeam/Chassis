@@ -2,6 +2,8 @@
 
 ## Adding to your own project
 
+### Gradle
+
 ```
 repositories {
 
@@ -18,4 +20,14 @@ dependencies {
 	//Chassis
 	modImplementation 'com.github.evergoodteam:chassis:<releaseVersion>'
 }
+```
+
+### fabric.mod.json
+
+```
+[...]
+"depends": {
+    [...]
+    "chassis": "0.x.x"
+  },
 ```
