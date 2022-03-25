@@ -5,6 +5,7 @@ import com.google.gson.JsonObject;
 import net.minecraft.util.Identifier;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class RecipeJson {
 
@@ -71,7 +72,6 @@ public class RecipeJson {
         //  "item": "modid:copper_pickaxe",
         //  "count": 1
         //}
-        System.out.println(json);
         return json;
     }
 
@@ -141,5 +141,17 @@ public class RecipeJson {
         //}
 
         return json;
+    }
+
+
+    public static JsonObject create3x3RecipeJson(String input, String type, String output, int outputCount){
+
+        return createShapedRecipeJson(new ArrayList<Character>(Arrays.asList('x')), new ArrayList<String>(Arrays.asList(input)), new ArrayList<String>(Arrays.asList(type)), new ArrayList<String>(Arrays.asList("xxx", "xxx", "xxx")), output, outputCount);
+    }
+
+
+    public static JsonObject createRingRecipeJson(String input, String type, String output, int outputCount){
+
+        return createShapedRecipeJson(new ArrayList<Character>(Arrays.asList('x')), new ArrayList<String>(Arrays.asList(input)), new ArrayList<String>(Arrays.asList(type)), new ArrayList<String>(Arrays.asList("xxx", "x x", "xxx")), output, outputCount);
     }
 }

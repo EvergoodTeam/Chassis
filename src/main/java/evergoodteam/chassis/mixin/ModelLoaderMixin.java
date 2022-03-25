@@ -10,6 +10,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import static evergoodteam.chassis.util.Reference.LOGGER;
 import static evergoodteam.chassis.objects.assets.ModelJson.makeBlockModelJson;
 import static evergoodteam.chassis.util.GetInfo.getIdFromIdentifier;
 import static evergoodteam.chassis.util.GetInfo.getTypeFromIdentifier;
@@ -36,7 +37,7 @@ public class ModelLoaderMixin {
 
             if(COLUMNS.stream().anyMatch(getIdFromIdentifier(id)::contains)){
 
-                System.out.println("Found column " + id);
+                LOGGER.info("Found column \"" + id + "\"");
 
                 modelJson = makeBlockModelJson("column", id.toString());
             }
@@ -44,7 +45,6 @@ public class ModelLoaderMixin {
 
                 modelJson = makeBlockModelJson("all", id.toString());
             }
-
         }
 
         else if("item".equals(getTypeFromIdentifier(id))){

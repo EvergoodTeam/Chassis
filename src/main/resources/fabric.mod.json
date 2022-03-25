@@ -7,7 +7,11 @@
   "authors": [
     "Libra"
   ],
-  "contact": {},
+  "contact": {
+    "issues": "https://github.com/EvergoodTeam/Chassis/issues",
+    "homepage": "https://www.curseforge.com/minecraft/mc-mods/chassis",
+    "sources": "https://github.com/EvergoodTeam/Chassis"
+  },
   "license": "MIT",
   "icon": "icon.png",
   "environment": "*",

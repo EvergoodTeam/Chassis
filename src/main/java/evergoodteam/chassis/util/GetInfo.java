@@ -22,4 +22,12 @@ public class GetInfo {
         return result;
     }
 
+    /*
+    // modid:path
+    public static Identifier getIdentifier(String modid, String path){
+
+        Identifier result = new Identifier(modid, path);
+        return result;
+    }*/
+
 }

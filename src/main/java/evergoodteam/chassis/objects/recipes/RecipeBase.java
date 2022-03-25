@@ -1,45 +1,22 @@
 package evergoodteam.chassis.objects.recipes;
 
 import com.google.gson.JsonObject;
-import net.minecraft.util.Identifier;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-
-import static evergoodteam.chassis.util.Reference.RECIPES;
+import static evergoodteam.chassis.util.Reference.RECIPESTABLE;
 
 public class RecipeBase {
 
-    public static void declareModForRecipe(Identifier id){
+    // Identifiers don't like uppercase
+    public static void addRecipe(String namespace, String path, JsonObject jsonRecipe){
 
-        RECIPES.put(id, new ArrayList()); // This way we can add without replacing to the recipe list
+        RECIPESTABLE.put(namespace.toLowerCase(), path.toLowerCase(), jsonRecipe);
     }
 
-    public static void declareModForRecipe(String modid, String path){
+    /*
+    public static Table<String, String, JsonObject> getRecipes(){
 
-        declareModForRecipe(new Identifier(modid, path));
+        return RECIPESTABLE;
     }
-
-    public static void addRecipeToMod(String modid, JsonObject jsonRecipe){
-
-        RECIPES.get("modid").add(jsonRecipe);
-    }
-
-    public static void addRecipe(String modid, String path, JsonObject jsonRecipe){
-
-        if(RECIPES.get(modid) == null){
-
-            declareModForRecipe(modid, path);
-        }
-
-        addRecipeToMod(modid, jsonRecipe);
-    }
-
-    public static Map<Identifier, List<JsonObject>> getRecipes(){
-
-        return RECIPES;
-    }
+    */
 
 }
