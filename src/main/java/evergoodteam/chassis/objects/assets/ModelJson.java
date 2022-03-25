@@ -4,9 +4,8 @@ public class ModelJson {
 
     public static String makeItemModelJson(String modId, String type, String textureName) {
 
-        // Type: item, block
-        // Specific: handheld, generated
-        // "handheld" is used mostly for tools, "generated" is used for everything else
+        // Type: handheld, generated, block
+        // "handheld" is used mostly for tools, "generated" is used for everything else item related
 
         if ("generated".equals(type) || "handheld".equals(type)) {
 

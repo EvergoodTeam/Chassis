@@ -1,6 +1,7 @@
 package evergoodteam.chassis.util;
 
 import net.minecraft.util.Identifier;
+
 import org.apache.commons.lang3.StringUtils;
 
 public class GetInfo {
@@ -28,6 +29,7 @@ public class GetInfo {
 
         Identifier result = new Identifier(modid, path);
         return result;
-    }*/
+    }
+    */
 
 }
