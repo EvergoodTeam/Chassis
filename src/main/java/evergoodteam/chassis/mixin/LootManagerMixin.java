@@ -17,7 +17,7 @@ import static evergoodteam.chassis.util.Reference.*;
 @Mixin(LootManager.class)
 public class LootManagerMixin {
 
-    @Inject(method = "apply", at = @At("RETURN"))
+    @Inject(method = "apply", at = @At("HEAD"))
     private void interceptApply(Map<Identifier, JsonObject> objectMap, ResourceManager manager, Profiler profiler, CallbackInfo info) {
 
         String namespace;
