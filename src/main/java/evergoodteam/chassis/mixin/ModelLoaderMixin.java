@@ -37,7 +37,7 @@ public class ModelLoaderMixin {
 
             if(COLUMNS.stream().anyMatch(getIdFromIdentifier(id)::contains)){
 
-                LOGGER.info("Found column \"" + id + "\"");
+                //LOGGER.info("Found column \"" + id + "\"");
 
                 modelJson = makeBlockModelJson("column", id.toString());
             }

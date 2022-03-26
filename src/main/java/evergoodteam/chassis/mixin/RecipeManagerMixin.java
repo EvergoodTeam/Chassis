@@ -39,7 +39,7 @@ public class RecipeManagerMixin {
                 path = DEEP.keySet().toArray()[j].toString();
                 json = DEEP.get(DEEP.keySet().toArray()[j]);
 
-                LOGGER.info("Working on " + j + " of " + (DEEP.size() - 1) + ": \"" + namespace + ":" + path + "\"");
+                //LOGGER.info("Working on " + j + " of " + (DEEP.size() - 1) + ": \"" + namespace + ":" + path + "\"");
 
                 // Check
                 if(json != null){
