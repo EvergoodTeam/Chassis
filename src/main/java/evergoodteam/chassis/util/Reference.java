@@ -35,4 +35,7 @@ public class Reference {
     // Map inside Map => {Test={son=something, son2=something2}, Test2={son=something}}
     public static Map<String, Map<String, JsonObject>> RECIPES = RECIPESTABLE.rowMap();
 
+    public static Table<String, String, JsonObject> LOOTTABLE = HashBasedTable.create();
+    public static Map<String, Map<String, JsonObject>> LOOT = LOOTTABLE.rowMap();
+
 }
