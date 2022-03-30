@@ -21,6 +21,8 @@ public class RecipeManagerMixin {
     @Inject(method = "apply", at = @At("HEAD"))
     public void interceptApply(Map<Identifier, JsonElement> map, ResourceManager resourceManager, Profiler profiler, CallbackInfo info) {
 
+        if(RECIPES.isEmpty()) return;
+
         String namespace;
         String path;
         JsonObject json;
@@ -28,9 +30,9 @@ public class RecipeManagerMixin {
         // First we look at how many mods we have to go through
         for(int i=0; i<RECIPES.size(); i++){
 
-            LOGGER.info("Checking recipes from \"" + RECIPES.keySet().toArray()[i] + "\"");
-
             Map <String, JsonObject> DEEP = RECIPES.get(RECIPES.keySet().toArray()[i]);
+
+            LOGGER.info("Checking recipes from \"" + RECIPES.keySet().toArray()[i] + "\": found " + DEEP.size() + " recipes");
 
             // Now we go through everything from that mod
             for(int j=0; j<DEEP.size(); j++){

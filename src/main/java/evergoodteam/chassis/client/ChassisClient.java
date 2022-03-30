@@ -13,8 +13,6 @@ public class ChassisClient implements ClientModInitializer {
     public void onInitializeClient() {
 
         LOGGER.info("Found " + BLOCKS.size() + " blocks to add, of which " + COLUMNS.size() + " types are columns");
-        LOGGER.info("Found " + RECIPES.size() + " recipes to add");
-        LOGGER.info("Found " + LOOT.size() + " loot tables to add");
 
     }
 }
