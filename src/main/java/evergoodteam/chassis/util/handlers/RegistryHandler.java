@@ -4,7 +4,6 @@ import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.minecraft.block.Block;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.item.BlockItem;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
@@ -27,13 +26,7 @@ public class RegistryHandler {
 
         Registry.register(Registry.ITEM, new Identifier(namespace, path), new BlockItem(block, new FabricItemSettings().group(itemGroup)));
     }
-/*
-    private static Block registerBlock(String namespace, String path, Block block, ItemGroup group, String tooltipKey) {
 
-        registerBlockItem(namespace, path, block, group, tooltipKey);
-        return Registry.register(Registry.BLOCK, new Identifier(namespace, path), block);
-    }
-*/
     public static void registerBlockItem(String namespace, String path, Block block, ItemGroup itemGroup, String tooltipKey) {
         Registry.register(Registry.ITEM, new Identifier(namespace, path),
             new BlockItem(block, new FabricItemSettings().group(itemGroup)) {
@@ -43,13 +36,18 @@ public class RegistryHandler {
                 }
             });
     }
-/*
-    private static Block registerBlock(String namespace, String path, Block block, ItemGroup group) {
-        registerBlockItem(namespace, path, block, group);
-        return Registry.register(Registry.BLOCK, new Identifier(namespace, path), block);
+
+
+    public static void registerBlock(String namespace, String path, Block block, ItemGroup itemGroup){
+
+        registerBlock(namespace, path, block);
+        registerBlockItem(namespace, path, block, itemGroup);
     }
 
-    private static Item registerBlockItem(String namespace, String path, Block block, ItemGroup group) {
-        return Registry.register(Registry.ITEM, new Identifier(namespace, path), new BlockItem(block, new FabricItemSettings().group(group)));
-    }*/
+    public static void registerBlock(String namespace, String path, Block block, ItemGroup itemGroup, String tooltipKey){
+
+        registerBlock(namespace, path, block);
+        registerBlockItem(namespace, path, block, itemGroup, tooltipKey);
+    }
+
 }
