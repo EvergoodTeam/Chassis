@@ -34,7 +34,7 @@ public class RegistryHandler {
         return Registry.register(Registry.BLOCK, new Identifier(namespace, path), block);
     }
 */
-    private static void registerBlockItem(String namespace, String path, Block block, ItemGroup itemGroup, String tooltipKey) {
+    public static void registerBlockItem(String namespace, String path, Block block, ItemGroup itemGroup, String tooltipKey) {
         Registry.register(Registry.ITEM, new Identifier(namespace, path),
             new BlockItem(block, new FabricItemSettings().group(itemGroup)) {
                 @Override
