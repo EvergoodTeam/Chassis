@@ -12,7 +12,7 @@ public class ChassisClient implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
 
-        LOGGER.info("Found " + BLOCKS.size() + " blocks to add, of which " + COLUMNS.size() + " types are columns");
+        if(!BLOCKS.isEmpty()) LOGGER.info("Found " + BLOCKS.size() + " blocks to add, of which " + COLUMNS.size() + " types are columns");
 
     }
 }
