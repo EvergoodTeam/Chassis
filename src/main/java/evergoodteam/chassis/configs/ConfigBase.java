@@ -190,6 +190,30 @@ public class ConfigBase {
         return this;
     }
 
+    public ConfigBase writeProperties(){
+
+        try {
+            PropertiesConfiguration config = new PropertiesConfiguration(this.propertiesPath);
+
+            this.OPTIONS.forEach((name, value) -> {
+
+                config.getLayout().setComment("configLocked", new Date().toString()); // Update Date
+                config.setProperty(name, value);
+
+            });
+
+            config.save();
+
+            readProperties();
+
+        } catch (ConfigurationException e) {
+            log.error(e);
+        }
+
+        return this;
+
+    }
+
 
     public ConfigBase openConfigFile(){
         Util.getOperatingSystem().open(Paths.get(this.propertiesPath).toFile());
