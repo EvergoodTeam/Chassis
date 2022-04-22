@@ -1,8 +1,8 @@
 # Chassis <a href=https://www.curseforge.com/minecraft/mc-mods/chassis> <img src="http://cf.way2muchnoise.eu/596615.svg"> </a>
 
-Making model recipe and/or loot json files is EXTREMELY boring, generate them instead with ✨code✨
+Creating hundreds of Json files for some Blocks is REALLY time consuming, so you should automate that
 
-Chassis is a library providing utilities for dynamic asset generation, recipe/loot generation and speeding up mod making
+Chassis is a Library providing utilities for dynamic asset generation (Blockstates, Models, Tags, Recipes, Loot Tables, Textures) and configuration for your Mod
 
 ## Adding to your own project
 
