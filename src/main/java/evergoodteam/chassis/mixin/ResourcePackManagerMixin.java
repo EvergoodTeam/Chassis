@@ -51,7 +51,7 @@ public class ResourcePackManagerMixin {
 
         if (!providerPresent) {
 
-            if(NAMESPACES.size() != 0) LOGGER.info("Registering {} ResourcePack(s)", NAMESPACES.size()); // TODO: ?
+            LOGGER.info("Registering {} ResourcePack(s)", NAMESPACES.size()); // TODO: ?
 
             if (isClient) return ImmutableSet.copyOf(ArrayUtils.add(elements, new ClientResourcePackProvider(NAMESPACES)));
 

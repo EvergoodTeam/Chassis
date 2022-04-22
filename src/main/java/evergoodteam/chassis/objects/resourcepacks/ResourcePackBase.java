@@ -139,8 +139,9 @@ public class ResourcePackBase {
 
         DirHandler.createDir(mineable);
 
-        createJsonFile(mineable.resolve(tool))
-                .writeJson(TagJson.createTagJson(new String[]{namespace}, inputs), mineable.resolve(tool));
+        if(!Files.exists(mineable.resolve(tool))) createJsonFile(mineable.resolve(tool));
+
+        writeJson(TagJson.createTagJson(new String[]{namespace}, inputs), mineable.resolve(tool));
 
         return this;
     }
@@ -158,8 +159,9 @@ public class ResourcePackBase {
 
         DirHandler.createDir(tagBlocks);
 
-        createJsonFile(tagBlocks.resolve(name))
-                .writeJson(TagJson.createTagJson(new String[]{namespace}, inputs), tagBlocks.resolve(name));
+        if(!Files.exists(tagBlocks.resolve(name))) createJsonFile(tagBlocks.resolve(name));
+
+        writeJson(TagJson.createTagJson(new String[]{namespace}, inputs), tagBlocks.resolve(name));
 
         return this;
     }
