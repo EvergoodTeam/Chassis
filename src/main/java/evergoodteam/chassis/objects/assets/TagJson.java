@@ -7,14 +7,11 @@ public class TagJson {
 
     /**
      * Create a JsonObject for a Tag File <br>
-     * NOTE: each Path MUST have its own Namespace
-     * @param namespaces
+     * @param namespace
      * @param paths
      * @return JsonObject with the inserted info
      */
-    public static JsonObject createTagJson(String[] namespaces, String[] paths){
-
-        if(namespaces.length != paths.length) return null;
+    public static JsonObject createTagJson(String namespace, String[] paths){
 
         JsonObject json = new JsonObject();
 
@@ -22,8 +19,8 @@ public class TagJson {
 
         JsonArray jsonArray = new JsonArray();
 
-        for(int i = 0; i < namespaces.length; i++){
-            jsonArray.add(namespaces[i] + ":" + paths[i]);
+        for(int i = 0; i < paths.length; i++){
+            jsonArray.add(namespace + ":" + paths[i]);
         }
 
         json.add("values", jsonArray);

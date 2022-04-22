@@ -125,10 +125,10 @@ public class ResourcePackBase {
         Path items = Paths.get(this.path.toString(), "resources/data/c/tags/items");
 
         createJsonFile(blocks.resolve(input))
-                .writeJson(TagJson.createTagJson(new String[]{namespace}, new String[]{input}), blocks.resolve(input));
+                .writeJson(TagJson.createTagJson(this.namespace, new String[]{input}), blocks.resolve(input));
 
         createJsonFile(items.resolve(input))
-                .writeJson(TagJson.createTagJson(new String[]{namespace}, new String[]{input}), items.resolve(input));
+                .writeJson(TagJson.createTagJson(this.namespace, new String[]{input}), items.resolve(input));
 
         return this;
     }
@@ -141,7 +141,7 @@ public class ResourcePackBase {
 
         if(!Files.exists(mineable.resolve(tool))) createJsonFile(mineable.resolve(tool));
 
-        writeJson(TagJson.createTagJson(new String[]{namespace}, inputs), mineable.resolve(tool));
+        writeJson(TagJson.createTagJson(this.namespace, inputs), mineable.resolve(tool));
 
         return this;
     }
@@ -161,7 +161,7 @@ public class ResourcePackBase {
 
         if(!Files.exists(tagBlocks.resolve(name))) createJsonFile(tagBlocks.resolve(name));
 
-        writeJson(TagJson.createTagJson(new String[]{namespace}, inputs), tagBlocks.resolve(name));
+        writeJson(TagJson.createTagJson(this.namespace, inputs), tagBlocks.resolve(name));
 
         return this;
     }
