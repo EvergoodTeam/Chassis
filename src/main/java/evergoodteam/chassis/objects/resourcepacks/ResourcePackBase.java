@@ -49,6 +49,7 @@ public class ResourcePackBase {
         //log.info(this.path);
 
         NAMESPACES.add(namespace);
+        log.info(NAMESPACES);
         RESOURCE_PACKS.put(this.namespace, this);
 
         if(!config.resourceLocked){
