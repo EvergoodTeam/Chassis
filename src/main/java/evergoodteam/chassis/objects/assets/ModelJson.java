@@ -2,17 +2,20 @@ package evergoodteam.chassis.objects.assets;
 
 public class ModelJson {
 
-    public static String makeItemModelJson(String modId, String type, String textureName) {
-
-        // Type: handheld, generated, block
-        // "handheld" is used mostly for tools, "generated" is used for everything else item related
+    /**
+     * @param namespace Your ModId
+     * @param type "handheld": used mostly for tools <br> "generated": everything else item related <br> "block": item generated from block
+     * @param textureName Name of your texture .png File
+     * @return
+     */
+    public static String createItemModelJson(String namespace, String type, String textureName) {
 
         if ("generated".equals(type) || "handheld".equals(type)) {
 
             return "{\n" +
                     "  \"parent\": \"item/" + type + "\",\n" +
                     "  \"textures\": {\n" +
-                    "    \"layer0\": \"" + modId + ":item/" + textureName + "\"\n" +
+                    "    \"layer0\": \"" + namespace + ":item/" + textureName + "\"\n" +
                     "  }\n" +
                     "}";
         }
@@ -20,7 +23,7 @@ public class ModelJson {
         else if ("block".equals(type)) {
 
             return "{\n" +
-                    "  \"parent\": \""+ modId + ":block/"+ textureName +"\"\n" +
+                    "  \"parent\": \""+ namespace + ":block/"+ textureName +"\"\n" +
                     "}";
         }
 
@@ -28,7 +31,12 @@ public class ModelJson {
         else return "";
     }
 
-    public static String makeBlockModelJson(String cubeType, String textureName){
+    /**
+     * @param cubeType "all": same texture on all 6 sides <br> "column": uses a specific texture for top and bottom side
+     * @param textureName Name of your .png Files <br> Have every texture with the same prefix and with either the "_end" or "_side" suffix
+     * @return
+     */
+    public static String createBlockModelJson(String cubeType, String textureName){
 
         if("all".equals(cubeType)){
             return "{\n" +
@@ -50,6 +58,5 @@ public class ModelJson {
         }
 
         else return "";
-
     }
 }

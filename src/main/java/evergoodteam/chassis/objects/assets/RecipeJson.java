@@ -8,6 +8,7 @@ import java.util.Arrays;
 
 public class RecipeJson {
 
+    // TODO: [NU] Namespace and path
     public static JsonObject createShapedRecipeJson(ArrayList<String> pattern, ArrayList<Character> keys, ArrayList<String> types, ArrayList<String> items, String output, int outputCount) {
 
         JsonObject json = new JsonObject();
@@ -89,7 +90,6 @@ public class RecipeJson {
         //  "item": "output",
         //  "count": outputCount
         //}
-
 
         return json;
     }

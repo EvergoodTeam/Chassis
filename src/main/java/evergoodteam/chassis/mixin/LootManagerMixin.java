@@ -26,31 +26,25 @@ public class LootManagerMixin {
         String path;
         JsonObject json;
 
-        // First we look at how many mods we have to go through
-        for(int i=0; i<LOOT.size(); i++){
+        // Go through every namespace
+        for(int i = 0; i < LOOT.size(); i++){
 
             Map <String, JsonObject> DEEP = LOOT.get(LOOT.keySet().toArray()[i]);
 
-            LOGGER.info("Checking loot tables from \"" + RECIPES.keySet().toArray()[i] + "\": found " + DEEP.size() + " loot tables");
+            LOGGER.info("Checking loot tables from \"{}\": found {} loot tables", LOOT.keySet().toArray()[i], DEEP.size());
 
-
-            // Now we go through everything from that mod
-            for(int j=0; j<DEEP.size(); j++){
+            // Go through everything from that namespace
+            for(int j = 0; j < DEEP.size(); j++){
 
                 namespace = LOOT.keySet().toArray()[i].toString();
                 path = DEEP.keySet().toArray()[j].toString();
                 json = DEEP.get(DEEP.keySet().toArray()[j]);
 
-                //LOGGER.info("Working on " + j + " of " + (DEEP.size() - 1) + ": \"" + namespace + ":" + path + "\"");
+                //LOGGER.info("Working on {} of {}: \"{}\"", (DEEP.size() - 1), namespace, path);
 
-                // Check
                 if(json != null){
-
-                    // Path is unique, having the same path will override previous
+                    // Path is unique, using the same path will override
                     objectMap.put(new Identifier(namespace, path), json);
-                    //LOGGER.info(objectMap);
-                    //LOGGER.info("Success");
-
                 }
             }
         }

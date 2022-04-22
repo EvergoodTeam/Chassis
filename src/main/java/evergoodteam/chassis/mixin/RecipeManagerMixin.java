@@ -12,8 +12,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import java.util.Map;
 
-import static evergoodteam.chassis.util.Reference.LOGGER;
-import static evergoodteam.chassis.util.Reference.RECIPES;
+import static evergoodteam.chassis.util.Reference.*;
 
 @Mixin(RecipeManager.class)
 public class RecipeManagerMixin {
@@ -27,33 +26,28 @@ public class RecipeManagerMixin {
         String path;
         JsonObject json;
 
-        // First we look at how many mods we have to go through
-        for(int i=0; i<RECIPES.size(); i++){
+        // Go through every namespace
+        for(int i = 0; i < RECIPES.size(); i++){
 
             Map <String, JsonObject> DEEP = RECIPES.get(RECIPES.keySet().toArray()[i]);
 
-            LOGGER.info("Checking recipes from \"" + RECIPES.keySet().toArray()[i] + "\": found " + DEEP.size() + " recipes");
+            LOGGER.info("Checking recipes from \"{}\": found {} recipes", RECIPES.keySet().toArray()[i], DEEP.size());
 
-            // Now we go through everything from that mod
-            for(int j=0; j<DEEP.size(); j++){
+            // Go through everything from that namespace
+            for(int j = 0; j < DEEP.size(); j++){
 
                 namespace = RECIPES.keySet().toArray()[i].toString();
                 path = DEEP.keySet().toArray()[j].toString();
                 json = DEEP.get(DEEP.keySet().toArray()[j]);
 
-                //LOGGER.info("Working on " + j + " of " + (DEEP.size() - 1) + ": \"" + namespace + ":" + path + "\"");
+                //LOGGER.info("Working on {} of {}: \"{}\"", (DEEP.size() - 1), namespace, path);
 
-                // Check
                 if(json != null){
-
-                    // Path is unique, having the same path will override previous
+                    // Path is unique, using the same path will override
                     map.put(new Identifier(namespace, path), json);
-
                 }
+                else LOGGER.info("Recipe on {} ( {}:{} ) has an invalid Json", (DEEP.size() - 1), namespace, path);
             }
         }
-
-
     }
-
 }

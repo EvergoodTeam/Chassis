@@ -5,8 +5,11 @@
   "compatibilityLevel": "JAVA_17",
   "mixins": [
     "LootManagerMixin",
+    "MainMixin",
     "ModelLoaderMixin",
-    "RecipeManagerMixin"
+    "PackScreenMixin",
+    "RecipeManagerMixin",
+    "ResourcePackManagerMixin"
   ],
   "client": [
   ],

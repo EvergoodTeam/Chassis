@@ -5,8 +5,8 @@ import com.google.gson.JsonObject;
 
 public class LootJson {
 
-
-    public static JsonObject createBlockBreakLootJson(String output){
+    // TODO: [NU] Change every namespace and path params to Identifier
+    public static JsonObject createBlockBreakLootJson(String namespace, String path){
 
         JsonObject json = new JsonObject();
 
@@ -25,7 +25,7 @@ public class LootJson {
 
         JsonObject type = new JsonObject();
         type.addProperty("type", "minecraft:item");
-        type.addProperty("name", output);
+        type.addProperty("name", namespace + ":" + path);
 
         entries.add(type);
 
@@ -45,7 +45,5 @@ public class LootJson {
         json.add("pools", pools);
 
         return json;
-
     }
-
 }

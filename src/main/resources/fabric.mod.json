@@ -3,7 +3,7 @@
   "id": "chassis",
   "version": "${version}",
   "name": "Chassis",
-  "description": "WIP",
+  "description": "Library providing utilities for dynamic asset generation and configuration",
   "authors": [
     "Libra"
   ],
@@ -12,7 +12,7 @@
     "homepage": "https://www.curseforge.com/minecraft/mc-mods/chassis",
     "sources": "https://github.com/EvergoodTeam/Chassis"
   },
-  "license": "MIT",
+  "license": "LGPL-2.1",
   "icon": "icon.png",
   "environment": "*",
   "entrypoints": {
@@ -21,6 +21,9 @@
     ],
     "main": [
       "evergoodteam.chassis.Chassis"
+    ],
+    "modmenu": [
+      "evergoodteam.chassis.configs.ChassisModMenu"
     ]
   },
   "mixins": [
@@ -30,5 +33,13 @@
     "fabricloader": ">=0.13.3",
     "fabric": "*",
     "minecraft": "1.18.1"
+  },
+  "custom": {
+    "modmenu": {
+      "links": {
+        "Discord": "https://discord.gg/k2P68Y8",
+        "BisectHosting": "https://www.bisecthosting.com/Libra"
+      }
+    }
   }
 }
