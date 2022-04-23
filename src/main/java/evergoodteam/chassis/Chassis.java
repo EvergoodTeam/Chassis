@@ -46,7 +46,7 @@ public class Chassis implements ModInitializer {
 
         chassisRP.createGlobalTag("testblock")
                 .createBlockstate("testblock")
-                .createBlockModels("testblock", "testblock")
+                .createBlockModels("testblock", "testblock", "all")
                 .createBlockDropLootTable("testblock")
                 .createRequiredToolTag("pickaxe", new String[]{"testblock"})
                 .createMiningLevelTag("stone", new String[]{"testblock"})

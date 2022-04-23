@@ -48,7 +48,7 @@ public class ResourcePackBuilder extends AbstractFileResourcePack implements Res
     }
 
     private Path getPath(String filename) {
-        Path childPath = basePath.resolve(filename.replace("/", separator)).toAbsolutePath().normalize();
+        Path childPath = basePath.resolve(filename.replace("/", separator));
 
         if (childPath.startsWith(basePath) && Files.exists(childPath)) return childPath;
         else return null;
@@ -119,6 +119,8 @@ public class ResourcePackBuilder extends AbstractFileResourcePack implements Res
     public Set<String> getNamespaces(ResourceType type) {
 
         if (this.namespaces == null) {
+
+            //log.info(type.getDirectory()); // TODO: Gen at main?
             Path file = getPath(type.getDirectory());
 
             if (!Files.isDirectory(file)) {

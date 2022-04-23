@@ -7,8 +7,6 @@ import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-import static evergoodteam.chassis.util.Reference.LOGGER;
-
 @Log4j2
 public class DirHandler {
 
@@ -33,7 +31,7 @@ public class DirHandler {
      * @param root
      * @param children
      */
-    public static void createDirs(Path root, String @NotNull [] children){
+    public static void createDir(Path root, String @NotNull [] children){
 
         for(String child : children){
             createDir(root.resolve(child));

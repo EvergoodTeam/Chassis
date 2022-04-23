@@ -55,7 +55,7 @@ public class ConfigBase {
             this.configLocked = true;
             this.createConfigRoot(); // Create .properties
         }
-        else LOGGER.info("Configs for \"{}\" already exist, skipping creation", this.namespace);
+        else LOGGER.info("Configs for \"{}\" already exist, skipping generation", this.namespace);
     }
 
     // TODO: General cleanup
@@ -75,7 +75,7 @@ public class ConfigBase {
             log.error(e);
         }
         setupDefaultProperties();
-        LOGGER.info("Created Configs for \"{}\"", this.namespace);
+        LOGGER.info("Generated Configs for \"{}\"", this.namespace);
 
         return this;
     }

@@ -1,5 +1,6 @@
 package evergoodteam.chassis.util.handlers;
 
+import evergoodteam.chassis.util.StringUtils;
 import lombok.extern.log4j.Log4j2;
 
 import java.io.FileWriter;
@@ -39,10 +40,7 @@ public class FileHandler {
 
     public static void createJsonFile(Path path){
 
-        Path actual = path;
-
-        if(path.toString().contains(".json")) actual = Paths.get(path.toString().replace(".json", ""));
-
+        Path actual = StringUtils.checkDuplicateExtension(path, ".json");
         //log.info(actual);
 
         try {
@@ -60,8 +58,9 @@ public class FileHandler {
      */
     public static void createFile(Path path, String extension) throws IOException {
 
-        Path actual = Paths.get(path + extension);
-        createFile(actual);
+        Path actual = StringUtils.checkDuplicateExtension(path, extension);
+
+        createFile(Paths.get(actual + extension));
         //else log.info("Unable to create file as it already exists");
     }
 
