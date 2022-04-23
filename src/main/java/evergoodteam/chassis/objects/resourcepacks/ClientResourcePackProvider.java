@@ -21,7 +21,7 @@ public class ClientResourcePackProvider implements ResourcePackProvider {
 
         for(int i = 0; i < namespaces.size(); i++){
 
-            this.groupResourcePacks.add(new ResourcePackBuilder(namespaces.get(i), ResourceType.CLIENT_RESOURCES, FabricLoader.getInstance().getConfigDir().resolve("chassis/resourcepacks").toAbsolutePath().normalize()));
+            this.groupResourcePacks.add(new ResourcePackBuilder(namespaces.get(i), ResourceType.CLIENT_RESOURCES, FabricLoader.getInstance().getConfigDir().resolve(namespaces.get(i) + "/resourcepacks").toAbsolutePath().normalize()));
         }
 
         this.namespaces = namespaces;
