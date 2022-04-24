@@ -14,12 +14,17 @@ import evergoodteam.chassis.objects.resourcepacks.ResourcePackBase;
 import evergoodteam.chassis.util.handlers.ListHandler;
 import evergoodteam.chassis.configs.ConfigHandler;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static evergoodteam.chassis.configs.ConfigBase.*;
 import static evergoodteam.chassis.util.Reference.*;
 
 public class Chassis implements ModInitializer {
 
-    public static final Block TEST_BLOCK = new BlockBase(MODID, FabricBlockSettings.of(Material.METAL).requiresTool().hardness(1.5f).resistance(6.0f).sounds(BlockSoundGroup.METAL).nonOpaque(), true);
+    public static final List<Block> BLOCKS = new ArrayList<>();
+
+    public static final Block TEST_BLOCK = new BlockBase(BLOCKS, FabricBlockSettings.of(Material.METAL).requiresTool().hardness(1.5f).resistance(6.0f).sounds(BlockSoundGroup.METAL).nonOpaque(), true);
 
     @Override
     public void onInitialize() {
