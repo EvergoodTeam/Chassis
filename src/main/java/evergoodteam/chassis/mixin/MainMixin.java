@@ -15,7 +15,7 @@ public class MainMixin {
     @Inject(method = "main", at = @At("HEAD"), remap = false)
     private static void injectMain(CallbackInfo ci) {
 
-        //new Reference();
+        new Reference();
         //ReferenceInterface.init();
     }
 }
