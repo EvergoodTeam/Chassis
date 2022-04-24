@@ -36,10 +36,8 @@ public class Reference{
     
     public static final List<Object> STUFF = new ArrayList<>();
 
-    /*
-    static{
-        STUFF.add(new ResourcePackBase(CHASSIS_CONFIGS, MODID, "https://evergoodteam.github.io/utils/icons/pack.png"));
-    }*/
 
-
+    public static void registerResources(){
+        // Register here
+    }
 }
