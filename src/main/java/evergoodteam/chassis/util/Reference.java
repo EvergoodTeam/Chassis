@@ -12,7 +12,7 @@ import java.util.*;
 import evergoodteam.chassis.configs.ConfigBase;
 import evergoodteam.chassis.objects.resourcepacks.ResourcePackBase;
 
-public class Reference {
+public class Reference{
 
     public static final String MODID = "chassis";
     public static final Logger LOGGER = LogManager.getLogger(StringUtils.capitalize(MODID));
@@ -33,5 +33,13 @@ public class Reference {
 
     public static final Table<String, String, JsonObject> LOOTTABLE = HashBasedTable.create();
     public static Map<String, Map<String, JsonObject>> LOOT = LOOTTABLE.rowMap();
+    
+    public static final List<Object> STUFF = new ArrayList<>();
+
+    /*
+    static{
+        STUFF.add(new ResourcePackBase(CHASSIS_CONFIGS, MODID, "https://evergoodteam.github.io/utils/icons/pack.png"));
+    }*/
+
 
 }

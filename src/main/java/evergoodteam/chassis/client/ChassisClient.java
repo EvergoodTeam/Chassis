@@ -21,7 +21,7 @@ public class ChassisClient implements ClientModInitializer {
             BlockRenderLayerMap.INSTANCE.putBlock(block, RenderLayer.getCutout());
         }
 
-        if(!BLOCKS.isEmpty()) LOGGER.info("Found {} Block(s) to register", BLOCKS.size());
+        if(b > 0) LOGGER.info("Found {} Block(s) to register", b);
         if(!COLUMNS.isEmpty()) LOGGER.info("Found {} Column(s)", COLUMNS.size());
         if(!ITEMS.isEmpty()) LOGGER.info("Found {} Item(s) to register", ITEMS.size());
 

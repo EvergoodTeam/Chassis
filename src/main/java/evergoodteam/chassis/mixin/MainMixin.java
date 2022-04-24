@@ -1,5 +1,6 @@
 package evergoodteam.chassis.mixin;
 
+import evergoodteam.chassis.util.Reference;
 import lombok.extern.log4j.Log4j2;
 import net.minecraft.client.main.Main;
 import org.spongepowered.asm.mixin.Mixin;
@@ -14,5 +15,7 @@ public class MainMixin {
     @Inject(method = "main", at = @At("HEAD"), remap = false)
     private static void injectMain(CallbackInfo ci) {
 
+        //new Reference();
+        //ReferenceInterface.init();
     }
 }
