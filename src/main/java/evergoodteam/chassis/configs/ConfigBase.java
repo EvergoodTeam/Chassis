@@ -124,16 +124,6 @@ public class ConfigBase {
         }
     }
 
-    private static void save(ConfigBase config){
-
-        try {
-            properties(config).save();
-        } catch (ConfigurationException e) {
-            throw new RuntimeException(e);
-        }
-
-    }
-
     private String header(ConfigBase config){
         return "Config Options for " + StringUtil.capitalize(config.namespace) + System.lineSeparator() + new Date();
     }
@@ -147,14 +137,18 @@ public class ConfigBase {
         config.setProperty("configLocked", this.configLocked);
         config.setProperty("resourceLocked", this.resourceLocked);
 
-        save(this);
+        try {
+            config.save();
+        } catch (ConfigurationException e) {
+            throw new RuntimeException(e);
+        }
 
         return this;
     }
 
     public ConfigBase readProperties(){
 
-        if(Files.exists(Paths.get(this.propertiesPath))) {
+        if(Files.exists(Paths.get(this.propertiesPath))) { // TODO: File can exist but can be empty at the same time
 
             PropertiesConfiguration config = properties(this);
 
@@ -188,7 +182,11 @@ public class ConfigBase {
                 }
             });
 
-            save(this);
+            try {
+                config.save();
+            } catch (ConfigurationException e) {
+                throw new RuntimeException(e);
+            }
         }
 
         return this;
@@ -206,7 +204,11 @@ public class ConfigBase {
                 config.setProperty(name, value);
             });
 
-            save(this);
+            try {
+                config.save();
+            } catch (ConfigurationException e) {
+                throw new RuntimeException(e);
+            }
 
             readProperties();
         }
