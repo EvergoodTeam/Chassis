@@ -31,7 +31,7 @@ public class ResourcePackBase {
     public static final Map<String, ResourcePackBase> RESOURCE_PACKS = new HashMap<>();
 
     public static final List<String> NAMESPACES = new ArrayList<>();
-    public static final List<String> HIDDEN = new ArrayList<>(); // Capitalized namespaces
+    public static final List<String> HIDDEN = new ArrayList<>(); // Requires capitalized namespaces
     public static final List<String> NO_ICON = new ArrayList<>();
 
     public String namespace;
@@ -64,16 +64,17 @@ public class ResourcePackBase {
             //log.info("Attempting to generate Resources");
             config.cleanResources();
             createRoot();
+
             //log.info("Are resources locked? {}", config.resourceLocked);
             config.resourceLocked = true;
             config.setupDefaultProperties();
+
             LOGGER.info("Generated Resources for \"{}\"", this.namespace);
         }
         else LOGGER.info("Resources for \"{}\" already exist, skipping generation", this.namespace);
 
         if(iconUrl == null) NO_ICON.add(namespace);
         else createPackIcon(config, namespace, iconUrl);
-
 
         this.assignDirs();
     }

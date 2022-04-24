@@ -17,8 +17,8 @@ public class Reference {
     public static final String MODID = "chassis";
     public static final Logger LOGGER = LogManager.getLogger(StringUtils.capitalize(MODID));
 
-    //public static final ConfigBase CHASSIS_CONFIGS = new ConfigBase(MODID);
-    //public static final ResourcePackBase CHASSIS_RESOURCES = new ResourcePackBase(CHASSIS_CONFIGS, MODID, "https://evergoodteam.github.io/utils/icons/pack.png");
+    public static final ConfigBase CHASSIS_CONFIGS = new ConfigBase(MODID);
+    public static final ResourcePackBase CHASSIS_RESOURCES = new ResourcePackBase(CHASSIS_CONFIGS, MODID, "https://evergoodteam.github.io/utils/icons/pack.png");
 
     // Used for model generation
     public static final List<String> MODEL_NAMESPACES = new ArrayList<>();

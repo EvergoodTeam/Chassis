@@ -69,11 +69,8 @@ public class ConfigBase {
 
         // Regenerate everything
         DirHandler.createDir(this.dirPath);
-        try {
-            FileHandler.createFile(Paths.get(this.propertiesPath));
-        } catch (IOException e) {
-            log.error(e);
-        }
+        FileHandler.createFile(Paths.get(this.propertiesPath));
+
         setupDefaultProperties();
         LOGGER.info("Generated Configs for \"{}\"", this.namespace);
 
@@ -118,45 +115,55 @@ public class ConfigBase {
     }
 
 
-    public ConfigBase setupDefaultProperties(){
+    private static PropertiesConfiguration properties(ConfigBase config){
 
         try {
-            PropertiesConfiguration config = new PropertiesConfiguration(this.propertiesPath);
-
-            config.getLayout().setHeaderComment("Config Options for " + StringUtil.capitalize(this.namespace));
-            config.getLayout().setComment("configLocked", new Date().toString());
-
-            config.setProperty("configLocked", this.configLocked);
-            config.setProperty("resourceLocked", this.resourceLocked);
-
-            config.save();
-
-            readProperties();
-
+            return new PropertiesConfiguration(config.propertiesPath);
         } catch (ConfigurationException e) {
-            log.error(e);
+            throw new RuntimeException(e);
         }
+    }
+
+    private static void save(ConfigBase config){
+
+        try {
+            properties(config).save();
+        } catch (ConfigurationException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
+    private String header(ConfigBase config){
+        return "Config Options for " + StringUtil.capitalize(config.namespace) + System.lineSeparator() + new Date();
+    }
+
+    public ConfigBase setupDefaultProperties(){
+
+        PropertiesConfiguration config = properties(this);
+
+        config.getLayout().setHeaderComment(header(this));
+
+        config.setProperty("configLocked", this.configLocked);
+        config.setProperty("resourceLocked", this.resourceLocked);
+
+        save(this);
 
         return this;
     }
 
     public ConfigBase readProperties(){
 
-        if(Files.exists(Paths.get(this.propertiesPath))){
+        if(Files.exists(Paths.get(this.propertiesPath))) {
 
-            try {
-                PropertiesConfiguration config = new PropertiesConfiguration(this.propertiesPath);
+            PropertiesConfiguration config = properties(this);
 
-                this.configLocked = Boolean.valueOf(config.getProperty("configLocked").toString());
-                this.resourceLocked = Boolean.valueOf(config.getProperty("resourceLocked").toString());
+            this.configLocked = Boolean.valueOf(config.getProperty("configLocked").toString());
+            this.resourceLocked = Boolean.valueOf(config.getProperty("resourceLocked").toString());
 
-                this.OPTIONS.forEach((name, value) -> {
-                    this.OPTIONS.put(name, config.getProperty(name));
-                });
-
-            } catch (ConfigurationException e) {
-                log.error(e);
-            }
+            this.OPTIONS.forEach((name, value) -> {
+                this.OPTIONS.put(name, config.getProperty(name));
+            });
         }
 
         return this;
@@ -166,52 +173,45 @@ public class ConfigBase {
 
         if(Files.exists(Paths.get(this.propertiesPath))){
 
-            try {
-                PropertiesConfiguration config = new PropertiesConfiguration(this.propertiesPath);
+            PropertiesConfiguration config = properties(this);
 
-                this.OPTIONS.forEach((name, value) -> {
+            config.getLayout().setBlancLinesBefore(OPTIONS.keySet().toArray()[0].toString(), 1);
 
-                    if(config.getProperty(name) == null){ // Property is missing, add with default value
-                        config.getLayout().setComment("configLocked", new Date().toString()); // Update Date
-                        config.setProperty(name, value);
-                    }
-                    else{ // Property exists, fetch the value and overwrite Map
-                        this.OPTIONS.put(name, config.getProperty(name));
-                    }
-                });
+            this.OPTIONS.forEach((name, value) -> {
 
-                config.save();
+                if(config.getProperty(name) == null){ // Property is missing, add with default value
+                    config.getLayout().setHeaderComment(header(this));
+                    config.setProperty(name, value);
+                }
+                else{ // Property exists, fetch the value and overwrite Map
+                    this.OPTIONS.put(name, config.getProperty(name));
+                }
+            });
 
-            } catch (ConfigurationException e) {
-                log.error(e);
-            }
+            save(this);
         }
 
         return this;
     }
 
-    public ConfigBase writeProperties(){
+    public ConfigBase overwriteProperties(){
 
-        try {
-            PropertiesConfiguration config = new PropertiesConfiguration(this.propertiesPath);
+        if(Files.exists(Paths.get(this.propertiesPath))) {
+
+            PropertiesConfiguration config = properties(this);
 
             this.OPTIONS.forEach((name, value) -> {
 
-                config.getLayout().setComment("configLocked", new Date().toString()); // Update Date
+                config.getLayout().setHeaderComment(header(this));
                 config.setProperty(name, value);
-
             });
 
-            config.save();
+            save(this);
 
             readProperties();
-
-        } catch (ConfigurationException e) {
-            log.error(e);
         }
 
         return this;
-
     }
 
 

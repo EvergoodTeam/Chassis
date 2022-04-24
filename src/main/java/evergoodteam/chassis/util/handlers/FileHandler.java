@@ -9,8 +9,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import static evergoodteam.chassis.util.Reference.LOGGER;
-
 @Log4j2
 public class FileHandler {
 
@@ -43,25 +41,19 @@ public class FileHandler {
         Path actual = StringUtils.checkDuplicateExtension(path, ".json");
         //log.info(actual);
 
-        try {
-            createFile(actual, ".json");
-        } catch (IOException e) {
-            LOGGER.error("Error on creating Json file", e);
-        }
+        createFile(actual, ".json");
     }
 
     /**
      * Creates a File only if one with the same Path doesn't exist already
      * @param path
      * @param extension .txt .json etc.
-     * @throws IOException
      */
-    public static void createFile(Path path, String extension) throws IOException {
+    public static void createFile(Path path, String extension) {
 
         Path actual = StringUtils.checkDuplicateExtension(path, extension);
 
         createFile(Paths.get(actual + extension));
-        //else log.info("Unable to create file as it already exists");
     }
 
     /**
@@ -69,10 +61,14 @@ public class FileHandler {
      * @param path Must include the File extension
      * @throws IOException
      */
-    public static void createFile(Path path) throws IOException {
+    public static void createFile(Path path) {
 
         if(!Files.exists(path)){
-            Files.createFile(path);
+            try {
+                Files.createFile(path);
+            } catch (IOException e) {
+                log.error("Error on creating File", e);
+            }
         }
         //else log.info("Unable to create file as it already exists");
     }

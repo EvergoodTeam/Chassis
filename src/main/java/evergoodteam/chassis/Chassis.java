@@ -26,10 +26,10 @@ public class Chassis implements ModInitializer {
 
         LOGGER.info("Starting up");
 
-        //testFeatures();
+        testFeatures();
     }
 
-/*
+
     private static void testFeatures(){
 
         CHASSIS_CONFIGS.OPTIONS.put("hideResourcePack", false);
@@ -54,6 +54,6 @@ public class Chassis implements ModInitializer {
 
         if(ConfigHandler.getBooleanOption(CHASSIS_CONFIGS, "hideResourcePack", false)) chassisRP.hide();
     }
-*/
+
 
 }
