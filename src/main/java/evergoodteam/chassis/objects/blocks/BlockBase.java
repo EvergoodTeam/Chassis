@@ -6,37 +6,39 @@ import net.minecraft.block.Material;
 import net.minecraft.sound.BlockSoundGroup;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class BlockBase extends Block {
 
-    public static final List<Block> BLOCKS = new ArrayList<>(); // TODO: [NU] Convert to Map for easier access
+    public static final Map<String, Block> BLOCKS = new HashMap<>(); // TODO: [NU] Convert to Map for easier access
     public static final List<Block> TRANSPARENT = new ArrayList<>();
 
-    public BlockBase(Material block, Float hardness, Float resistance, BlockSoundGroup sound) {
+    public BlockBase(String namespace, Material block, Float hardness, Float resistance, BlockSoundGroup sound) {
         super(FabricBlockSettings.of(block).requiresTool().strength(hardness, resistance).sounds(sound));
 
-        if(this != null) BLOCKS.add(this);
+        if(this != null) BLOCKS.put(namespace, this);
     }
 
-    public BlockBase(Material block, Float strength, BlockSoundGroup sound) {
+    public BlockBase(String namespace, Material block, Float strength, BlockSoundGroup sound) {
         super(FabricBlockSettings.of(block).requiresTool().strength(strength).sounds(sound));
 
-        if(this != null) BLOCKS.add(this);
+        if(this != null) BLOCKS.put(namespace, this);
     }
 
-    public BlockBase(FabricBlockSettings blockSettings, Boolean transparent){
+    public BlockBase(String namespace, FabricBlockSettings blockSettings, Boolean transparent){
         super(blockSettings);
 
         if(this != null){
-            BLOCKS.add(this);
+            BLOCKS.put(namespace, this);
             if(transparent) TRANSPARENT.add(this);
         }
     }
 
-    public BlockBase(FabricBlockSettings blockSettings){
+    public BlockBase(String namespace, FabricBlockSettings blockSettings){
         super(blockSettings);
 
-        if(this != null) BLOCKS.add(this);
+        if(this != null) BLOCKS.put(namespace, this);
     }
 }

@@ -19,7 +19,7 @@ import static evergoodteam.chassis.util.Reference.*;
 
 public class Chassis implements ModInitializer {
 
-    public static final Block TEST_BLOCK = new BlockBase(FabricBlockSettings.of(Material.METAL).requiresTool().hardness(1.5f).resistance(6.0f).sounds(BlockSoundGroup.METAL).nonOpaque(), true);
+    public static final Block TEST_BLOCK = new BlockBase(MODID, FabricBlockSettings.of(Material.METAL).requiresTool().hardness(1.5f).resistance(6.0f).sounds(BlockSoundGroup.METAL).nonOpaque(), true);
 
     @Override
     public void onInitialize() {
