@@ -33,4 +33,7 @@ public class Reference {
 
     public static final Table<String, String, JsonObject> LOOTTABLE = HashBasedTable.create();
     public static Map<String, Map<String, JsonObject>> LOOT = LOOTTABLE.rowMap();
+
+    public static void init(){
+    }
 }
