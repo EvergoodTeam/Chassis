@@ -8,28 +8,35 @@ Chassis is a Library providing utilities for dynamic asset generation (Blockstat
 
 ### Gradle
 
+In your `build.grade`
+
 ```
 repositories {
-	maven {
-		url "https://jitpack.io"
-		content { includeGroup "com.github.evergoodteam" }
-	}
+    ...
+    maven { url 'https://jitpack.io' }
 }
 ```
 
 ```
 dependencies {
-	//Chassis
-	modImplementation 'com.github.evergoodteam:chassis:<releaseVersion>'
+    ...
+    //Chassis
+    modImplementation 'com.github.evergoodteam:chassis:<releaseVersion>'
 }
 ```
+Make sure to change `<releaseVersion>`  
+We recommend using `${project.chassis_version}` and specifying the version in your `gradle.properties`
 
 ### fabric.mod.json
 
+- Versions < `1.1.0` = `1.18.1`
+- Versions >= `1.1.0` = `1.18.2`
+
+Each version from their respective group should not break when swapped for newer one
+
 ```
-[...]
 "depends": {
-    [...]
-    "chassis": "0.x.x"
-  },
+    ...
+    "chassis": "1.0.x"
+},
 ```

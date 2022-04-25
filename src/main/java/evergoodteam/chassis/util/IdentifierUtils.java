@@ -1,7 +1,6 @@
 package evergoodteam.chassis.util;
 
 import net.minecraft.util.Identifier;
-
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
@@ -9,23 +8,25 @@ public class IdentifierUtils {
 
     /**
      * example_mod:block/example_block -> example_block
-     * @param id
+     *
+     * @param identifier
      * @return Id of the Object from the specified Identifier
      */
-    public static String getIdFromIdentifier(@NotNull Identifier id){
+    public static String getIdFromIdentifier(@NotNull Identifier identifier) {
 
-        String result = id.toString().substring(id.toString().lastIndexOf("/") + 1);
+        String result = identifier.toString().substring(identifier.toString().lastIndexOf("/") + 1);
         return result;
     }
 
     /**
      * example_mod:block/example_block -> block
-     * @param id
-     * @return Object Type from the specified Identifier
+     *
+     * @param identifier
+     * @return Object Type of the Object from the specified Identifier
      */
-    public static String getTypeFromIdentifier(@NotNull Identifier id){
+    public static String getTypeFromIdentifier(@NotNull Identifier identifier) {
 
-        String result = StringUtils.substringBetween(id.toString(), ":", "/");
+        String result = StringUtils.substringBetween(identifier.toString(), ":", "/");
         return result;
     }
 }

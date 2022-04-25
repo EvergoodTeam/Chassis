@@ -10,22 +10,23 @@ public class StringUtils {
 
     /**
      * Removes specified extension from the provided String if found
+     *
      * @param input
      * @param extension
      * @return
      */
-    public static @NotNull String checkDuplicateExtension(String input, String extension){
+    public static @NotNull String checkDuplicateExtension(String input, String extension) {
 
         String result = input;
 
-        if(!result.contains(extension)){
+        if (!result.contains(extension)) {
             result = result.replace(extension, "");
         }
 
         return result;
     }
 
-    public static @NotNull Path checkDuplicateExtension(@NotNull Path path, String extension){
+    public static @NotNull Path checkDuplicateExtension(@NotNull Path path, String extension) {
 
         Path result = Paths.get(checkDuplicateExtension(path.toString(), extension));
         return result;
@@ -33,23 +34,24 @@ public class StringUtils {
 
     /**
      * Adds specified extension to the provided String if missing
+     *
      * @param input
      * @param extension
      * @return
      */
     @Contract(pure = true)
-    public static @NotNull String checkMissingExtension(String input, String extension){
+    public static @NotNull String checkMissingExtension(String input, String extension) {
 
         String result = input;
 
-        if(!result.contains(extension)){
+        if (!result.contains(extension)) {
             result = result + extension;
         }
 
         return result;
     }
 
-    public static @NotNull Path checkMissingExtension(@NotNull Path path, String extension){
+    public static @NotNull Path checkMissingExtension(@NotNull Path path, String extension) {
 
         Path result = Paths.get(checkMissingExtension(path.toString(), extension));
 

@@ -12,7 +12,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.Map;
 
-import static evergoodteam.chassis.util.Reference.*;
+import static evergoodteam.chassis.util.Reference.LOGGER;
+import static evergoodteam.chassis.util.Reference.LOOT;
 
 @Mixin(LootManager.class)
 public class LootManagerMixin {
@@ -20,21 +21,21 @@ public class LootManagerMixin {
     @Inject(method = "apply", at = @At("HEAD"))
     private void interceptApply(Map<Identifier, JsonObject> objectMap, ResourceManager manager, Profiler profiler, CallbackInfo info) {
 
-        if(LOOT.isEmpty()) return;
+        if (LOOT.isEmpty()) return;
 
         String namespace;
         String path;
         JsonObject json;
 
         // Go through every namespace
-        for(int i = 0; i < LOOT.size(); i++){
+        for (int i = 0; i < LOOT.size(); i++) {
 
-            Map <String, JsonObject> DEEP = LOOT.get(LOOT.keySet().toArray()[i]);
+            Map<String, JsonObject> DEEP = LOOT.get(LOOT.keySet().toArray()[i]);
 
             LOGGER.info("Checking loot tables from \"{}\": found {} loot tables", LOOT.keySet().toArray()[i], DEEP.size());
 
             // Go through everything from that namespace
-            for(int j = 0; j < DEEP.size(); j++){
+            for (int j = 0; j < DEEP.size(); j++) {
 
                 namespace = LOOT.keySet().toArray()[i].toString();
                 path = DEEP.keySet().toArray()[j].toString();
@@ -42,7 +43,7 @@ public class LootManagerMixin {
 
                 //LOGGER.info("Working on {} of {}: \"{}\"", (DEEP.size() - 1), namespace, path);
 
-                if(json != null){
+                if (json != null) {
                     // Path is unique, using the same path will override
                     objectMap.put(new Identifier(namespace, path), json);
                 }

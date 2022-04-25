@@ -17,7 +17,7 @@ public class JsonUtils {
      * @param file Path of a valid .json File
      * @return {@link JsonObject} with all the contents of the specified .json File
      */
-    public static JsonObject getJsonObject(Path file){
+    public static JsonObject getJsonObject(@NotNull Path file) {
 
         JsonElement jsonElement = null;
 
@@ -34,20 +34,22 @@ public class JsonUtils {
 
     /**
      * Translates String to a JsonObject
+     *
      * @param json Naturally has to be a valid Json transcript
      * @return
      */
-    public static JsonObject getJsonObject(@NotNull String json){
+    public static JsonObject getJsonObject(@NotNull String json) {
 
         return JsonParser.parseString(json).getAsJsonObject();
     }
 
     /**
      * Translates JsonObject to a String
+     *
      * @param jsonObject Naturally has to be a valid {@link JsonObject}
      * @return
      */
-    public static String getString(@NotNull JsonObject jsonObject){
+    public static String getString(@NotNull JsonObject jsonObject) {
 
         return jsonObject.toString();
     }

@@ -15,7 +15,7 @@ public class BlockBase extends Block {
     public static final List<Block> TRANSPARENT = new ArrayList<>();
 
     /**
-     * @param namespaceGroup List to which add generated Block - You may use this List to later register the Block(s)
+     * @param namespaceGroup list to which add generated Block - you may use this List to later register the Block(s)
      * @param block
      * @param hardness
      * @param resistance
@@ -24,7 +24,7 @@ public class BlockBase extends Block {
     public BlockBase(List<Block> namespaceGroup, Material block, Float hardness, Float resistance, BlockSoundGroup sound) {
         super(FabricBlockSettings.of(block).requiresTool().strength(hardness, resistance).sounds(sound));
 
-        if(this != null){
+        if (this != null) {
             namespaceGroup.add(this);
             b++;
         }
@@ -33,31 +33,31 @@ public class BlockBase extends Block {
     public BlockBase(List<Block> namespaceGroup, Material block, Float strength, BlockSoundGroup sound) {
         super(FabricBlockSettings.of(block).requiresTool().strength(strength).sounds(sound));
 
-        if(this != null){
+        if (this != null) {
             namespaceGroup.add(this);
             b++;
         }
     }
 
     /**
-     * @param namespaceGroup List to which add generated Block - You may use this List to later register the Block(s)
+     * @param namespaceGroup list to which add generated Block - you may use this List to later register the Block(s)
      * @param blockSettings
      * @param transparent
      */
-    public BlockBase(List<Block> namespaceGroup, FabricBlockSettings blockSettings, Boolean transparent){
+    public BlockBase(List<Block> namespaceGroup, FabricBlockSettings blockSettings, Boolean transparent) {
         super(blockSettings);
 
-        if(this != null){
+        if (this != null) {
             namespaceGroup.add(this);
-            if(transparent) TRANSPARENT.add(this);
+            if (transparent) TRANSPARENT.add(this);
             b++;
         }
     }
 
-    public BlockBase(List<Block> namespaceGroup, FabricBlockSettings blockSettings){
+    public BlockBase(List<Block> namespaceGroup, FabricBlockSettings blockSettings) {
         super(blockSettings);
 
-        if(this != null){
+        if (this != null) {
             namespaceGroup.add(this);
             b++;
         }

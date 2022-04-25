@@ -12,27 +12,31 @@ import java.nio.file.Paths;
 public class ConfigHandler {
 
     /**
-     * @param config
-     * @param name Name of your Boolean
-     * @param defaultValue Default value of your Boolean, used when the .properties File doesn't exist
+     * Gets a Boolean option from the .properties file of the specified Config
+     *
+     * @param config       owner of the Boolean
+     * @param name         name of your Boolean
+     * @param defaultValue default value of your Boolean, used when the .properties File doesn't exist
      * @return
      */
-    public static @NotNull Boolean getBooleanOption(@NotNull ConfigBase config, String name, Boolean defaultValue){
+    public static @NotNull Boolean getBooleanOption(@NotNull ConfigBase config, String name, Boolean defaultValue) {
 
         return Boolean.valueOf(String.valueOf(getOption(config, name, defaultValue)));
     }
 
     /**
-     * @param config
-     * @param name Name of your Object
-     * @param defaultValue Default value of your Object, used when the .properties File doesn't exist
+     * Gets an Object option from the .properties file of the specified Config
+     *
+     * @param config       owner of the Boolean
+     * @param name         name of your Object
+     * @param defaultValue default value of your Object, used when the .properties File doesn't exist
      * @return
      */
-    public static Object getOption(@NotNull ConfigBase config, String name, Object defaultValue){
+    public static Object getOption(@NotNull ConfigBase config, String name, Object defaultValue) {
 
         Object result = null;
 
-        if(Files.exists(Paths.get(config.propertiesPath))){
+        if (Files.exists(Paths.get(config.propertiesPath))) {
             try {
                 PropertiesConfiguration p = new PropertiesConfiguration(config.propertiesPath);
                 //log.info(Boolean.valueOf(String.valueOf(p.getProperty(name))));
@@ -40,8 +44,7 @@ public class ConfigHandler {
             } catch (ConfigurationException e) {
                 log.error(e);
             }
-        }
-        else result = defaultValue;
+        } else result = defaultValue;
 
         return result;
     }

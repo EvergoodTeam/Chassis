@@ -28,6 +28,7 @@ import java.util.regex.Pattern;
 public class ResourcePackBuilder extends AbstractFileResourcePack implements ResourcePack {
 
     private static final Pattern RESOURCEPACK_PATH = Pattern.compile("[a-z0-9-_]+");
+    public static final List<ResourcePackBuilder> BUILT = new ArrayList<>();
 
     private String id;
     private ResourceType resourceType;
@@ -45,6 +46,8 @@ public class ResourcePackBuilder extends AbstractFileResourcePack implements Res
 
         this.basePath = basePath.resolve(id).resolve("resources").toAbsolutePath().normalize();
         this.separator = basePath.getFileSystem().getSeparator();
+
+        BUILT.add(this);
     }
 
     private Path getPath(String filename) {
@@ -100,13 +103,11 @@ public class ResourcePackBuilder extends AbstractFileResourcePack implements Res
 
                                 try {
                                     ids.add(new Identifier(namespace, string));
-                                }
-                                catch (InvalidIdentifierException e) {
+                                } catch (InvalidIdentifierException e) {
                                     log.error(e.getMessage(), e);
                                 }
                             });
-                }
-                catch (IOException e) {
+                } catch (IOException e) {
                     log.error("findResources at {} in namespace {} failed: {}", path, namespace, e);
                 }
             }
@@ -120,7 +121,6 @@ public class ResourcePackBuilder extends AbstractFileResourcePack implements Res
 
         if (this.namespaces == null) {
 
-            //log.info(type.getDirectory()); // TODO: Gen at main?
             Path file = getPath(type.getDirectory());
 
             if (!Files.isDirectory(file)) {

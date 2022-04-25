@@ -1,6 +1,9 @@
 package evergoodteam.chassis.mixin;
 
 import lombok.extern.log4j.Log4j2;
+import net.minecraft.client.gui.screen.pack.PackListWidget;
+import net.minecraft.client.gui.screen.pack.PackScreen;
+import net.minecraft.client.gui.screen.pack.ResourcePackOrganizer;
 import net.minecraft.client.texture.TextureManager;
 import net.minecraft.resource.ResourcePackProfile;
 import net.minecraft.util.Identifier;
@@ -8,18 +11,15 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import net.minecraft.client.gui.screen.pack.PackListWidget;
-import net.minecraft.client.gui.screen.pack.PackScreen;
-import net.minecraft.client.gui.screen.pack.ResourcePackOrganizer;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import java.util.List;
-import java.util.stream.Stream;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Stream;
 
-import static evergoodteam.chassis.objects.resourcepacks.ResourcePackBase.*;
-import static evergoodteam.chassis.util.Reference.*;
+import static evergoodteam.chassis.objects.resourcepacks.ResourcePackBase.HIDDEN;
+import static evergoodteam.chassis.objects.resourcepacks.ResourcePackBase.NO_ICON;
 
 @Log4j2
 @Mixin(PackScreen.class)
@@ -27,9 +27,9 @@ public class PackScreenMixin {
 
     // Fix random selection of icon when icon is missing
     @Inject(at = @At("HEAD"), method = "Lnet/minecraft/client/gui/screen/pack/PackScreen;loadPackIcon(Lnet/minecraft/client/texture/TextureManager;Lnet/minecraft/resource/ResourcePackProfile;)Lnet/minecraft/util/Identifier;", cancellable = true)
-    public void injectLoadPackIcon(TextureManager textureManager, ResourcePackProfile resourcePackProfile, CallbackInfoReturnable<Identifier> cir){
+    public void injectLoadPackIcon(TextureManager textureManager, ResourcePackProfile resourcePackProfile, CallbackInfoReturnable<Identifier> cir) {
 
-        if(NO_ICON.contains(resourcePackProfile.getName())){
+        if (NO_ICON.contains(resourcePackProfile.getName())) {
             //log.info("Attempting to set unknown pack icon before error is thrown / random texture issue");
             cir.setReturnValue(new Identifier("textures/misc/unknown_pack.png"));
         }

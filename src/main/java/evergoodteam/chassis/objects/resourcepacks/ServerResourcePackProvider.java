@@ -7,52 +7,51 @@ import net.minecraft.resource.ResourcePackProvider;
 import net.minecraft.resource.ResourcePackSource;
 import net.minecraft.resource.ResourceType;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.function.Consumer;
 
 @Log4j2
 public class ServerResourcePackProvider implements ResourcePackProvider {
 
-    public List<ResourcePackBuilder> groupResourcePacks = new ArrayList<>();
-    public List<String> namespaces;
+    public ResourcePackBuilder groupResourcePack;
+    public String namespace;
+    public String path;
 
-    public ServerResourcePackProvider(List<String> namespaces) {
+    /**
+     * @param namespace Name of the Config Folder, root of all the Resources
+     * @param path      Name of your ResourcePack
+     */
+    public ServerResourcePackProvider(String namespace, String path) {
 
-        for(int i = 0; i < namespaces.size(); i++){
-            this.groupResourcePacks.add(new ResourcePackBuilder( namespaces.get(i), ResourceType.SERVER_DATA, FabricLoader.getInstance().getConfigDir().resolve("chassis/resourcepacks").toAbsolutePath().normalize()));
-        }
+        this.groupResourcePack = new ResourcePackBuilder(path, ResourceType.SERVER_DATA, FabricLoader.getInstance().getConfigDir().resolve(namespace + "resourcepacks").toAbsolutePath().normalize());
 
-        this.namespaces = namespaces;
+        this.namespace = namespace;
+        this.path = path;
     }
 
     @Override
     public void register(Consumer<ResourcePackProfile> profileAdder, ResourcePackProfile.Factory factory) {
 
-        for(int index = 0; index < groupResourcePacks.size(); index++) {
 
-            int finalIndex = index;
-            ResourcePackProfile profile = ResourcePackProfile.of(
-                    namespaces.get(index),
-                    true,
-                    () -> groupResourcePacks.get(finalIndex),
-                    factory,
-                    ResourcePackProfile.InsertionPosition.BOTTOM,
-                    ResourcePackSource.nameAndSource("built-in")
-            );
+        ResourcePackProfile profile = ResourcePackProfile.of(
+                path,
+                true,
+                () -> groupResourcePack,
+                factory,
+                ResourcePackProfile.InsertionPosition.BOTTOM,
+                ResourcePackSource.nameAndSource("built-in")
+        );
 
-            //log.info("Attempting to register Server ResourcePackProfile - {}", profile);
-            profileAdder.accept(new ResourcePackProfile(
-                    profile.getName(),
-                    profile.isAlwaysEnabled(),
-                    profile::createResourcePack,
-                    profile.getDisplayName(),
-                    profile.getDescription(),
-                    profile.getCompatibility(),
-                    profile.getInitialPosition(),
-                    profile.isPinned(),
-                    profile.getSource())
-            );
-        }
+        //log.info("Attempting to register Server ResourcePackProfile - {}", profile);
+        profileAdder.accept(new ResourcePackProfile(
+                profile.getName(),
+                profile.isAlwaysEnabled(),
+                profile::createResourcePack,
+                profile.getDisplayName(),
+                profile.getDescription(),
+                profile.getCompatibility(),
+                profile.getInitialPosition(),
+                profile.isPinned(),
+                profile.getSource())
+        );
     }
 }

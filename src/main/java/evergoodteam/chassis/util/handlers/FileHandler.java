@@ -14,14 +14,15 @@ public class FileHandler {
 
     /**
      * Writes provided String to the File identified with the Path
+     *
      * @param text
      * @param path
      */
-    public static void writeToFile(String text, Path path){
+    public static void writeToFile(String text, Path path) {
 
         //LOGGER.info("Attempting to write to path {}", path);
 
-        if(Files.exists(path)){
+        if (Files.exists(path)) {
 
             try (FileWriter fileWriter = new FileWriter(path.toFile())) {
 
@@ -29,14 +30,12 @@ public class FileHandler {
             } catch (IOException e) {
                 log.error("Error on writing to File", e);
             }
-        }
-
-        else{
+        } else {
             log.warn("Provided Path is not valid");
         }
     }
 
-    public static void createJsonFile(Path path){
+    public static void createJsonFile(Path path) {
 
         Path actual = StringUtils.checkDuplicateExtension(path, ".json");
         //log.info(actual);
@@ -46,6 +45,7 @@ public class FileHandler {
 
     /**
      * Creates a File only if one with the same Path doesn't exist already
+     *
      * @param path
      * @param extension .txt .json etc.
      */
@@ -58,12 +58,13 @@ public class FileHandler {
 
     /**
      * Creates a File only if one with the same Path doesn't exist already
+     *
      * @param path Must include the File extension
      * @throws IOException
      */
     public static void createFile(Path path) {
 
-        if(!Files.exists(path)){
+        if (!Files.exists(path)) {
             try {
                 Files.createFile(path);
             } catch (IOException e) {

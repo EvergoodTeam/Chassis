@@ -14,12 +14,12 @@ public class ItemBase extends Item {
     public ItemBase(ItemGroup group) {
         super(new FabricItemSettings().group(group));
 
-        if(this != null) ITEMS.add(this);
+        if (this != null) ITEMS.add(this);
     }
 
-    public ItemBase(FabricItemSettings itemSettings){
+    public ItemBase(FabricItemSettings itemSettings) {
         super(itemSettings);
 
-        if(this != null) ITEMS.add(this);
+        if (this != null) ITEMS.add(this);
     }
 }

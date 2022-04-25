@@ -13,13 +13,14 @@ public class DirHandler {
     /**
      * Creates a Directory at the specified Path if one doesn't exist already <br>
      * NOTE: Also creates missing parent Dirs
+     *
      * @param path
      */
-    public static void createDir(Path path){
+    public static void createDir(Path path) {
 
         //LOGGER.info("Attempting to create Dir at {}", path);
 
-        if(!Files.exists(path)){
+        if (!Files.exists(path)) {
             new File(path.toString()).mkdirs();
             //LOGGER.info("Created Dir at {}", path);
         }
@@ -28,12 +29,13 @@ public class DirHandler {
 
     /**
      * Creates a Dir at the specified root for each String provided
+     *
      * @param root
      * @param children
      */
-    public static void createDir(Path root, String @NotNull [] children){
+    public static void createDir(Path root, String @NotNull [] children) {
 
-        for(String child : children){
+        for (String child : children) {
             createDir(root.resolve(child));
         }
     }

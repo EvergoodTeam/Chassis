@@ -7,53 +7,50 @@ import net.minecraft.resource.ResourcePackProvider;
 import net.minecraft.resource.ResourcePackSource;
 import net.minecraft.resource.ResourceType;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.function.Consumer;
 
 @Log4j2
 public class ClientResourcePackProvider implements ResourcePackProvider {
 
-    public List<ResourcePackBuilder> groupResourcePacks = new ArrayList<>();
-    public List<String> namespaces;
+    public ResourcePackBuilder groupResourcePack;
+    public String namespace;
+    public String path;
 
-    public ClientResourcePackProvider(List<String> namespaces) {
+    /**
+     * @param namespace Name of the Config Folder, root of all the Resources
+     * @param path Name of your ResourcePack
+     */
+    public ClientResourcePackProvider(String namespace, String path) {
 
-        for(int i = 0; i < namespaces.size(); i++){
+        this.groupResourcePack = new ResourcePackBuilder(path, ResourceType.CLIENT_RESOURCES, FabricLoader.getInstance().getConfigDir().resolve(namespace + "/resourcepacks").toAbsolutePath().normalize());
 
-            this.groupResourcePacks.add(new ResourcePackBuilder(namespaces.get(i), ResourceType.CLIENT_RESOURCES, FabricLoader.getInstance().getConfigDir().resolve(namespaces.get(i) + "/resourcepacks").toAbsolutePath().normalize()));
-        }
-
-        this.namespaces = namespaces;
+        this.namespace = namespace;
+        this.path = path;
     }
 
     @Override
     public void register(Consumer<ResourcePackProfile> profileAdder, ResourcePackProfile.Factory factory) {
 
-        for(int index = 0; index < groupResourcePacks.size(); index++) {
+        ResourcePackProfile profile = ResourcePackProfile.of(
+                path,
+                true,
+                () -> groupResourcePack,
+                factory,
+                ResourcePackProfile.InsertionPosition.BOTTOM,
+                ResourcePackSource.nameAndSource("built-in") // Source of RP, displayed in the menu
+        );
 
-            int finalIndex = index;
-            ResourcePackProfile profile = ResourcePackProfile.of(
-                    namespaces.get(index),
-                    true,
-                    () -> groupResourcePacks.get(finalIndex),
-                    factory,
-                    ResourcePackProfile.InsertionPosition.BOTTOM,
-                    ResourcePackSource.nameAndSource("built-in") // Source of RP, displayed in the menu
-            );
-
-            //log.info("Attempting to register Client ResourcePackProfile - {}", profile);
-            profileAdder.accept(new ResourcePackProfile(
-                    profile.getName(),
-                    profile.isAlwaysEnabled(),
-                    profile::createResourcePack,
-                    profile.getDisplayName(),
-                    profile.getDescription(),
-                    profile.getCompatibility(),
-                    profile.getInitialPosition(),
-                    profile.isPinned(),
-                    profile.getSource())
-            );
-        }
+        //log.info("Attempting to register Client ResourcePackProfile - {}", profile);
+        profileAdder.accept(new ResourcePackProfile(
+                profile.getName(),
+                profile.isAlwaysEnabled(),
+                profile::createResourcePack,
+                profile.getDisplayName(),
+                profile.getDescription(),
+                profile.getCompatibility(),
+                profile.getInitialPosition(),
+                profile.isPinned(),
+                profile.getSource())
+        );
     }
 }

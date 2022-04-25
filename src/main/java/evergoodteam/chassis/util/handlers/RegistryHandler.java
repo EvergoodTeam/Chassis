@@ -17,17 +17,17 @@ import java.util.List;
 
 public class RegistryHandler {
 
-    public static void registerBlock(String namespace, String path, Block block){
+    public static void registerBlock(String namespace, String path, Block block) {
 
         Registry.register(Registry.BLOCK, new Identifier(namespace, path), block);
     }
 
-    public static void registerBlockItem(String namespace, String path, Block block){
+    public static void registerBlockItem(String namespace, String path, Block block) {
 
         Registry.register(Registry.ITEM, new Identifier(namespace, path), new BlockItem(block, new FabricItemSettings()));
     }
 
-    public static void registerBlockItem(String namespace, String path, Block block, ItemGroup itemGroup){
+    public static void registerBlockItem(String namespace, String path, Block block, ItemGroup itemGroup) {
 
         Registry.register(Registry.ITEM, new Identifier(namespace, path), new BlockItem(block, new FabricItemSettings().group(itemGroup)));
     }
@@ -35,27 +35,27 @@ public class RegistryHandler {
     public static void registerBlockItem(String namespace, String path, Block block, ItemGroup itemGroup, String tooltipKey) {
 
         Registry.register(Registry.ITEM, new Identifier(namespace, path),
-            new BlockItem(block, new FabricItemSettings().group(itemGroup)) {
-                @Override
-                public void appendTooltip(ItemStack stack, @Nullable World world, List<Text> tooltip, TooltipContext context) {
-                    tooltip.add(new TranslatableText(tooltipKey));
-                }
-            });
+                new BlockItem(block, new FabricItemSettings().group(itemGroup)) {
+                    @Override
+                    public void appendTooltip(ItemStack stack, @Nullable World world, List<Text> tooltip, TooltipContext context) {
+                        tooltip.add(new TranslatableText(tooltipKey));
+                    }
+                });
     }
 
-    public static void registerBoth(String namespace, String path, Block block){
+    public static void registerBoth(String namespace, String path, Block block) {
 
         registerBlock(namespace, path, block);
         registerBlockItem(namespace, path, block);
     }
 
-    public static void registerBoth(String namespace, String path, Block block, ItemGroup itemGroup){
+    public static void registerBoth(String namespace, String path, Block block, ItemGroup itemGroup) {
 
         registerBlock(namespace, path, block);
         registerBlockItem(namespace, path, block, itemGroup);
     }
 
-    public static void registerBoth(String namespace, String path, Block block, ItemGroup itemGroup, String tooltipKey){
+    public static void registerBoth(String namespace, String path, Block block, ItemGroup itemGroup, String tooltipKey) {
 
         registerBlock(namespace, path, block);
         registerBlockItem(namespace, path, block, itemGroup, tooltipKey);

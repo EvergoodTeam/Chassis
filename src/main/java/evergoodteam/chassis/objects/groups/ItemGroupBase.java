@@ -11,11 +11,13 @@ public class ItemGroupBase {
     public ItemGroup group;
 
     /**
-     * @param namespace Your ModId
-     * @param path Used to identify from other additions from the same namespace
-     * @param icon Accepts Item or Block objects; will be used as the icon for the Creative Tab
+     * Creates an ItemGroup, aka a Creative Tab
+     *
+     * @param namespace your ModId
+     * @param path      used to identify from other additions from the same namespace
+     * @param icon      accepts Item or Block objects; will be used as the icon for the Creative Tab
      */
-    public ItemGroupBase(String namespace, String path, ItemConvertible icon){
+    public ItemGroupBase(String namespace, String path, ItemConvertible icon) {
         this.group = FabricItemGroupBuilder.build(new Identifier(namespace, path),
                 () -> new ItemStack(icon));
     }

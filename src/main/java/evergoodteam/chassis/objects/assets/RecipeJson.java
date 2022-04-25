@@ -95,13 +95,13 @@ public class RecipeJson {
     }
 
 
-    public static JsonObject create3x3RecipeJson(String input, String type, String output, int outputCount){
+    public static JsonObject create3x3RecipeJson(String input, String type, String output, int outputCount) {
 
-        return createShapedRecipeJson(new ArrayList<String>(Arrays.asList("xxx", "xxx", "xxx")), new ArrayList<Character>(Arrays.asList('x')),  new ArrayList<String>(Arrays.asList(type)), new ArrayList<String>(Arrays.asList(input)), output, outputCount);
+        return createShapedRecipeJson(new ArrayList<String>(Arrays.asList("xxx", "xxx", "xxx")), new ArrayList<Character>(Arrays.asList('x')), new ArrayList<String>(Arrays.asList(type)), new ArrayList<String>(Arrays.asList(input)), output, outputCount);
     }
 
 
-    public static JsonObject createRingRecipeJson(String input, String type, String output, int outputCount){
+    public static JsonObject createRingRecipeJson(String input, String type, String output, int outputCount) {
 
         return createShapedRecipeJson(new ArrayList<String>(Arrays.asList("xxx", "x x", "xxx")), new ArrayList<Character>(Arrays.asList('x')), new ArrayList<String>(Arrays.asList(type)), new ArrayList<String>(Arrays.asList(input)), output, outputCount);
     }

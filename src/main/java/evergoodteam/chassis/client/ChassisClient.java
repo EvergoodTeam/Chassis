@@ -5,11 +5,13 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.minecraft.block.Block;
-import net.minecraft.client.render.RenderLayer;;
+import net.minecraft.client.render.RenderLayer;
 
-import static evergoodteam.chassis.objects.blocks.BlockBase.*;
-import static evergoodteam.chassis.objects.items.ItemBase.*;
-import static evergoodteam.chassis.util.Reference.*;
+import static evergoodteam.chassis.objects.blocks.BlockBase.TRANSPARENT;
+import static evergoodteam.chassis.objects.blocks.BlockBase.b;
+import static evergoodteam.chassis.objects.items.ItemBase.ITEMS;
+import static evergoodteam.chassis.util.Reference.COLUMNS;
+import static evergoodteam.chassis.util.Reference.LOGGER;
 
 @Environment(EnvType.CLIENT)
 public class ChassisClient implements ClientModInitializer {
@@ -17,13 +19,13 @@ public class ChassisClient implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
 
-        for(Block block : TRANSPARENT){
+        for (Block block : TRANSPARENT) {
             BlockRenderLayerMap.INSTANCE.putBlock(block, RenderLayer.getCutout());
         }
 
-        if(b > 0) LOGGER.info("Found {} Block(s) to register", b);
-        if(!COLUMNS.isEmpty()) LOGGER.info("Found {} Column(s)", COLUMNS.size());
-        if(!ITEMS.isEmpty()) LOGGER.info("Found {} Item(s) to register", ITEMS.size());
+        if (b > 0) LOGGER.info("Found {} Block(s) to register", b);
+        if (!COLUMNS.isEmpty()) LOGGER.info("Found {} Column(s)", COLUMNS.size());
+        if (!ITEMS.isEmpty()) LOGGER.info("Found {} Item(s) to register", ITEMS.size());
 
     }
 }
