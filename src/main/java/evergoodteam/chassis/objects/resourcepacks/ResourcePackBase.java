@@ -39,8 +39,6 @@ public class ResourcePackBase {
     public String namespace;
     public Path path;
 
-    public Boolean locked = false;
-
     private Path assetsDir;
     private Path dataDir;
     private Path namespaceAssetsDir;
@@ -68,12 +66,12 @@ public class ResourcePackBase {
         RESOURCE_PACKS.get(config.namespace).add(this);
         //log.info(RESOURCE_PACKS);
 
-        config.resourcesLocked.put(namespace + "ResourceLocked", locked); // TODO: Possible duplicates overriding
+        config.resourcesLocked.put(namespace + "ResourceLocked", false); // TODO: Possible duplicates overriding
 
         config.readProperties();
         //log.info(ConfigHandler.getBooleanOption(config, "chassisResourceLocked", false));
 
-        if (!ConfigHandler.getBooleanOption(config, "chassisResourceLocked", false)) {
+        if (!ConfigHandler.getBooleanOption(config, namespace + "ResourceLocked", false)) {
             //log.info("Attempting to generate Resources");
             config.cleanResources(this);
             createRoot();

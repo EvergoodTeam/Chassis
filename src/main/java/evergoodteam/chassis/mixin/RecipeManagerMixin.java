@@ -33,7 +33,7 @@ public class RecipeManagerMixin {
 
             Map<String, JsonObject> DEEP = RECIPES.get(RECIPES.keySet().toArray()[i]);
 
-            LOGGER.info("Checking recipes from \"{}\": found {} recipes", RECIPES.keySet().toArray()[i], DEEP.size());
+            LOGGER.info("Scanning recipes from \"{}\": found {} recipe(s)", RECIPES.keySet().toArray()[i], DEEP.size());
 
             // Go through everything from that namespace
             for (int j = 0; j < DEEP.size(); j++) {

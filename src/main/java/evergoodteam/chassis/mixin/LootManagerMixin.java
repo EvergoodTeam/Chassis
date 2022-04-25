@@ -32,7 +32,7 @@ public class LootManagerMixin {
 
             Map<String, JsonObject> DEEP = LOOT.get(LOOT.keySet().toArray()[i]);
 
-            LOGGER.info("Checking loot tables from \"{}\": found {} loot tables", LOOT.keySet().toArray()[i], DEEP.size());
+            LOGGER.info("Scanning loot tables from \"{}\": found {} loot table(s)", LOOT.keySet().toArray()[i], DEEP.size());
 
             // Go through everything from that namespace
             for (int j = 0; j < DEEP.size(); j++) {
