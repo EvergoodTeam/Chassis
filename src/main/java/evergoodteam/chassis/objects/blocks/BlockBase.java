@@ -10,33 +10,22 @@ import java.util.List;
 
 public class BlockBase extends Block {
 
-    public static int b = 0;
-    public static final List<Block> BLOCK_LIST = new ArrayList<>();
     public static final List<Block> TRANSPARENT = new ArrayList<>();
+    public static int blockCount = 0;
 
     /**
-     * @param namespaceGroup list to which add generated Block - you may use this List to later register the Block(s)
+     * @param namespaceGroup list to which add the generated Block - you may use this List to later register the Block(s)
      * @param block
      * @param hardness
      * @param resistance
      * @param sound
      */
     public BlockBase(List<Block> namespaceGroup, Material block, Float hardness, Float resistance, BlockSoundGroup sound) {
-        super(FabricBlockSettings.of(block).requiresTool().strength(hardness, resistance).sounds(sound));
-
-        if (this != null) {
-            namespaceGroup.add(this);
-            b++;
-        }
+        this(namespaceGroup, FabricBlockSettings.of(block).requiresTool().strength(hardness, resistance).sounds(sound));
     }
 
     public BlockBase(List<Block> namespaceGroup, Material block, Float strength, BlockSoundGroup sound) {
-        super(FabricBlockSettings.of(block).requiresTool().strength(strength).sounds(sound));
-
-        if (this != null) {
-            namespaceGroup.add(this);
-            b++;
-        }
+        this(namespaceGroup, FabricBlockSettings.of(block).requiresTool().strength(strength).sounds(sound));
     }
 
     /**
@@ -45,21 +34,38 @@ public class BlockBase extends Block {
      * @param transparent
      */
     public BlockBase(List<Block> namespaceGroup, FabricBlockSettings blockSettings, Boolean transparent) {
-        super(blockSettings);
+        this(namespaceGroup, blockSettings);
 
-        if (this != null) {
-            namespaceGroup.add(this);
-            if (transparent) TRANSPARENT.add(this);
-            b++;
-        }
+        if (this != null) if (transparent) TRANSPARENT.add(this);
     }
 
     public BlockBase(List<Block> namespaceGroup, FabricBlockSettings blockSettings) {
-        super(blockSettings);
+        //super(blockSettings);
+        this(blockSettings);
+
+        if (this != null) namespaceGroup.add(this);
+    }
+
+    public BlockBase(Material block, Float hardness, Float resistance, BlockSoundGroup sound) {
+        //super(FabricBlockSettings.of(block).requiresTool().strength(hardness, resistance).sounds(sound));
+        this(FabricBlockSettings.of(block).requiresTool().hardness(hardness).resistance(resistance).sounds(sound));
+    }
+
+    public BlockBase(Material block, Float strength, BlockSoundGroup sound) {
+        this(FabricBlockSettings.of(block).requiresTool().strength(strength).sounds(sound));
+    }
+
+    public BlockBase(FabricBlockSettings blockSettings, Boolean transparent) {
+        this(blockSettings);
 
         if (this != null) {
-            namespaceGroup.add(this);
-            b++;
+            if (transparent) TRANSPARENT.add(this);
         }
+    }
+
+    public BlockBase(FabricBlockSettings blockSettings) {
+        super(blockSettings);
+
+        if (this != null) blockCount++;
     }
 }

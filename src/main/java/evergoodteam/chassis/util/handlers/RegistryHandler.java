@@ -43,19 +43,19 @@ public class RegistryHandler {
                 });
     }
 
-    public static void registerBoth(String namespace, String path, Block block) {
+    public static void registerBlockAndItem(String namespace, String path, Block block) {
 
         registerBlock(namespace, path, block);
         registerBlockItem(namespace, path, block);
     }
 
-    public static void registerBoth(String namespace, String path, Block block, ItemGroup itemGroup) {
+    public static void registerBlockAndItem(String namespace, String path, Block block, ItemGroup itemGroup) {
 
         registerBlock(namespace, path, block);
         registerBlockItem(namespace, path, block, itemGroup);
     }
 
-    public static void registerBoth(String namespace, String path, Block block, ItemGroup itemGroup, String tooltipKey) {
+    public static void registerBlockAndItem(String namespace, String path, Block block, ItemGroup itemGroup, String tooltipKey) {
 
         registerBlock(namespace, path, block);
         registerBlockItem(namespace, path, block, itemGroup, tooltipKey);

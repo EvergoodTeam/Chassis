@@ -6,6 +6,7 @@ import net.minecraft.resource.ResourcePackProfile;
 import net.minecraft.resource.ResourcePackProvider;
 import net.minecraft.resource.ResourcePackSource;
 import net.minecraft.resource.ResourceType;
+import net.minecraft.text.TranslatableText;
 
 import java.util.function.Consumer;
 
@@ -16,21 +17,22 @@ public class ServerResourcePackProvider implements ResourcePackProvider {
     public String namespace;
     public String path;
 
+    private ResourcePackSource resourcePackSource;
+
     /**
-     * @param namespace Name of the Config Folder, root of all the Resources
-     * @param path      Name of your ResourcePack
+     * @param namespace name of the Config Folder, root of all the Resources
+     * @param path      name of your ResourcePack
+     * @see evergoodteam.chassis.mixin.ResourcePackManagerMixin
      */
     public ServerResourcePackProvider(String namespace, String path) {
-
         this.groupResourcePack = new ResourcePackBuilder(path, ResourceType.SERVER_DATA, FabricLoader.getInstance().getConfigDir().resolve(namespace + "resourcepacks").toAbsolutePath().normalize());
-
         this.namespace = namespace;
         this.path = path;
+        this.resourcePackSource = text -> new TranslatableText("pack.source." + namespace, text);
     }
 
     @Override
     public void register(Consumer<ResourcePackProfile> profileAdder, ResourcePackProfile.Factory factory) {
-
 
         ResourcePackProfile profile = ResourcePackProfile.of(
                 path,
@@ -38,7 +40,7 @@ public class ServerResourcePackProvider implements ResourcePackProvider {
                 () -> groupResourcePack,
                 factory,
                 ResourcePackProfile.InsertionPosition.BOTTOM,
-                ResourcePackSource.nameAndSource("built-in")
+                resourcePackSource
         );
 
         //log.info("Attempting to register Server ResourcePackProfile - {}", profile);

@@ -37,8 +37,8 @@ public class ResourcePackManagerMixin {
 
         for (ResourcePackProvider provider : this.providers) {
             if (provider instanceof ClientResourcePackProvider) {
-                client = true;
                 providerAlreadyExists = true;
+                client = true;
                 break;
             }
 
@@ -54,10 +54,9 @@ public class ResourcePackManagerMixin {
             if (client) {
 
                 for (int i = 0; i < m.keySet().size(); i++) {
-
                     for (int j = 0; j < m.get(m.keySet().toArray()[i]).size(); j++) { // sus
-
-                        this.providers.add(new ClientResourcePackProvider(m.keySet().toArray()[i].toString(), m.get(m.keySet().toArray()[i]).get(j).namespace));
+                        ResourcePackBase r = m.get(m.keySet().toArray()[i]).get(j);
+                        this.providers.add(new ClientResourcePackProvider(m.keySet().toArray()[i].toString(), r.namespace, r.hexDescColor));
                     }
                 }
 
@@ -65,9 +64,7 @@ public class ResourcePackManagerMixin {
             } else {
 
                 for (int i = 0; i < m.keySet().size(); i++) {
-
                     for (int j = 0; j < m.get(m.keySet().toArray()[i]).size(); j++) {
-
                         this.providers.add(new ServerResourcePackProvider(m.keySet().toArray()[i].toString(), m.get(m.keySet().toArray()[i]).get(j).namespace));
                     }
                 }

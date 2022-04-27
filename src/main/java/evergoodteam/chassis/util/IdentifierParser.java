@@ -4,7 +4,7 @@ import net.minecraft.util.Identifier;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
-public class IdentifierUtils {
+public class IdentifierParser {
 
     /**
      * example_mod:block/example_block -> example_block

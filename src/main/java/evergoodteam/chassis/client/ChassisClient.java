@@ -8,7 +8,7 @@ import net.minecraft.block.Block;
 import net.minecraft.client.render.RenderLayer;
 
 import static evergoodteam.chassis.objects.blocks.BlockBase.TRANSPARENT;
-import static evergoodteam.chassis.objects.blocks.BlockBase.b;
+import static evergoodteam.chassis.objects.blocks.BlockBase.blockCount;
 import static evergoodteam.chassis.objects.items.ItemBase.ITEMS;
 import static evergoodteam.chassis.util.Reference.COLUMNS;
 import static evergoodteam.chassis.util.Reference.LOGGER;
@@ -23,7 +23,7 @@ public class ChassisClient implements ClientModInitializer {
             BlockRenderLayerMap.INSTANCE.putBlock(block, RenderLayer.getCutout());
         }
 
-        if (b > 0) LOGGER.info("Found {} Block(s) to register", b);
+        if (blockCount > 0) LOGGER.info("Found {} Block(s) to register", blockCount);
         if (!COLUMNS.isEmpty()) LOGGER.info("Found {} Column(s)", COLUMNS.size());
         if (!ITEMS.isEmpty()) LOGGER.info("Found {} Item(s) to register", ITEMS.size());
 

@@ -10,8 +10,8 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import static evergoodteam.chassis.objects.assets.ModelJson.createBlockModelJson;
-import static evergoodteam.chassis.util.IdentifierUtils.getIdFromIdentifier;
-import static evergoodteam.chassis.util.IdentifierUtils.getTypeFromIdentifier;
+import static evergoodteam.chassis.util.IdentifierParser.getIdFromIdentifier;
+import static evergoodteam.chassis.util.IdentifierParser.getTypeFromIdentifier;
 import static evergoodteam.chassis.util.Reference.COLUMNS;
 import static evergoodteam.chassis.util.Reference.MODEL_NAMESPACES;
 

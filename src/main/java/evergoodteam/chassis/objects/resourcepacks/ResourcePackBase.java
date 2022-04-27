@@ -14,6 +14,7 @@ import evergoodteam.chassis.util.handlers.JsonHandler;
 import lombok.extern.log4j.Log4j2;
 import net.fabricmc.loader.impl.util.StringUtil;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -39,6 +40,8 @@ public class ResourcePackBase {
     public String namespace;
     public Path path;
 
+    public String hexDescColor;
+
     private Path assetsDir;
     private Path dataDir;
     private Path namespaceAssetsDir;
@@ -49,11 +52,12 @@ public class ResourcePackBase {
     /**
      * Object from which a ResourcePack will be generated
      *
-     * @param config    Config to which assign the ResourcePack, determines the Root Dir
-     * @param namespace name of your ResourcePack
-     * @param iconUrl   valid URL, can be null
+     * @param config       {@link ConfigBase} to which assign the ResourcePack, determines the Root Dir
+     * @param namespace    name of your ResourcePack
+     * @param iconUrl      valid URL, can be null
+     * @param hexDescColor hex color value used for the description text in the GUI
      */
-    public ResourcePackBase(@NotNull ConfigBase config, @NotNull String namespace, String iconUrl) {
+    public ResourcePackBase(@NotNull ConfigBase config, @NotNull String namespace, @Nullable String iconUrl, @Nullable String hexDescColor) {
 
         if (!RESOURCE_PACKS.containsKey(config.namespace)) {
             RESOURCE_PACKS.put(config.namespace, new ArrayList<>());
@@ -62,6 +66,7 @@ public class ResourcePackBase {
         this.namespace = namespace;
         this.path = Paths.get(config.dirPath.toString(), "resourcepacks/" + namespace.toLowerCase()); // Root of every ResourcePack
         //log.info(this.path);
+        this.hexDescColor = hexDescColor;
 
         RESOURCE_PACKS.get(config.namespace).add(this);
         //log.info(RESOURCE_PACKS);
@@ -96,11 +101,12 @@ public class ResourcePackBase {
      * @param namespace name of your ResourcePack
      */
     public ResourcePackBase(ConfigBase config, String namespace) {
-        new ResourcePackBase(config, namespace, null);
+        this(config, namespace, null, "AAAAAA");
     }
 
     /**
-     * Gets the ResourcePack from the given Id, which corresponds to the Root Dir and Config Name to which the ResourcePack is assigned
+     * Gets the ResourcePack from the given Id, which corresponds to the Root Dir and Config Name
+     * to which the ResourcePack is assigned
      *
      * @param id   name of the Configs to which the ResourcePack is assigned
      * @param name name of the ResourcePack
