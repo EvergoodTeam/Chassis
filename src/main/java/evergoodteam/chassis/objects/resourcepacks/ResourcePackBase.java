@@ -4,12 +4,11 @@ import com.google.gson.JsonObject;
 import evergoodteam.chassis.configs.ConfigBase;
 import evergoodteam.chassis.configs.ConfigHandler;
 import evergoodteam.chassis.objects.assets.*;
-import evergoodteam.chassis.util.StringUtils;
+import evergoodteam.chassis.util.StringUtil;
 import evergoodteam.chassis.util.handlers.DirHandler;
 import evergoodteam.chassis.util.handlers.FileHandler;
 import evergoodteam.chassis.util.handlers.JsonHandler;
 import lombok.extern.log4j.Log4j2;
-import net.fabricmc.loader.impl.util.StringUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -149,7 +148,7 @@ public class ResourcePackBase {
         DirHandler.createDir(this.blockstatesDir);
 
         createJsonFile(this.blockstatesDir.resolve(path))
-                .writeJson(BlockstateJson.createBlockstateJson(this.namespace, path), this.blockstatesDir.resolve(path));
+                .writeJsonIfEmpty(BlockstateJson.createBlockstateJson(this.namespace, path), this.blockstatesDir.resolve(path));
 
         return this;
     }
@@ -161,12 +160,11 @@ public class ResourcePackBase {
         DirHandler.createDir(item);
 
         createJsonFile(item.resolve(path))
-                .writeJson(ModelJson.createItemModelJson(this.namespace, "generated", texture), item.resolve(path));
+                .writeJsonIfEmpty(ModelJson.createItemModelJson(this.namespace, "generated", texture), item.resolve(path));
 
         return this;
     }
 
-    // TODO: Fallback for null
     public ResourcePackBase createBlockModels(String path, String texture, String cubeType) {
 
         DirHandler.createDir(this.namespaceAssetsDir.resolve("models"), new String[]{"block", "item"});
@@ -175,10 +173,10 @@ public class ResourcePackBase {
         Path item = Paths.get(this.namespaceAssetsDir.toString(), "models/item");
 
         createJsonFile(block.resolve(path))
-                .writeJson(ModelJson.createBlockModelJson(cubeType, this.namespace + ":block/" + texture), block.resolve(path));
+                .writeJsonIfEmpty(ModelJson.createBlockModelJson(cubeType, this.namespace + ":block/" + texture), block.resolve(path));
 
         createJsonFile(item.resolve(path))
-                .writeJson(ModelJson.createItemModelJson(this.namespace, "block", path), item.resolve(path));
+                .writeJsonIfEmpty(ModelJson.createItemModelJson(this.namespace, "block", path), item.resolve(path));
 
         return this;
     }
@@ -190,7 +188,7 @@ public class ResourcePackBase {
         DirHandler.createDir(lootTables);
 
         createJsonFile(lootTables.resolve(path))
-                .writeJson(LootJson.createBlockBreakLootJson(this.namespace, path), lootTables.resolve(path));
+                .writeJsonIfEmpty(LootJson.createBlockBreakLootJson(this.namespace, path), lootTables.resolve(path));
 
         return this;
     }
@@ -204,10 +202,10 @@ public class ResourcePackBase {
         Path items = Paths.get(commonTagsDir.toString(), "items");
 
         createJsonFile(blocks.resolve(input))
-                .writeJson(TagJson.createTagJson(this.namespace, new String[]{input}), blocks.resolve(input));
+                .writeJsonIfEmpty(TagJson.createTagJson(this.namespace, new String[]{input}), blocks.resolve(input));
 
         createJsonFile(items.resolve(input))
-                .writeJson(TagJson.createTagJson(this.namespace, new String[]{input}), items.resolve(input));
+                .writeJsonIfEmpty(TagJson.createTagJson(this.namespace, new String[]{input}), items.resolve(input));
 
         return this;
     }
@@ -221,7 +219,7 @@ public class ResourcePackBase {
         if (!Files.exists(mineable.resolve(tool)))
             createJsonFile(mineable.resolve(tool)); // Create once, write big Json
 
-        writeJson(TagJson.createTagJson(this.namespace, inputs), mineable.resolve(tool));
+        writeJsonIfEmpty(TagJson.createTagJson(this.namespace, inputs), mineable.resolve(tool));
 
         return this;
     }
@@ -256,7 +254,7 @@ public class ResourcePackBase {
      */
     public ResourcePackBase createTexture(Boolean block, String textureURL, String textureName) {
 
-        String actual = StringUtils.checkMissingExtension(textureName, ".png");
+        String actual = StringUtil.checkMissingExtension(textureName, ".png");
 
         DirHandler.createDir(this.namespaceAssetsDir.resolve("textures"), new String[]{"block", "item"});
 
@@ -289,11 +287,31 @@ public class ResourcePackBase {
         DirHandler.createDir(this.namespaceAssetsDir.resolve("lang"));
 
         createJsonFile(this.namespaceAssetsDir.resolve("lang/" + language))
-                .writeJson(LangJson.createLangJson(entries), this.namespaceAssetsDir.resolve("lang/" + language));
+                .writeJsonIfEmpty(LangJson.createLangJson(entries), this.namespaceAssetsDir.resolve("lang/" + language));
 
         return this;
     }
 
+
+    public ResourcePackBase writeJsonIfEmpty(JsonObject jsonObject, @NotNull Path path){
+
+        if(Paths.get(path + ".json").toFile().length() == 0){
+            //log.info("File is empty, writing at {}", path);
+            writeJson(jsonObject, path);
+        }
+
+        return this;
+    }
+
+    public ResourcePackBase writeJsonIfEmpty(String json, @NotNull Path path){
+
+        if(Paths.get(path + ".json").toFile().length() == 0){
+            //log.info("File is empty, writing at {}", path);
+            writeJson(json, path);
+        }
+
+        return this;
+    }
 
     public ResourcePackBase writeJson(JsonObject jsonObject, Path path) {
 
@@ -320,7 +338,7 @@ public class ResourcePackBase {
      * @return
      */
     public ResourcePackBase hide() {
-        HIDDEN.add(StringUtil.capitalize(this.namespace));
+        HIDDEN.add(net.fabricmc.loader.impl.util.StringUtil.capitalize(this.namespace));
         return this;
     }
 

@@ -1,6 +1,6 @@
 package evergoodteam.chassis.util.handlers;
 
-import evergoodteam.chassis.util.StringUtils;
+import evergoodteam.chassis.util.StringUtil;
 import lombok.extern.log4j.Log4j2;
 
 import java.io.FileWriter;
@@ -37,7 +37,7 @@ public class FileHandler {
 
     public static void createJsonFile(Path path) {
 
-        Path actual = StringUtils.checkDuplicateExtension(path, ".json");
+        Path actual = StringUtil.checkDuplicateExtension(path, ".json");
         //log.info(actual);
 
         createFile(actual, ".json");
@@ -51,7 +51,7 @@ public class FileHandler {
      */
     public static void createFile(Path path, String extension) {
 
-        Path actual = StringUtils.checkDuplicateExtension(path, extension);
+        Path actual = StringUtil.checkDuplicateExtension(path, extension);
 
         createFile(Paths.get(actual + extension));
     }

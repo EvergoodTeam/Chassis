@@ -6,7 +6,7 @@ import org.jetbrains.annotations.NotNull;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-public class StringUtils {
+public class StringUtil {
 
     /**
      * Removes specified extension from the provided String if found
@@ -39,7 +39,6 @@ public class StringUtils {
      * @param extension
      * @return
      */
-    @Contract(pure = true)
     public static @NotNull String checkMissingExtension(String input, String extension) {
 
         String result = input;

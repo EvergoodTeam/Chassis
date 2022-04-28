@@ -2,107 +2,95 @@ package evergoodteam.chassis.objects.assets;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import net.minecraft.util.Identifier;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 
 public class RecipeJson {
 
-    // TODO: [NU] Namespace and path
-    public static JsonObject createShapedRecipeJson(ArrayList<String> pattern, ArrayList<Character> keys, ArrayList<String> types, ArrayList<String> items, String output, int outputCount) {
+    public static JsonObject create3x3RecipeJson(String type, Identifier input, Identifier output, int outputCount) {
+        return createShapedRecipeJson(Arrays.asList("xxx", "xxx", "xxx"), List.of('x'), List.of(type), List.of(input), output, outputCount);
+    }
 
-        JsonObject json = new JsonObject();
+    public static JsonObject createRingRecipeJson(String type, Identifier input, Identifier output, int outputCount) {
+        return createShapedRecipeJson(Arrays.asList("xxx", "x x", "xxx"), List.of('x'), List.of(type), List.of(input), output, outputCount);
+    }
 
-        json.addProperty("type", "minecraft:crafting_shaped");
-        //"type": "minecraft:crafting_shaped"
+    public static JsonObject createShapedRecipeJson(List<String> pattern, List<Character> keys, List<String> types, Map<String, String> inputs, String outputNamespace, String outputPath, int outputCount) {
 
+        List<Identifier> identifiers = new ArrayList<>();
 
-        JsonArray jsonArray = new JsonArray();
-        jsonArray.add(pattern.get(0));
-        jsonArray.add(pattern.get(1));
-        jsonArray.add(pattern.get(2));
-        json.add("pattern", jsonArray);
-        //"pattern": [
-        //  "#xx",
-        //  "#xx",
-        //  "###"
-        //]
-
-
-        JsonObject individualKey;
-        JsonObject keyList = new JsonObject();
-
-        for (int i = 0; i < keys.size(); ++i) {
-            individualKey = new JsonObject();
-            individualKey.addProperty(types.get(i), items.get(i));
-            keyList.add(keys.get(i) + "", individualKey);
-            //"key1": { "type1": "input1" }
-            //"key2": { "type2": "input2 }
+        for (Map.Entry<String, String> entry : inputs.entrySet()) {
+            identifiers.add(new Identifier(entry.getKey(), entry.getValue()));
         }
 
-        json.add("key", keyList);
-        //"key": {
-        //  "key1": {
-        //    "type1": "input1"
-        //  },
-        //  "key2": {
-        //    "type2": "input2"
-        //  }
-        //},
-
-
-        JsonObject result = new JsonObject();
-        result.addProperty("item", output);
-        result.addProperty("count", outputCount);
-        json.add("result", result);
-        //"result": {
-        //  "item": "output",
-        //  "count": outputCount
-        //}
-
-        return json;
+        return createShapedRecipeJson(pattern, keys, types, identifiers, new Identifier(outputNamespace, outputPath), outputCount);
     }
 
+    public static JsonObject createShapedRecipeJson(List<String> pattern, List<Character> keys, List<String> types, List<String> inputs, String output, int outputCount) {
 
-    public static JsonObject createShapelessRecipeJson(String type, String input, String output, int outputCount) {
+        List<Identifier> identifiers = new ArrayList<>();
+
+        for (String entry : inputs) {
+            identifiers.add(new Identifier(entry));
+        }
+
+        return createShapedRecipeJson(pattern, keys, types, identifiers, new Identifier(output), outputCount);
+    }
+
+    public static JsonObject createShapedRecipeJson(List<String> pattern, List<Character> keys, List<String> types, List<Identifier> inputs, Identifier output, int outputCount) {
 
         JsonObject json = new JsonObject();
 
-        json.addProperty("type", "minecraft:crafting_shapeless");
-        //"type": "minecraft:crafting_shapeless"
+        json.addProperty("type",
+                "minecraft:crafting_shaped");                 //"type": "minecraft:crafting_shaped"
 
-        JsonArray ingredients = new JsonArray();
-        JsonObject inputIngredient = new JsonObject();
-        inputIngredient.addProperty(type, input);
-        ingredients.add(inputIngredient);
-        json.add("ingredients", ingredients);
-        //"ingredients": [
-        //    {
-        //      "type": "input"
-        //    }
-        //],
+        JsonArray jsonArray = new JsonArray();                      //"pattern": [
+        jsonArray.add(pattern.get(0));                              //  "#xx",
+        jsonArray.add(pattern.get(1));                              //  "#xx",
+        jsonArray.add(pattern.get(2));                              //  "###"
+        json.add("pattern", jsonArray);                     //]
 
-        JsonObject result = new JsonObject();
-        result.addProperty("item", output);
-        result.addProperty("count", outputCount);
-        json.add("result", result);
-        //"result": {
-        //  "item": "output",
-        //  "count": outputCount
-        //}
+        JsonObject individualKey;
+        JsonObject keyList = new JsonObject();                      //"key": {
+        for (int i = 0; i < keys.size(); ++i) {                     //  "key1": {
+            individualKey = new JsonObject();                       //    "type1": "input1"
+            individualKey.addProperty(types.get(i),                 //  },
+                    inputs.get(i).toString());                      //  "key2": {
+            keyList.add(keys.get(i) + "", individualKey);   //    "type2": "input2"
+        }                                                           //  }
+        json.add("key", keyList);                           //},
+
+        JsonObject result = new JsonObject();                       //"result": {
+        result.addProperty("item", output.toString());      //  "item": "output",
+        result.addProperty("count", outputCount);           //  "count": outputCount
+        json.add("result", result);                         //}
 
         return json;
     }
 
 
-    public static JsonObject create3x3RecipeJson(String input, String type, String output, int outputCount) {
+    public static JsonObject createShapelessRecipeJson(String type, Identifier input, Identifier output, int outputCount) {
 
-        return createShapedRecipeJson(new ArrayList<String>(Arrays.asList("xxx", "xxx", "xxx")), new ArrayList<Character>(Arrays.asList('x')), new ArrayList<String>(Arrays.asList(type)), new ArrayList<String>(Arrays.asList(input)), output, outputCount);
-    }
+        JsonObject json = new JsonObject();
 
+        json.addProperty("type",
+                "minecraft:crafting_shapeless");              //"type": "minecraft:crafting_shapeless"
 
-    public static JsonObject createRingRecipeJson(String input, String type, String output, int outputCount) {
+        JsonArray ingredients = new JsonArray();                    //"ingredients": [
+        JsonObject inputIngredient = new JsonObject();              //    {
+        inputIngredient.addProperty(type, input.toString());        //      "type": "input"
+        ingredients.add(inputIngredient);                           //    }
+        json.add("ingredients", ingredients);               //],
 
-        return createShapedRecipeJson(new ArrayList<String>(Arrays.asList("xxx", "x x", "xxx")), new ArrayList<Character>(Arrays.asList('x')), new ArrayList<String>(Arrays.asList(type)), new ArrayList<String>(Arrays.asList(input)), output, outputCount);
+        JsonObject result = new JsonObject();                       //"result": {
+        result.addProperty("item", output.toString());      //  "item": "output",
+        result.addProperty("count", outputCount);           //  "count": outputCount
+        json.add("result", result);                         //}
+
+        return json;
     }
 }

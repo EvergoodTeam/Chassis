@@ -6,6 +6,10 @@ import org.jetbrains.annotations.NotNull;
 
 public class IdentifierParser {
 
+    public static String getString(String namespace, String path){
+        return namespace + ":" + path;
+    }
+
     /**
      * example_mod:block/example_block -> example_block
      *

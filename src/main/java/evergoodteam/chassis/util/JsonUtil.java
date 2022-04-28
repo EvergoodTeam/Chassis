@@ -11,7 +11,7 @@ import java.io.FileReader;
 import java.nio.file.Path;
 
 @Log4j2
-public class JsonUtils {
+public class JsonUtil {
 
     /**
      * @param file Path of a valid .json File

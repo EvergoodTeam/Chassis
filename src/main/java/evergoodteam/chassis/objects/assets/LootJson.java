@@ -2,44 +2,41 @@ package evergoodteam.chassis.objects.assets;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import net.minecraft.util.Identifier;
 
 public class LootJson {
 
-    // TODO: [NU] Change every namespace and path params to Identifier
     public static JsonObject createBlockBreakLootJson(String namespace, String path) {
+        return createBlockBreakLootJson(new Identifier(namespace, path));
+    }
+
+    public static JsonObject createBlockBreakLootJson(Identifier input) {
 
         JsonObject json = new JsonObject();
 
         json.addProperty("type", "minecraft:block");
 
-
         JsonArray pools = new JsonArray();
+        JsonObject poolContents = new JsonObject();
 
-
-        JsonObject everything = new JsonObject();
-        everything.addProperty("rolls", 1);
-
+        poolContents.addProperty("rolls", 1);
 
         JsonArray entries = new JsonArray();
+        JsonObject entriesContents = new JsonObject();
+        entriesContents.addProperty("type", "minecraft:item");
+        entriesContents.addProperty("name", input.toString());
+        entries.add(entriesContents);
 
-        JsonObject type = new JsonObject();
-        type.addProperty("type", "minecraft:item");
-        type.addProperty("name", namespace + ":" + path);
-
-        entries.add(type);
-
-        everything.add("entries", entries);
-
+        poolContents.add("entries", entries);
 
         JsonArray conditions = new JsonArray();
+        JsonObject conditionContents = new JsonObject();
+        conditionContents.addProperty("condition", "minecraft:survives_explosion");
+        conditions.add(conditionContents);
 
-        JsonObject condition = new JsonObject();
-        condition.addProperty("condition", "minecraft:survives_explosion");
-        conditions.add(condition);
+        poolContents.add("conditions", conditions);
 
-        everything.add("conditions", conditions);
-
-        pools.add(everything);
+        pools.add(poolContents);
 
         json.add("pools", pools);
 
