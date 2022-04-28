@@ -5,13 +5,13 @@
   "compatibilityLevel": "JAVA_17",
   "mixins": [
     "LootManagerMixin",
-    "MainMixin",
-    "ModelLoaderMixin",
-    "PackScreenMixin",
     "RecipeManagerMixin",
     "ResourcePackManagerMixin"
   ],
   "client": [
+    "MainMixin",
+    "ModelLoaderMixin",
+    "PackScreenMixin"
   ],
   "injectors": {
     "defaultRequire": 1

@@ -3,10 +3,7 @@ package evergoodteam.chassis.objects.resourcepacks;
 import com.google.gson.JsonObject;
 import evergoodteam.chassis.configs.ConfigBase;
 import evergoodteam.chassis.configs.ConfigHandler;
-import evergoodteam.chassis.objects.assets.BlockstateJson;
-import evergoodteam.chassis.objects.assets.LootJson;
-import evergoodteam.chassis.objects.assets.ModelJson;
-import evergoodteam.chassis.objects.assets.TagJson;
+import evergoodteam.chassis.objects.assets.*;
 import evergoodteam.chassis.util.StringUtils;
 import evergoodteam.chassis.util.handlers.DirHandler;
 import evergoodteam.chassis.util.handlers.FileHandler;
@@ -157,6 +154,18 @@ public class ResourcePackBase {
         return this;
     }
 
+    public ResourcePackBase createItemModel(String path, String texture) {
+
+        Path item = Paths.get(this.namespaceAssetsDir.toString(), "models/item");
+
+        DirHandler.createDir(item);
+
+        createJsonFile(item.resolve(path))
+                .writeJson(ModelJson.createItemModelJson(this.namespace, "generated", texture), item.resolve(path));
+
+        return this;
+    }
+
     // TODO: Fallback for null
     public ResourcePackBase createBlockModels(String path, String texture, String cubeType) {
 
@@ -264,6 +273,23 @@ public class ResourcePackBase {
         } catch (IOException e) {
             log.warn("Error on creating Texture .png", (e));
         }
+
+        return this;
+    }
+
+    /**
+     * Creates a language file
+     *
+     * @param language eg. "en_us"
+     * @param entries
+     * @return
+     */
+    public ResourcePackBase createLang(String language, Map<String, String> entries) {
+
+        DirHandler.createDir(this.namespaceAssetsDir.resolve("lang"));
+
+        createJsonFile(this.namespaceAssetsDir.resolve("lang/" + language))
+                .writeJson(LangJson.createLangJson(entries), this.namespaceAssetsDir.resolve("lang/" + language));
 
         return this;
     }

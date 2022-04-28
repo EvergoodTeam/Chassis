@@ -51,25 +51,22 @@ public class ResourcePackManagerMixin {
         Map<String, List<ResourcePackBase>> m = ResourcePackBase.RESOURCE_PACKS;
 
         if (!providerAlreadyExists) {
-            if (client) {
+            for (int i = 0; i < m.keySet().size(); i++) {
 
-                for (int i = 0; i < m.keySet().size(); i++) {
-                    for (int j = 0; j < m.get(m.keySet().toArray()[i]).size(); j++) { // sus
-                        ResourcePackBase r = m.get(m.keySet().toArray()[i]).get(j);
-                        this.providers.add(new ClientResourcePackProvider(m.keySet().toArray()[i].toString(), r.namespace, r.hexDescColor));
+                String id = m.keySet().toArray()[i].toString();
+
+                for (int j = 0; j < m.get(m.keySet().toArray()[i]).size(); j++) {
+
+                    ResourcePackBase r = m.get(m.keySet().toArray()[i]).get(j);
+
+                    if (client) {
+                        this.providers.add(new ClientResourcePackProvider(id, r.namespace, r.hexDescColor));
+                        //log.info("Injected our ClientProvider into providers: {}", this.providers);
+                    } else {
+                        this.providers.add(new ServerResourcePackProvider(id, r.namespace));
+                        //log.info("Injected our ServerProvider into providers: {}", this.providers);
                     }
                 }
-
-                //log.info("Injected our ClientProvider into providers: {}", this.providers);
-            } else {
-
-                for (int i = 0; i < m.keySet().size(); i++) {
-                    for (int j = 0; j < m.get(m.keySet().toArray()[i]).size(); j++) {
-                        this.providers.add(new ServerResourcePackProvider(m.keySet().toArray()[i].toString(), m.get(m.keySet().toArray()[i]).get(j).namespace));
-                    }
-                }
-
-                //log.info("Injected our ServerProvider into providers: {}", this.providers);
             }
         }
     }

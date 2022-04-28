@@ -29,7 +29,7 @@ public class ConfigHandler {
      *
      * @param config       owner of the Boolean
      * @param name         name of your Object
-     * @param defaultValue default value of your Object, used when the .properties File doesn't exist
+     * @param defaultValue default value of your Object, used when the .properties File or the Property doesn't exist
      * @return
      */
     public static Object getOption(@NotNull ConfigBase config, String name, Object defaultValue) {
@@ -40,7 +40,10 @@ public class ConfigHandler {
             try {
                 PropertiesConfiguration p = new PropertiesConfiguration(config.propertiesPath);
                 //log.info(Boolean.valueOf(String.valueOf(p.getProperty(name))));
-                result = p.getProperty(name);
+
+                if(p.getProperty(name) != null) result = p.getProperty(name); // Property could be missing
+                else result = defaultValue;
+
             } catch (ConfigurationException e) {
                 log.error(e);
             }

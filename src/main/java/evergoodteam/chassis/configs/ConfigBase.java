@@ -20,10 +20,14 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import static evergoodteam.chassis.configs.ConfigHandler.getBooleanOption;
+import static evergoodteam.chassis.configs.ConfigHandler.getOption;
 import static evergoodteam.chassis.util.Reference.LOGGER;
 
 @Log4j2
 public class ConfigBase {
+
+    //public static final Logger LOGGER = LogManager.getLogger(StringUtils.capitalize(MODID) + "/ConfigBase");
 
     public static final Map<String, ConfigBase> CONFIGURATIONS = new HashMap<>();
     private static final Path CONFIG_DIR = FabricLoader.getInstance().getConfigDir();
@@ -155,19 +159,25 @@ public class ConfigBase {
 
     public ConfigBase readProperties() {
 
-        if (Files.exists(Paths.get(this.propertiesPath))) { // TODO: File can exist but can be empty at the same time
+        if (Files.exists(Paths.get(this.propertiesPath))) {
 
             PropertiesConfiguration config = properties(this);
 
-            this.configLocked = Boolean.valueOf(config.getProperty("configLocked").toString());
+            if (config.isEmpty()) {   // File can exist AND be empty at the same time
+                LOGGER.warn("Can't read as the Config File is empty, trying to regenerate");
+                setupDefaultProperties();
+                return this;
+            }
+
+            this.configLocked = getBooleanOption(this, "configLocked", false);
             //this.resourceLocked = Boolean.valueOf(config.getProperty("resourceLocked").toString());
 
             this.resourcesLocked.forEach((name, value) -> {
-                this.resourcesLocked.put(name, config.getProperty(name));
+                this.resourcesLocked.put(name, getOption(this, name, value));
             });
 
             this.options.forEach((name, value) -> {
-                this.options.put(name, config.getProperty(name));
+                this.options.put(name, getOption(this, name, value));
             });
         }
 
@@ -202,17 +212,14 @@ public class ConfigBase {
         return this;
     }
 
-    public ConfigBase overwriteProperties() {
+    public ConfigBase overwriteProperties(String name, Object value) {
 
         if (Files.exists(Paths.get(this.propertiesPath))) {
 
             PropertiesConfiguration config = properties(this);
 
-            this.options.forEach((name, value) -> {
-
-                config.getLayout().setHeaderComment(header(this));
-                config.setProperty(name, value);
-            });
+            config.getLayout().setHeaderComment(header(this));
+            config.setProperty(name, value);
 
             try {
                 config.save();

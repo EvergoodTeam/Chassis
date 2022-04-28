@@ -9,7 +9,7 @@ import net.minecraft.client.render.RenderLayer;
 
 import static evergoodteam.chassis.objects.blocks.BlockBase.TRANSPARENT;
 import static evergoodteam.chassis.objects.blocks.BlockBase.blockCount;
-import static evergoodteam.chassis.objects.items.ItemBase.ITEMS;
+import static evergoodteam.chassis.objects.items.ItemBase.itemCount;
 import static evergoodteam.chassis.util.Reference.COLUMNS;
 import static evergoodteam.chassis.util.Reference.LOGGER;
 
@@ -25,7 +25,8 @@ public class ChassisClient implements ClientModInitializer {
 
         if (blockCount > 0) LOGGER.info("Found {} Block(s) to register", blockCount);
         if (!COLUMNS.isEmpty()) LOGGER.info("Found {} Column(s)", COLUMNS.size());
-        if (!ITEMS.isEmpty()) LOGGER.info("Found {} Item(s) to register", ITEMS.size());
+
+        if (itemCount > 0) LOGGER.info("Found {} Item(s) to register", itemCount);
 
     }
 }
