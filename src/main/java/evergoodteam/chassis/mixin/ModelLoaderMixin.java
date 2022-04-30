@@ -17,6 +17,7 @@ import static evergoodteam.chassis.util.Reference.COLUMNS;
 import static evergoodteam.chassis.util.Reference.MODEL_INJECTION;
 import static evergoodteam.chassis.util.handlers.RegistryHandler.ITEM_TYPES;
 import static evergoodteam.chassis.util.handlers.RegistryHandler.REGISTERED_BLOCKS;
+import static evergoodteam.chassis.util.Reference.*;
 
 @Log4j2
 @Mixin(ModelLoader.class)
@@ -34,10 +35,13 @@ public class ModelLoaderMixin {
         }
 
         for (int i = 0; i < MODEL_INJECTION.size(); i++) {
-            if (!MODEL_INJECTION.get(i).equals(id.getNamespace())) return;
+            if (!MODEL_INJECTION.get(i).equals(id.getNamespace())){
+                log.info("from {} not correct namespace {}", MODEL_INJECTION, id.getNamespace());
+                return;
+            }
         }
 
-        log.info("Now looking at this entry {}", id);
+        LOGGER.info("Now looking at this entry {}", id);
 
         String entryNamespace = id.getNamespace();
         String entryPath = getIdFromIdentifier(id);
