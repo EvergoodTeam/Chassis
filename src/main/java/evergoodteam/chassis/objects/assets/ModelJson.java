@@ -102,7 +102,7 @@ public class ModelJson {
 
             JsonObject textures = new JsonObject();
             textures.addProperty("end", textureName + "_end");
-            textures.addProperty("end", textureName + "_side");
+            textures.addProperty("side", textureName + "_side");
 
             json.add("textures", textures);
 
