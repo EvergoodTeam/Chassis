@@ -25,7 +25,13 @@ public class ModelLoaderMixin {
     @Inject(method = "loadModelFromJson", at = @At(value = "INVOKE", target = "Lnet/minecraft/resource/ResourceManager;getResource(Lnet/minecraft/util/Identifier;)Lnet/minecraft/resource/Resource;"), cancellable = true)
     public void loadModelFromJson(Identifier id, CallbackInfoReturnable<JsonUnbakedModel> cir) {
 
-        if (MODEL_INJECTION.isEmpty()) return;
+
+        log.info("Mixin going");
+
+        if (MODEL_INJECTION.isEmpty()){
+            log.info("It is empty");
+            return;
+        }
 
         for (int i = 0; i < MODEL_INJECTION.size(); i++) {
             if (!MODEL_INJECTION.get(i).equals(id.getNamespace())) return;
