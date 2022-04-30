@@ -27,6 +27,8 @@ public class ModelJson {
             textures.addProperty("layer0", namespace + ":item/" + textureName);
 
             json.add("textures", textures);
+
+            log.info(json);
 /*
             String result = "{\n" +
                     "  \"parent\": \"item/" + type + "\",\n" +
@@ -43,6 +45,8 @@ public class ModelJson {
             JsonObject json = new JsonObject();
 
             json.addProperty("parent", namespace + ":block/" + textureName);
+
+            log.info(json);
 
             /*
             String result = "{\n" +
@@ -79,6 +83,8 @@ public class ModelJson {
 
             json.add("textures", textures);
 
+            log.info(json);
+
             /*
             String result = "{\n" +
                     "  \"parent\": \"block/cube_all\",\n" +
@@ -97,6 +103,10 @@ public class ModelJson {
             JsonObject textures = new JsonObject();
             textures.addProperty("end", textureName + "_end");
             textures.addProperty("end", textureName + "_side");
+
+            json.add("textures", textures);
+
+            log.info(json);
 
             /*
             json.add("textures", textures);

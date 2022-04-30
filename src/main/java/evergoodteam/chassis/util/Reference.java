@@ -18,8 +18,8 @@ public class Reference {
     public static final String MODID = "chassis";
     public static final Logger LOGGER = LogManager.getLogger(StringUtils.capitalize(MODID));
 
-    //public static final ConfigBase CHASSIS_CONFIGS = new ConfigBase(MODID);
-    //public static final ResourcePackBase CHASSIS_RESOURCES = new ResourcePackBase(CHASSIS_CONFIGS, MODID, "https://evergoodteam.github.io/utils/icons/chassisIcon.png", "53a074");
+    public static final ConfigBase CHASSIS_CONFIGS = new ConfigBase(MODID);
+    public static final ResourcePackBase CHASSIS_RESOURCES = new ResourcePackBase(CHASSIS_CONFIGS, MODID, "https://evergoodteam.github.io/utils/icons/chassisIcon.png", "53a074");
 
     //public static final ConfigBase TEST_CONFIGS = new ConfigBase("test");
     //public static final ResourcePackBase TEST_RESOURCES = new ResourcePackBase(TEST_CONFIGS, "test");

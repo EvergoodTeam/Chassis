@@ -1,6 +1,6 @@
 package evergoodteam.chassis;
 
-/*
+
 import evergoodteam.chassis.configs.ConfigHandler;
 import evergoodteam.chassis.objects.assets.LootJson;
 import evergoodteam.chassis.objects.assets.RecipeJson;
@@ -21,18 +21,18 @@ import net.minecraft.util.Identifier;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-*/
+
 import net.fabricmc.api.ModInitializer;
 
 import static evergoodteam.chassis.util.Reference.*;
 
 public class Chassis implements ModInitializer {
 
-    //static final List<Block> BLOCKS = new ArrayList<>();
-    //static final Block TEST_BLOCK = new BlockBase(BLOCKS, FabricBlockSettings.of(Material.METAL).requiresTool().hardness(1.5f).resistance(6.0f).sounds(BlockSoundGroup.METAL).nonOpaque(), true);
-    //static final Item TEST_ITEM = new ItemBase(new FabricItemSettings().maxCount(65));
+    static final List<Block> BLOCKS = new ArrayList<>();
+    static final Block TEST_BLOCK = new BlockBase(BLOCKS, FabricBlockSettings.of(Material.METAL).requiresTool().hardness(1.5f).resistance(6.0f).sounds(BlockSoundGroup.METAL).nonOpaque(), true);
+    static final Item TEST_ITEM = new ItemBase(new FabricItemSettings().maxCount(65));
 
-    /*
+
     private static void testFeatures() {
 
         CHASSIS_CONFIGS.options.put("hideResourcePack", false);
@@ -68,12 +68,12 @@ public class Chassis implements ModInitializer {
 
         if (ConfigHandler.getBooleanOption(CHASSIS_CONFIGS, "hideResourcePack", false)) CHASSIS_RESOURCES.hide();
     }
-    */
+
     @Override
     public void onInitialize() {
 
         LOGGER.info("Starting up");
 
-        //testFeatures();
+        testFeatures();
     }
 }
