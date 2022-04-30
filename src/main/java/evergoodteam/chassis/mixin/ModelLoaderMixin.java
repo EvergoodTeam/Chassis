@@ -35,7 +35,7 @@ public class ModelLoaderMixin {
         }
 
         for (int i = 0; i < MODEL_INJECTION.size(); i++) {
-            if (!MODEL_INJECTION.get(i).equals(id.getNamespace())){
+            if (!MODEL_INJECTION.get(i).contains(id.getNamespace())){
                 log.info("from {} not correct namespace {}", MODEL_INJECTION, id.getNamespace());
                 return;
             }
