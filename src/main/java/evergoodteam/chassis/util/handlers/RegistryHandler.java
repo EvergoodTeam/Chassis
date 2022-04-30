@@ -1,7 +1,6 @@
 package evergoodteam.chassis.util.handlers;
 
 import evergoodteam.chassis.util.IdentifierParser;
-import lombok.extern.log4j.Log4j2;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.minecraft.block.Block;
 import net.minecraft.client.item.TooltipContext;
@@ -21,7 +20,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@Log4j2
 public class RegistryHandler {
 
     public static final Map<String, List<String>> REGISTERED_BLOCKS = new HashMap<>();
@@ -89,7 +87,6 @@ public class RegistryHandler {
      */
     public static void registerBlock(String namespace, String path, Block block) {
         REGISTERED_BLOCKS.computeIfAbsent(namespace, k -> new ArrayList<>()).add(path);
-        log.info(REGISTERED_BLOCKS);
         Registry.register(Registry.BLOCK, new Identifier(namespace, path), block);
     }
 

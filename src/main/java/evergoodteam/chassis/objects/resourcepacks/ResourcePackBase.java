@@ -55,18 +55,11 @@ public class ResourcePackBase {
      */
     public ResourcePackBase(@NotNull ConfigBase config, @NotNull String namespace, @Nullable String iconUrl, @Nullable String hexDescColor) {
 
-        /*
-        if (!RESOURCE_PACKS.containsKey(config.namespace)) {
-            RESOURCE_PACKS.put(config.namespace, new ArrayList<>());
-        }
-        */
-
         this.namespace = namespace;
         this.path = Paths.get(config.dirPath.toString(), "resourcepacks/" + namespace.toLowerCase()); // Root of every ResourcePack
         //log.info(this.path);
         this.hexDescColor = hexDescColor;
 
-        //RESOURCE_PACKS.get(config.namespace).add(this);
         RESOURCE_PACKS.computeIfAbsent(config.namespace, k -> new ArrayList<>()).add(this);
         //log.info(RESOURCE_PACKS);
 
@@ -80,7 +73,6 @@ public class ResourcePackBase {
             config.cleanResources(this);
             createRoot();
 
-            //log.info("Are resources locked? {}", config.resourcesLocked);
             config.resourcesLocked.put(namespace + "ResourceLocked", true);
             config.setupDefaultProperties();
 
