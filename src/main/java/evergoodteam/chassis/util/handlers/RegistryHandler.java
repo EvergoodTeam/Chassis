@@ -36,7 +36,7 @@ public class RegistryHandler {
     //region Block Registration
 
     /**
-     * Registers an Item version of the provided Block
+     * Registers the Block and its Item version of the provided Block
      *
      * @param namespace  your ModId
      * @param path       name to identify your Block from other entries in the same namespace
@@ -52,7 +52,7 @@ public class RegistryHandler {
     }
 
     /**
-     * Registers an Item version of the provided Block
+     * Registers the Block and its Item version of the provided Block
      *
      * @param namespace your ModId
      * @param path      name to identify your Block from other entries in the same namespace
@@ -67,7 +67,7 @@ public class RegistryHandler {
     }
 
     /**
-     * Registers an Item version of the provided Block
+     * Registers the Block and its Item version of the provided Block
      *
      * @param namespace your ModId
      * @param path      name to identify your Block from other entries in the same namespace

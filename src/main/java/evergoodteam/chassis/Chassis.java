@@ -1,6 +1,6 @@
 package evergoodteam.chassis;
 
-
+/*
 import evergoodteam.chassis.configs.ConfigHandler;
 import evergoodteam.chassis.objects.assets.LootJson;
 import evergoodteam.chassis.objects.assets.RecipeJson;
@@ -21,18 +21,16 @@ import net.minecraft.util.Identifier;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
+*/
 import net.fabricmc.api.ModInitializer;
 
 import static evergoodteam.chassis.util.Reference.*;
 
 public class Chassis implements ModInitializer {
 
+    /*
     static final List<Block> BLOCKS = new ArrayList<>();
     static final Block TEST_BLOCK = new BlockBase(BLOCKS, FabricBlockSettings.of(Material.METAL).requiresTool().hardness(1.5f).resistance(6.0f).sounds(BlockSoundGroup.METAL).nonOpaque(), true);
-    static final Block TEST_BLOCK2 = new BlockBase(BLOCKS, FabricBlockSettings.of(Material.METAL).requiresTool().hardness(1.5f).resistance(6.0f).sounds(BlockSoundGroup.METAL).nonOpaque(), true);
-    static final Block TEST_BLOCK3 = new BlockBase(BLOCKS, FabricBlockSettings.of(Material.METAL).requiresTool().hardness(1.5f).resistance(6.0f).sounds(BlockSoundGroup.METAL).nonOpaque(), true);
-
     static final Item TEST_ITEM = new ItemBase(new FabricItemSettings().maxCount(65));
 
 
@@ -43,8 +41,6 @@ public class Chassis implements ModInitializer {
 
         ItemGroup testGroup = new ItemGroupBase("chassis", "testgroup", TEST_BLOCK).group;
         RegistryHandler.registerBlockAndItem("chassis", "testblock", TEST_BLOCK, testGroup);
-        RegistryHandler.registerBlockAndItem("chassis", "testblockt", TEST_BLOCK2, testGroup, "test");
-        RegistryHandler.registerBlockAndItem("chassis", "testblocktt", TEST_BLOCK3);
         RegistryHandler.registerGeneratedItem("chassis", "testitem", TEST_ITEM);
 
         InjectionHandler.addAssetInjection(MODID);
@@ -56,9 +52,7 @@ public class Chassis implements ModInitializer {
 
         CHASSIS_RESOURCES.createGlobalTag("testblock")
                 .createBlockstate("testblock")
-                .createBlockstate("testblockt")
-                .createBlockstate("testblocktt")
-                //.createBlockModels("testblock", "testblock", "all")
+                .createBlockModels("testblock", "testblock", "all")
                 .createBlockDropLootTable("testblock")
                 .createRequiredToolTag("pickaxe", new String[]{"testblock"})
                 .createMiningLevelTag("stone", new String[]{"testblock"})
@@ -75,12 +69,13 @@ public class Chassis implements ModInitializer {
 
         if (ConfigHandler.getBooleanOption(CHASSIS_CONFIGS, "hideResourcePack", false)) CHASSIS_RESOURCES.hide();
     }
+    */
 
     @Override
     public void onInitialize() {
 
-        LOGGER.info("Starting up");
+        LOGGER.info("Starting up Chassis");
 
-        testFeatures();
+        //testFeatures();
     }
 }

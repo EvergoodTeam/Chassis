@@ -28,17 +28,6 @@ public class ModelJson {
 
             json.add("textures", textures);
 
-            log.info(json);
-/*
-            String result = "{\n" +
-                    "  \"parent\": \"item/" + type + "\",\n" +
-                    "  \"textures\": {\n" +
-                    "    \"layer0\": \"" + namespace + ":item/" + textureName + "\"\n" +
-                    "  }\n" +
-                    "}";
-*/
-            //log.info(result);
-
             return json;
         } else if ("block".equals(type)) {
 
@@ -46,15 +35,6 @@ public class ModelJson {
 
             json.addProperty("parent", namespace + ":block/" + textureName);
 
-            log.info(json);
-
-            /*
-            String result = "{\n" +
-                    "  \"parent\": \"" + namespace + ":block/" + textureName + "\"\n" +
-                    "}";
-
-            //log.info(result);
-            */
             return json;
 
         } else return null;
@@ -83,16 +63,6 @@ public class ModelJson {
 
             json.add("textures", textures);
 
-            log.info(json);
-
-            /*
-            String result = "{\n" +
-                    "  \"parent\": \"block/cube_all\",\n" +
-                    "  \"textures\": {\n" +
-                    "    \"all\": \"" + textureName + "\"\n" +
-                    "  }\n" +
-                    "}";
-            //log.info(result);*/
             return json;
         } else if ("column".equals(cubeType)) {
 
@@ -106,18 +76,6 @@ public class ModelJson {
 
             json.add("textures", textures);
 
-            log.info(json);
-
-            /*
-            json.add("textures", textures);
-            String result = "{\n" +
-                    "  \"parent\": \"block/cube_column\",\n" +
-                    "  \"textures\": {\n" +
-                    "    \"end\": \"" + textureName + "_end\",\n" +
-                    "    \"side\": \"" + textureName + "_side\"\n" +
-                    "  }\n" +
-                    "}";
-            //log.info(result);*/
             return json;
         } else return null;
     }

@@ -26,22 +26,15 @@ public class ModelLoaderMixin {
     @Inject(method = "loadModelFromJson", at = @At(value = "INVOKE", target = "Lnet/minecraft/resource/ResourceManager;getResource(Lnet/minecraft/util/Identifier;)Lnet/minecraft/resource/Resource;"), cancellable = true)
     public void loadModelFromJson(Identifier id, CallbackInfoReturnable<JsonUnbakedModel> cir) {
 
-
-        log.info("Mixin going");
-
         if (MODEL_INJECTION.isEmpty()){
-            log.info("It is empty");
             return;
         }
 
         for (int i = 0; i < MODEL_INJECTION.size(); i++) {
             if (!MODEL_INJECTION.contains(id.getNamespace())){
-                log.info("from {} not correct namespace {}", MODEL_INJECTION, id.getNamespace());
                 return;
             }
         }
-
-        LOGGER.info("Now looking at this entry {}", id);
 
         String entryNamespace = id.getNamespace();
         String entryPath = getIdFromIdentifier(id);
@@ -56,12 +49,6 @@ public class ModelLoaderMixin {
                 modelJson = createBlockModelJson("all", id.toString());
             }
         } else if ("item".equals(getTypeFromIdentifier(id))) {
-
-            /*
-            log.info("This arrived to item {}", id);
-            log.info(REGISTERED_BLOCKS);
-            log.info(id.getNamespace() + "and also" + id.getPath());
-            */
 
             if (REGISTERED_BLOCKS.get(id.getNamespace()).contains(entryPath)) {
                 modelJson = ModelJson.createItemModelJson(entryNamespace, "block", entryPath);
