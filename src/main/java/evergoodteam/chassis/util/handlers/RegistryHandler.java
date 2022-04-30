@@ -89,6 +89,7 @@ public class RegistryHandler {
      */
     public static void registerBlock(String namespace, String path, Block block) {
         REGISTERED_BLOCKS.computeIfAbsent(namespace, k -> new ArrayList<>()).add(path);
+        log.info(REGISTERED_BLOCKS);
         Registry.register(Registry.BLOCK, new Identifier(namespace, path), block);
     }
 
