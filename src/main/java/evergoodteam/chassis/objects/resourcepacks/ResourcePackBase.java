@@ -55,16 +55,19 @@ public class ResourcePackBase {
      */
     public ResourcePackBase(@NotNull ConfigBase config, @NotNull String namespace, @Nullable String iconUrl, @Nullable String hexDescColor) {
 
+        /*
         if (!RESOURCE_PACKS.containsKey(config.namespace)) {
             RESOURCE_PACKS.put(config.namespace, new ArrayList<>());
         }
+        */
 
         this.namespace = namespace;
         this.path = Paths.get(config.dirPath.toString(), "resourcepacks/" + namespace.toLowerCase()); // Root of every ResourcePack
         //log.info(this.path);
         this.hexDescColor = hexDescColor;
 
-        RESOURCE_PACKS.get(config.namespace).add(this);
+        //RESOURCE_PACKS.get(config.namespace).add(this);
+        RESOURCE_PACKS.computeIfAbsent(config.namespace, k -> new ArrayList<>()).add(this);
         //log.info(RESOURCE_PACKS);
 
         config.resourcesLocked.put(namespace + "ResourceLocked", false); // TODO: Possible duplicates overriding
@@ -239,7 +242,7 @@ public class ResourcePackBase {
 
         if (!Files.exists(tagBlocks.resolve(fileName))) createJsonFile(tagBlocks.resolve(fileName));
 
-        writeJson(TagJson.createTagJson(this.namespace, inputs), tagBlocks.resolve(fileName));
+        writeJsonIfEmpty(TagJson.createTagJson(this.namespace, inputs), tagBlocks.resolve(fileName));
 
         return this;
     }
@@ -306,7 +309,7 @@ public class ResourcePackBase {
     public ResourcePackBase writeJsonIfEmpty(String json, @NotNull Path path){
 
         if(Paths.get(path + ".json").toFile().length() == 0){
-            //log.info("File is empty, writing at {}", path);
+            log.info("File is empty, writing at {}", path);
             writeJson(json, path);
         }
 

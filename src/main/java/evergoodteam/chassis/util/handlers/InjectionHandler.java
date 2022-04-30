@@ -7,7 +7,7 @@ import java.util.Arrays;
 
 import static evergoodteam.chassis.util.Reference.*;
 
-public class ListHandler {
+public class InjectionHandler {
 
     /**
      * Specify to {@link evergoodteam.chassis.mixin.ModelLoaderMixin} which Blocks need the column texture layout
@@ -36,16 +36,16 @@ public class ListHandler {
      */
     public static void addAssetInjection(@NotNull String namespace) {
 
-        MODEL_NAMESPACES.add(namespace.toLowerCase());
+        MODEL_INJECTION.add(namespace.toLowerCase());
     }
 
     /**
      * Sends {@link evergoodteam.chassis.mixin.LootManagerMixin} Loot Tables to inject
-     * @see evergoodteam.chassis.objects.assets.LootJson
      *
      * @param namespace namespace of your loot table (your ModId)
-     * @param path name to identify your loot table from other entries in the same namespace
-     * @param jsonLoot {@link JsonObject} formatted for loot tables
+     * @param path      name to identify your loot table from other entries in the same namespace
+     * @param jsonLoot  {@link JsonObject} formatted for loot tables
+     * @see evergoodteam.chassis.objects.assets.LootJson
      */
     public static void addLoot(@NotNull String namespace, @NotNull String path, JsonObject jsonLoot) {
 
@@ -54,11 +54,11 @@ public class ListHandler {
 
     /**
      * Sends {@link evergoodteam.chassis.mixin.RecipeManagerMixin} Recipes to inject
-     * @see evergoodteam.chassis.objects.assets.RecipeJson
      *
-     * @param namespace namespace of your recipe (your ModId)
-     * @param path name to identify your recipe from other entries in the same namespace
+     * @param namespace  namespace of your recipe (your ModId)
+     * @param path       name to identify your recipe from other entries in the same namespace
      * @param jsonRecipe {@link JsonObject} formatted for recipes
+     * @see evergoodteam.chassis.objects.assets.RecipeJson
      */
     public static void addRecipe(@NotNull String namespace, @NotNull String path, JsonObject jsonRecipe) {
 

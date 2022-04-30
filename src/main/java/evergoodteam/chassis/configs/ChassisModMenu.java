@@ -20,9 +20,10 @@ public class ChassisModMenu implements ModMenuApi {
                 this.client.setScreen(screen);
             }
         };
-    }*/
+    }
+    */
 
-    /* Soon™, will be used to create a proper config screen inside of the game
+    /* Soon™, will be used to create a proper config screen inside of the GUI
     @Override
     public Map<String, ConfigScreenFactory<?>> getProvidedConfigScreenFactories() {
         return ImmutableMap.of("minecraft", parent -> new OptionsScreen(parent, MinecraftClient.getInstance().options));

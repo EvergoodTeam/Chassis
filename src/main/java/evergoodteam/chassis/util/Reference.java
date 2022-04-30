@@ -18,15 +18,14 @@ public class Reference {
     public static final String MODID = "chassis";
     public static final Logger LOGGER = LogManager.getLogger(StringUtils.capitalize(MODID));
 
-    public static final ConfigBase CHASSIS_CONFIGS = new ConfigBase(MODID);
-    public static final ResourcePackBase CHASSIS_RESOURCES = new ResourcePackBase(CHASSIS_CONFIGS, MODID, "https://evergoodteam.github.io/utils/icons/pack.png", "53a074");
+    //public static final ConfigBase CHASSIS_CONFIGS = new ConfigBase(MODID);
+    //public static final ResourcePackBase CHASSIS_RESOURCES = new ResourcePackBase(CHASSIS_CONFIGS, MODID, "https://evergoodteam.github.io/utils/icons/chassisIcon.png", "53a074");
 
+    //public static final ConfigBase TEST_CONFIGS = new ConfigBase("test");
+    //public static final ResourcePackBase TEST_RESOURCES = new ResourcePackBase(TEST_CONFIGS, "test");
 
-    // Used for model generation
-    public static final List<String> MODEL_NAMESPACES = new ArrayList<>();
-    // Blocks with specifc texture layouts (eg. Basalt)
-    public static final List<String> COLUMNS = new ArrayList<>();
-
+    public static final List<String> MODEL_INJECTION = new ArrayList<>(); // Used for model generation
+    public static final List<String> COLUMNS = new ArrayList<>(); // Blocks with specifc texture layouts (eg. Basalt)
 
     // Use Table to easily add elements; use Map to "easily" access them
     public static final Table<String, String, JsonObject> RECIPESTABLE = HashBasedTable.create();

@@ -1,6 +1,5 @@
 package evergoodteam.chassis.util;
 
-import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 import java.nio.file.Path;
