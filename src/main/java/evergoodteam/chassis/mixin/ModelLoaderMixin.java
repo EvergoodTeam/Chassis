@@ -31,6 +31,8 @@ public class ModelLoaderMixin {
             if (!MODEL_INJECTION.get(i).equals(id.getNamespace())) return;
         }
 
+        log.info("Now looking at this entry {}", id);
+
         String entryNamespace = id.getNamespace();
         String entryPath = getIdFromIdentifier(id);
         JsonObject modelJson = new JsonObject();

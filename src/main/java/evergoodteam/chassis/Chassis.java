@@ -56,6 +56,8 @@ public class Chassis implements ModInitializer {
 
         CHASSIS_RESOURCES.createGlobalTag("testblock")
                 .createBlockstate("testblock")
+                .createBlockstate("testblockt")
+                .createBlockstate("testblocktt")
                 //.createBlockModels("testblock", "testblock", "all")
                 .createBlockDropLootTable("testblock")
                 .createRequiredToolTag("pickaxe", new String[]{"testblock"})
