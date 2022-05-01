@@ -5,11 +5,11 @@ import evergoodteam.chassis.util.handlers.DirHandler;
 import evergoodteam.chassis.util.handlers.FileHandler;
 import lombok.extern.log4j.Log4j2;
 import net.fabricmc.loader.api.FabricLoader;
-import net.fabricmc.loader.impl.util.StringUtil;
 import net.minecraft.util.Util;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
@@ -130,7 +130,7 @@ public class ConfigBase {
     }
 
     private String header(@NotNull ConfigBase config) {
-        return "Config Options for " + StringUtil.capitalize(config.namespace) + System.lineSeparator() + new Date();
+        return "Config Options for " + StringUtils.capitalize(config.namespace) + System.lineSeparator() + new Date();
     }
 
     public ConfigBase setupDefaultProperties() {

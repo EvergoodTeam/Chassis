@@ -28,7 +28,7 @@ import static evergoodteam.chassis.util.Reference.*;
 
 public class Chassis implements ModInitializer {
 
-    /*
+/*
     static final List<Block> BLOCKS = new ArrayList<>();
     static final Block TEST_BLOCK = new BlockBase(BLOCKS, FabricBlockSettings.of(Material.METAL).requiresTool().hardness(1.5f).resistance(6.0f).sounds(BlockSoundGroup.METAL).nonOpaque(), true);
     static final Item TEST_ITEM = new ItemBase(new FabricItemSettings().maxCount(65));
@@ -69,7 +69,7 @@ public class Chassis implements ModInitializer {
 
         if (ConfigHandler.getBooleanOption(CHASSIS_CONFIGS, "hideResourcePack", false)) CHASSIS_RESOURCES.hide();
     }
-    */
+*/
 
     @Override
     public void onInitialize() {

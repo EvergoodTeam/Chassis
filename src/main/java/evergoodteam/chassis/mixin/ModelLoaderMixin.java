@@ -17,7 +17,6 @@ import static evergoodteam.chassis.util.Reference.COLUMNS;
 import static evergoodteam.chassis.util.Reference.MODEL_INJECTION;
 import static evergoodteam.chassis.util.handlers.RegistryHandler.ITEM_TYPES;
 import static evergoodteam.chassis.util.handlers.RegistryHandler.REGISTERED_BLOCKS;
-import static evergoodteam.chassis.util.Reference.*;
 
 @Log4j2
 @Mixin(ModelLoader.class)
@@ -26,12 +25,12 @@ public class ModelLoaderMixin {
     @Inject(method = "loadModelFromJson", at = @At(value = "INVOKE", target = "Lnet/minecraft/resource/ResourceManager;getResource(Lnet/minecraft/util/Identifier;)Lnet/minecraft/resource/Resource;"), cancellable = true)
     public void loadModelFromJson(Identifier id, CallbackInfoReturnable<JsonUnbakedModel> cir) {
 
-        if (MODEL_INJECTION.isEmpty()){
+        if (MODEL_INJECTION.isEmpty()) {
             return;
         }
 
         for (int i = 0; i < MODEL_INJECTION.size(); i++) {
-            if (!MODEL_INJECTION.contains(id.getNamespace())){
+            if (!MODEL_INJECTION.contains(id.getNamespace())) {
                 return;
             }
         }

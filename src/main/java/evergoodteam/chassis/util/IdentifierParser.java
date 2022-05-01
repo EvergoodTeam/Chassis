@@ -6,7 +6,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class IdentifierParser {
 
-    public static String getString(String namespace, String path){
+    public static String getString(String namespace, String path) {
         return namespace + ":" + path;
     }
 

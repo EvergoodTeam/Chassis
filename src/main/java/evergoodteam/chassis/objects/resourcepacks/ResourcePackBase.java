@@ -288,9 +288,9 @@ public class ResourcePackBase {
     }
 
 
-    public ResourcePackBase writeJsonIfEmpty(JsonObject jsonObject, @NotNull Path path){
+    public ResourcePackBase writeJsonIfEmpty(JsonObject jsonObject, @NotNull Path path) {
 
-        if(Paths.get(path + ".json").toFile().length() == 0){
+        if (Paths.get(path + ".json").toFile().length() == 0) {
             //log.info("File is empty, writing at {}", path);
             writeJson(jsonObject, path);
         }
@@ -298,9 +298,9 @@ public class ResourcePackBase {
         return this;
     }
 
-    public ResourcePackBase writeJsonIfEmpty(String json, @NotNull Path path){
+    public ResourcePackBase writeJsonIfEmpty(String json, @NotNull Path path) {
 
-        if(Paths.get(path + ".json").toFile().length() == 0){
+        if (Paths.get(path + ".json").toFile().length() == 0) {
             log.info("File is empty, writing at {}", path);
             writeJson(json, path);
         }

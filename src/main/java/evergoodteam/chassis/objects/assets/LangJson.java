@@ -6,11 +6,11 @@ import java.util.Map;
 
 public class LangJson {
 
-    public static JsonObject createLangJson(Map<String, String> entries){
+    public static JsonObject createLangJson(Map<String, String> entries) {
 
         JsonObject json = new JsonObject();
 
-        for(int i = 0; i < entries.keySet().size(); i++){
+        for (int i = 0; i < entries.keySet().size(); i++) {
             json.addProperty(entries.keySet().toArray()[i].toString(), entries.get(entries.keySet().toArray()[i]));
         }
 

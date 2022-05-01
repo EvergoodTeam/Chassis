@@ -41,7 +41,7 @@ public class ConfigHandler {
                 PropertiesConfiguration p = new PropertiesConfiguration(config.propertiesPath);
                 //log.info(Boolean.valueOf(String.valueOf(p.getProperty(name))));
 
-                if(p.getProperty(name) != null) result = p.getProperty(name); // Property could be missing
+                if (p.getProperty(name) != null) result = p.getProperty(name); // Property could be missing
                 else result = defaultValue;
 
             } catch (ConfigurationException e) {
