@@ -1,12 +1,15 @@
 package evergoodteam.chassis.configs;
 
 import lombok.extern.log4j.Log4j2;
-import org.apache.commons.configuration.ConfigurationException;
-import org.apache.commons.configuration.PropertiesConfiguration;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Properties;
 
 @Log4j2
 public class ConfigHandler {
@@ -20,7 +23,6 @@ public class ConfigHandler {
      * @return
      */
     public static @NotNull Boolean getBooleanOption(@NotNull ConfigBase config, String name, Boolean defaultValue) {
-
         return Boolean.valueOf(String.valueOf(getOption(config, name, defaultValue)));
     }
 
@@ -33,22 +35,21 @@ public class ConfigHandler {
      * @return
      */
     public static Object getOption(@NotNull ConfigBase config, String name, Object defaultValue) {
+        return getOption(config, name) != null ? getOption(config, name) : defaultValue;
+    }
 
-        Object result = null;
+    public static @Nullable Object getOption(ConfigBase config, String name) {
+
+        Properties p = new Properties();
 
         if (Files.exists(Paths.get(config.propertiesPath))) {
-            try {
-                PropertiesConfiguration p = new PropertiesConfiguration(config.propertiesPath);
-                //log.info(Boolean.valueOf(String.valueOf(p.getProperty(name))));
-
-                if (p.getProperty(name) != null) result = p.getProperty(name); // Property could be missing
-                else result = defaultValue;
-
-            } catch (ConfigurationException e) {
-                log.error(e);
+            try (InputStream input = new FileInputStream(config.propertiesPath)) {
+                p.load(input);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
             }
-        } else result = defaultValue;
+        }
 
-        return result;
+        return p.getProperty(name);
     }
 }

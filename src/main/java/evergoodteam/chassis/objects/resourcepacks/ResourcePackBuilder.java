@@ -1,5 +1,6 @@
 package evergoodteam.chassis.objects.resourcepacks;
 
+import evergoodteam.chassis.util.StringUtil;
 import lombok.ToString;
 import lombok.extern.log4j.Log4j2;
 import net.minecraft.SharedConstants;
@@ -11,7 +12,6 @@ import net.minecraft.resource.metadata.ResourceMetadataReader;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.InvalidIdentifierException;
-import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
@@ -30,11 +30,11 @@ public class ResourcePackBuilder extends AbstractFileResourcePack implements Res
     private static final Pattern RESOURCEPACK_PATH = Pattern.compile("[a-z0-9-_]+");
     public static final List<ResourcePackBuilder> BUILT = new ArrayList<>();
 
-    private String id;
-    private ResourceType resourceType;
-    private PackResourceMetadata packMetadata;
-    private Path basePath;
-    private String separator;
+    private final String id;
+    private final ResourceType resourceType;
+    private final PackResourceMetadata packMetadata;
+    private final Path basePath;
+    private final String separator;
     private Set<String> namespaces;
 
     public ResourcePackBuilder(String id, ResourceType resourceType, Path basePath) {
@@ -165,7 +165,7 @@ public class ResourcePackBuilder extends AbstractFileResourcePack implements Res
     @Override
     public String getName() {
 
-        return StringUtils.capitalize(this.id);
+        return StringUtil.capitalize(this.id);
     }
 
     @Override

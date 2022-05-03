@@ -2,12 +2,16 @@ package evergoodteam.chassis.util.handlers;
 
 import evergoodteam.chassis.util.StringUtil;
 import lombok.extern.log4j.Log4j2;
+import org.apache.commons.io.FileUtils;
 
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.Writer;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+
+import static evergoodteam.chassis.util.Reference.LOGGER;
 
 @Log4j2
 public class FileHandler {
@@ -20,11 +24,11 @@ public class FileHandler {
      */
     public static void writeToFile(String text, Path path) {
 
-        //LOGGER.info("Attempting to write to path {}", path);
+        LOGGER.info("Attempting to write to path {}", path);
 
         if (Files.exists(path)) {
 
-            try (FileWriter fileWriter = new FileWriter(path.toFile())) {
+            try (Writer fileWriter = new FileWriter(path.toFile())) {
 
                 fileWriter.write(text);
             } catch (IOException e) {
@@ -72,5 +76,16 @@ public class FileHandler {
             }
         }
         //else log.info("Unable to create file as it already exists");
+    }
+
+    public static void clean(Path path) {
+        try {
+            if (Files.exists(path)) {
+                FileUtils.delete(path.toFile());
+                //log.info("Deleted {}", this.propertiesPath);
+            }
+        } catch (IOException e) {
+            log.error("Error on cleaning {}", path, e);
+        }
     }
 }

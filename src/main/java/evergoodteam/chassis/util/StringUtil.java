@@ -7,6 +7,10 @@ import java.nio.file.Paths;
 
 public class StringUtil {
 
+    public static String capitalize(String input){
+        return input.substring(0, 1).toUpperCase() + input.substring(1);
+    }
+
     /**
      * Removes specified extension from the provided String if found
      *

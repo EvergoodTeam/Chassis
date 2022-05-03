@@ -61,28 +61,13 @@ public class ResourcePackBase {
         this.hexDescColor = hexDescColor;
 
         RESOURCE_PACKS.computeIfAbsent(config.namespace, k -> new ArrayList<>()).add(this);
-        //log.info(RESOURCE_PACKS);
 
-        config.resourcesLocked.put(namespace + "ResourceLocked", false); // TODO: Possible duplicates overriding
-
-        config.readProperties();
-        //log.info(ConfigHandler.getBooleanOption(config, "chassisResourceLocked", false));
-
-        if (!ConfigHandler.getBooleanOption(config, namespace + "ResourceLocked", false)) {
-            //log.info("Attempting to generate Resources");
-            config.cleanResources(this);
-            createRoot();
-
-            config.resourcesLocked.put(namespace + "ResourceLocked", true);
-            config.setupDefaultProperties();
-
-            LOGGER.info("Generated Resources for \"{}\"", this.namespace);
-        } else LOGGER.info("Resources for \"{}\" already exist, skipping generation", this.namespace);
+        configInit(config);
 
         if (iconUrl == null) NO_ICON.add(namespace);
         else createPackIcon(config, namespace, iconUrl);
 
-        this.assignDirs();
+        assignDirs();
     }
 
     /**
@@ -118,8 +103,37 @@ public class ResourcePackBase {
         return RESOURCE_PACKS.get(id).get(index);
     }
 
+    //region Config Handler
+    private void configInit(ConfigBase config) {
+        config.resourcesLocked.put(namespace + "ResourceLocked", false);
 
-    private ResourcePackBase assignDirs() {
+        config.readProperties();
+
+        if (ConfigHandler.getOption(config, namespace + "ResourceLocked") == null) {
+            //log.info("Attempting to generate Resources");
+            FileHandler.clean(this.path);
+            createRoot();
+
+            config.resourcesLocked.put(namespace + "ResourceLocked", true);
+            config.setupResourceProperties();
+
+            LOGGER.info("Generated Resources for \"{}\"", this.namespace);
+        } else if (!Boolean.parseBoolean(String.valueOf(ConfigHandler.getOption(config, namespace + "ResourceLocked")))) {
+            FileHandler.clean(this.path);
+            createRoot();
+
+            config.resourcesLocked.put(namespace + "ResourceLocked", true);
+            config.overwrite(namespace + "ResourceLocked", "true");
+
+            LOGGER.info("Regenerated Resources for \"{}\"", this.namespace);
+        } else {
+            LOGGER.info("Resources for \"{}\" already exist, skipping generation", this.namespace);
+        }
+    }
+    //endregion
+
+    //region File Generation
+    private void assignDirs() {
 
         this.assetsDir = this.path.resolve("resources/assets");
         this.dataDir = this.path.resolve("resources/data");
@@ -129,13 +143,10 @@ public class ResourcePackBase {
         this.blockstatesDir = this.namespaceAssetsDir.resolve("blockstates");
         this.tagsDir = this.namespaceDataDir.resolve("tags");
 
-        return this;
     }
 
-    public ResourcePackBase createRoot() {
-
+    private void createRoot() {
         DirHandler.createDir(this.path.resolve("resources"), new String[]{"assets", "data"}); // Without assets and data folder getPath from Builder dies
-        return this;
     }
 
     public ResourcePackBase createBlockstate(String path) {
@@ -286,9 +297,10 @@ public class ResourcePackBase {
 
         return this;
     }
+    //endregion
 
-
-    public ResourcePackBase writeJsonIfEmpty(JsonObject jsonObject, @NotNull Path path) {
+    //region File Handling
+    private ResourcePackBase writeJsonIfEmpty(JsonObject jsonObject, @NotNull Path path) {
 
         if (Paths.get(path + ".json").toFile().length() == 0) {
             //log.info("File is empty, writing at {}", path);
@@ -298,7 +310,7 @@ public class ResourcePackBase {
         return this;
     }
 
-    public ResourcePackBase writeJsonIfEmpty(String json, @NotNull Path path) {
+    private ResourcePackBase writeJsonIfEmpty(String json, @NotNull Path path) {
 
         if (Paths.get(path + ".json").toFile().length() == 0) {
             log.info("File is empty, writing at {}", path);
@@ -308,24 +320,26 @@ public class ResourcePackBase {
         return this;
     }
 
-    public ResourcePackBase writeJson(JsonObject jsonObject, Path path) {
+    private ResourcePackBase writeJson(JsonObject jsonObject, Path path) {
 
         JsonHandler.writeToJson(jsonObject, path);
         return this;
     }
 
-    public ResourcePackBase writeJson(String json, Path path) {
+    private ResourcePackBase writeJson(String json, Path path) {
 
         JsonHandler.writeToJson(json, path);
         return this;
     }
 
-    public ResourcePackBase createJsonFile(Path path) {
+    private ResourcePackBase createJsonFile(Path path) {
 
         FileHandler.createJsonFile(path);
         return this;
     }
+    //endregion
 
+    //region GUI
 
     /**
      * Hide ResourcePack from the GUI
@@ -337,7 +351,7 @@ public class ResourcePackBase {
         return this;
     }
 
-    public void createPackIcon(@NotNull ConfigBase config, @NotNull String namespace, String iconURL) {
+    private void createPackIcon(@NotNull ConfigBase config, @NotNull String namespace, String iconURL) {
 
         Path iconPath = Paths.get(config.dirPath.toString(), "resourcepacks/" + namespace.toLowerCase() + "/resources/pack.png");
 
@@ -348,4 +362,5 @@ public class ResourcePackBase {
             this.hide();
         }
     }
+    //endregion
 }
