@@ -11,8 +11,8 @@ import java.nio.file.Path;
 public class DirHandler {
 
     /**
-     * Creates a Directory at the specified Path if one doesn't exist already <br>
-     * NOTE: Also creates missing parent Dirs
+     * <p> Creates a Directory at the specified Path if one doesn't exist already </p>
+     * <p> Also creates missing parent Dirs from the specified Path </p>
      *
      * @param path
      */
@@ -28,15 +28,15 @@ public class DirHandler {
     }
 
     /**
-     * Creates a Dir at the specified root for each String provided
+     * Creates a Dir at the specified parent Path for each String provided
      *
-     * @param root
+     * @param parent
      * @param children
      */
-    public static void createDir(Path root, String @NotNull [] children) {
+    public static void createDir(Path parent, String @NotNull [] children) {
 
         for (String child : children) {
-            createDir(root.resolve(child));
+            createDir(parent.resolve(child));
         }
     }
 }

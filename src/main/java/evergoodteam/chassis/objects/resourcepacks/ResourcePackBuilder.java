@@ -1,6 +1,6 @@
 package evergoodteam.chassis.objects.resourcepacks;
 
-import evergoodteam.chassis.util.StringUtil;
+import evergoodteam.chassis.util.StringUtils;
 import lombok.ToString;
 import lombok.extern.log4j.Log4j2;
 import net.minecraft.SharedConstants;
@@ -165,7 +165,7 @@ public class ResourcePackBuilder extends AbstractFileResourcePack implements Res
     @Override
     public String getName() {
 
-        return StringUtil.capitalize(this.id);
+        return StringUtils.capitalize(this.id);
     }
 
     @Override

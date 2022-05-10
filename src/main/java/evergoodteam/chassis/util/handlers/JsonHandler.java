@@ -4,8 +4,8 @@ import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
-import evergoodteam.chassis.util.JsonUtil;
-import evergoodteam.chassis.util.StringUtil;
+import evergoodteam.chassis.util.JsonUtils;
+import evergoodteam.chassis.util.StringUtils;
 import lombok.extern.log4j.Log4j2;
 
 import java.io.FileWriter;
@@ -25,7 +25,7 @@ public class JsonHandler {
      */
     public static void writeToJson(String json, Path path) {
 
-        writeToJson(JsonUtil.getJsonObject(json), path);
+        writeToJson(JsonUtils.getJsonObject(json), path);
     }
 
     /**
@@ -36,7 +36,7 @@ public class JsonHandler {
      */
     public static void writeToJson(JsonObject jsonObject, Path path) {
 
-        Path actual = StringUtil.checkMissingExtension(path, ".json");
+        Path actual = StringUtils.checkMissingExtension(path, ".json");
 
         //log.info("Attempting to write to path {}", actual);
 

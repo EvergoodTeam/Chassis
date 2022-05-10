@@ -5,7 +5,7 @@ import org.jetbrains.annotations.NotNull;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-public class StringUtil {
+public class StringUtils {
 
     public static String capitalize(String input){
         return input.substring(0, 1).toUpperCase() + input.substring(1);

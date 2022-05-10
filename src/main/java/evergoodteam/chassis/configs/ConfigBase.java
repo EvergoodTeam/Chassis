@@ -1,6 +1,5 @@
 package evergoodteam.chassis.configs;
 
-import evergoodteam.chassis.objects.resourcepacks.ResourcePackBase;
 import evergoodteam.chassis.util.handlers.DirHandler;
 import evergoodteam.chassis.util.handlers.FileHandler;
 import lombok.extern.log4j.Log4j2;
@@ -8,19 +7,11 @@ import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.util.Util;
 
 
-import org.apache.commons.io.FileUtils;
-
-import org.jetbrains.annotations.NotNull;
-
 import java.io.*;
-import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
 
 import static evergoodteam.chassis.configs.ConfigHandler.getBooleanOption;
 import static evergoodteam.chassis.configs.ConfigHandler.getOption;
@@ -66,7 +57,8 @@ public class ConfigBase {
         } else LOGGER.info("Configs for \"{}\" already exist, skipping generation", this.namespace);
     }
 
-    //region Root Handler
+    //region Root Init
+
     /**
      * Creates all the needed dirs and the .properties Confile File
      */
@@ -86,6 +78,7 @@ public class ConfigBase {
     //endregion
 
     //region Config Build
+
     ConfigBuilder cb = new ConfigBuilder(this);
 
     public ConfigBase setupDefaultProperties() {
@@ -129,7 +122,7 @@ public class ConfigBase {
         return this;
     }
 
-    public ConfigBase readProperties() { // TODO: rename to default and make separate for resources
+    public ConfigBase readProperties() { // TODO: Separate for resources
 
         if (Files.exists(Paths.get(this.propertiesPath))) {
 
@@ -162,7 +155,24 @@ public class ConfigBase {
         return this;
     }
 
-    public ConfigBase addProperties() {
+    /**
+     * Add a Property to the Config File
+     *
+     * @param name name of your Property
+     * @param value what the Property is equal to
+     * @return
+     */
+    public ConfigBase addProperty(String name, Object value){
+        this.options.put(name, value);
+        return this;
+    }
+
+    /**
+     * Write the Properties added with {@link #addProperty} to the Config File
+     *
+     * @return
+     */
+    public ConfigBase registerProperties() {
 
         if (Files.exists(Paths.get(this.propertiesPath))) {
             try {

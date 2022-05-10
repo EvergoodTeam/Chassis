@@ -31,11 +31,19 @@ public class Chassis implements ModInitializer {
     static final Block TEST_BLOCK = new BlockBase(BLOCKS, FabricBlockSettings.of(Material.METAL).requiresTool().hardness(1.5f).resistance(6.0f).sounds(BlockSoundGroup.METAL).nonOpaque(), true);
     static final Item TEST_ITEM = new ItemBase(new FabricItemSettings().maxCount(65));
 
+    @Override
+    public void onInitialize() {
+
+        LOGGER.info("Starting up Chassis");
+
+        testFeatures();
+    }
 
     private static void testFeatures() {
 
-        CHASSIS_CONFIGS.options.put("hideResourcePack", false);
-        CHASSIS_CONFIGS.addProperties();
+        CHASSIS_CONFIGS.addProperty("hideResourcePack", false)
+                .addProperty("testProperty", true)
+                .registerProperties();
 
         ItemGroup testGroup = new ItemGroupBase("chassis", "testgroup", TEST_BLOCK).group;
         RegistryHandler.registerBlockAndItem("chassis", "testblock", TEST_BLOCK, testGroup);
@@ -66,14 +74,5 @@ public class Chassis implements ModInitializer {
                 }});
 
         if (ConfigHandler.getBooleanOption(CHASSIS_CONFIGS, "hideResourcePack", false)) CHASSIS_RESOURCES.hide();
-    }
-
-
-    @Override
-    public void onInitialize() {
-
-        LOGGER.info("Starting up Chassis");
-
-        testFeatures();
     }
 }

@@ -4,7 +4,7 @@ import com.google.gson.JsonObject;
 import evergoodteam.chassis.configs.ConfigBase;
 import evergoodteam.chassis.configs.ConfigHandler;
 import evergoodteam.chassis.objects.assets.*;
-import evergoodteam.chassis.util.StringUtil;
+import evergoodteam.chassis.util.StringUtils;
 import evergoodteam.chassis.util.handlers.DirHandler;
 import evergoodteam.chassis.util.handlers.FileHandler;
 import evergoodteam.chassis.util.handlers.JsonHandler;
@@ -260,7 +260,7 @@ public class ResourcePackBase {
      */
     public ResourcePackBase createTexture(Boolean block, String textureURL, String textureName) {
 
-        String actual = StringUtil.checkMissingExtension(textureName, ".png");
+        String actual = StringUtils.checkMissingExtension(textureName, ".png");
 
         DirHandler.createDir(this.namespaceAssetsDir.resolve("textures"), new String[]{"block", "item"});
 
