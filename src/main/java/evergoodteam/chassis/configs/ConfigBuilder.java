@@ -83,8 +83,8 @@ public class ConfigBuilder {
             if (p.getProperty(name) == null) { // Property is missing, add with default value
                 log.info("Found missing property \"{}\", adding to File", name);
 
-                sb.append(N).append("# " + config.addonComments.get(index)).append(N);
-                sb.append(name + " = " + value);
+                if(!"".equals(config.addonComments.get(index))) sb.append("# " + config.addonComments.get(index)).append(N);
+                sb.append(N).append(name + " = " + value);
 
             } else { // Property exists, fetch the value and overwrite Map
                 config.addonOptions.put(name, p.getProperty(name));

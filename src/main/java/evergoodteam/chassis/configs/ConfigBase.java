@@ -186,6 +186,18 @@ public class ConfigBase {
     }
 
     /**
+     * Add a Property to the Config File
+     *
+     * @param name    name of your Property
+     * @param value   what the Property is equal to
+     */
+    public ConfigBase addProperty(String name, Object value) {
+        this.addonOptions.put(name, value);
+        this.addonComments.add("");
+        return this;
+    }
+
+    /**
      * Write the Properties added with {@link #addProperty} to the Config File
      */
     public ConfigBase registerProperties() {
