@@ -42,7 +42,7 @@ public class Chassis implements ModInitializer {
 
         CHASSIS_CONFIGS.addProperty("hideResourcePack", false, "Hides the Chassis ResourcePack from the GUI")
                 .addProperty("testProperty", true, "Test comment")
-                .addProperty("testProperty2", true, "Test comment 2")
+                .addProperty("testProperty2", true)
                 .addProperty("testProperty3", true, "Test comment 3")
                 .registerProperties();
 
