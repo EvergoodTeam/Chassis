@@ -1,6 +1,5 @@
 package evergoodteam.chassis;
 
-
 import evergoodteam.chassis.configs.ConfigHandler;
 import evergoodteam.chassis.objects.assets.LootJson;
 import evergoodteam.chassis.objects.assets.RecipeJson;
@@ -41,8 +40,10 @@ public class Chassis implements ModInitializer {
 
     private static void testFeatures() {
 
-        CHASSIS_CONFIGS.addProperty("hideResourcePack", false)
-                .addProperty("testProperty", true)
+        CHASSIS_CONFIGS.addProperty("hideResourcePack", false, "Hides the Chassis ResourcePack from the GUI")
+                .addProperty("testProperty", true, "Test comment")
+                .addProperty("testProperty2", true, "Test comment 2")
+                .addProperty("testProperty3", true, "Test comment 3")
                 .registerProperties();
 
         ItemGroup testGroup = new ItemGroupBase("chassis", "testgroup", TEST_BLOCK).group;

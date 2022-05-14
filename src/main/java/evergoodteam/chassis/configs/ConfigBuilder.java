@@ -1,5 +1,6 @@
 package evergoodteam.chassis.configs;
 
+import evergoodteam.chassis.util.SetUtils;
 import evergoodteam.chassis.util.StringUtils;
 import lombok.extern.log4j.Log4j2;
 
@@ -7,7 +8,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Date;
-import java.util.List;
 import java.util.Properties;
 
 @Log4j2
@@ -30,7 +30,7 @@ public class ConfigBuilder {
         return sb.toString();
     }
 
-    public String heading(String text){
+    public String heading(String text) {
         StringBuilder sb = new StringBuilder();
 
         String line = "#".repeat(81);
@@ -64,32 +64,30 @@ public class ConfigBuilder {
         return sb.toString();
     }
 
-    public String comment(String comment) {
-        return "# " + comment;
-    }
-
     public String additionalOptions() {
 
         StringBuilder sb = new StringBuilder();
 
         Properties p = new Properties();
 
-        try (InputStream input = new FileInputStream(config.propertiesPath)) {
+        try (InputStream input = new FileInputStream(config.propertiesFile)) {
             p.load(input);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
-        int i = 0;
+        config.addonOptions.forEach((name, value) -> {
 
-        config.options.forEach((name, value) -> {
+            int index = SetUtils.getIndex(config.addonOptions.keySet(), name);
 
             if (p.getProperty(name) == null) { // Property is missing, add with default value
-                log.info("Found missing property, adding to File");
-                //sb.append("# " + comments.get(i)).append(N);
-                sb.append(name + " = " + value).append(N);
+                log.info("Found missing property \"{}\", adding to File", name);
+
+                sb.append(N).append("# " + config.addonComments.get(index)).append(N);
+                sb.append(name + " = " + value);
+
             } else { // Property exists, fetch the value and overwrite Map
-                config.options.put(name, p.getProperty(name));
+                config.addonOptions.put(name, p.getProperty(name));
             }
         });
 

@@ -81,7 +81,7 @@ public class ResourcePackBase {
     }
 
     /**
-     * Gets the ResourcePack from the given Id, which corresponds to the Root Dir and Config Name
+     * Get the ResourcePack from the given Id, which corresponds to the Root Dir and Config Name
      * to which the ResourcePack is assigned
      *
      * @param id   name of the Configs to which the ResourcePack is assigned
@@ -111,7 +111,7 @@ public class ResourcePackBase {
 
         if (ConfigHandler.getOption(config, namespace + "ResourceLocked") == null) {
             //log.info("Attempting to generate Resources");
-            FileHandler.clean(this.path);
+            DirHandler.clean(this.path);
             createRoot();
 
             config.resourcesLocked.put(namespace + "ResourceLocked", true);
@@ -119,7 +119,7 @@ public class ResourcePackBase {
 
             LOGGER.info("Generated Resources for \"{}\"", this.namespace);
         } else if (!Boolean.parseBoolean(String.valueOf(ConfigHandler.getOption(config, namespace + "ResourceLocked")))) {
-            FileHandler.clean(this.path);
+            FileHandler.delete(this.path);
             createRoot();
 
             config.resourcesLocked.put(namespace + "ResourceLocked", true);
@@ -146,12 +146,12 @@ public class ResourcePackBase {
     }
 
     private void createRoot() {
-        DirHandler.createDir(this.path.resolve("resources"), new String[]{"assets", "data"}); // Without assets and data folder getPath from Builder dies
+        DirHandler.create(this.path.resolve("resources"), new String[]{"assets", "data"}); // Without assets and data folder getPath from Builder dies
     }
 
     public ResourcePackBase createBlockstate(String path) {
 
-        DirHandler.createDir(this.blockstatesDir);
+        DirHandler.create(this.blockstatesDir);
 
         createJsonFile(this.blockstatesDir.resolve(path))
                 .writeJsonIfEmpty(BlockstateJson.createBlockstateJson(this.namespace, path), this.blockstatesDir.resolve(path));
@@ -163,7 +163,7 @@ public class ResourcePackBase {
 
         Path item = Paths.get(this.namespaceAssetsDir.toString(), "models/item");
 
-        DirHandler.createDir(item);
+        DirHandler.create(item);
 
         createJsonFile(item.resolve(path))
                 .writeJsonIfEmpty(ModelJson.createItemModelJson(this.namespace, "generated", texture), item.resolve(path));
@@ -173,7 +173,7 @@ public class ResourcePackBase {
 
     public ResourcePackBase createBlockModels(String path, String texture, String cubeType) {
 
-        DirHandler.createDir(this.namespaceAssetsDir.resolve("models"), new String[]{"block", "item"});
+        DirHandler.create(this.namespaceAssetsDir.resolve("models"), new String[]{"block", "item"});
 
         Path block = Paths.get(this.namespaceAssetsDir.toString(), "models/block");
         Path item = Paths.get(this.namespaceAssetsDir.toString(), "models/item");
@@ -191,7 +191,7 @@ public class ResourcePackBase {
 
         Path lootTables = Paths.get(this.namespaceDataDir.toString(), "loot_tables/blocks");
 
-        DirHandler.createDir(lootTables);
+        DirHandler.create(lootTables);
 
         createJsonFile(lootTables.resolve(path))
                 .writeJsonIfEmpty(LootJson.createBlockBreakLootJson(this.namespace, path), lootTables.resolve(path));
@@ -202,7 +202,7 @@ public class ResourcePackBase {
     public ResourcePackBase createGlobalTag(String input) {
 
         Path commonTagsDir = this.dataDir.resolve("c/tags");
-        DirHandler.createDir(commonTagsDir, new String[]{"blocks", "items"});
+        DirHandler.create(commonTagsDir, new String[]{"blocks", "items"});
 
         Path blocks = Paths.get(commonTagsDir.toString(), "blocks");
         Path items = Paths.get(commonTagsDir.toString(), "items");
@@ -220,7 +220,7 @@ public class ResourcePackBase {
 
         Path mineable = Paths.get(this.dataDir.toString(), "minecraft/tags/blocks/mineable"); // Has to be inside of Minecraft folder
 
-        DirHandler.createDir(mineable);
+        DirHandler.create(mineable);
 
         if (!Files.exists(mineable.resolve(tool)))
             createJsonFile(mineable.resolve(tool)); // Create once, write big Json
@@ -241,7 +241,7 @@ public class ResourcePackBase {
 
         Path tagBlocks = Paths.get(this.dataDir.toString(), "minecraft/tags/blocks");
 
-        DirHandler.createDir(tagBlocks);
+        DirHandler.create(tagBlocks);
 
         if (!Files.exists(tagBlocks.resolve(fileName))) createJsonFile(tagBlocks.resolve(fileName));
 
@@ -262,7 +262,7 @@ public class ResourcePackBase {
 
         String actual = StringUtils.checkMissingExtension(textureName, ".png");
 
-        DirHandler.createDir(this.namespaceAssetsDir.resolve("textures"), new String[]{"block", "item"});
+        DirHandler.create(this.namespaceAssetsDir.resolve("textures"), new String[]{"block", "item"});
 
         Path blockDir = this.namespaceAssetsDir.resolve("textures/block");
         Path itemDir = this.namespaceAssetsDir.resolve("textures/item");
@@ -290,7 +290,7 @@ public class ResourcePackBase {
      */
     public ResourcePackBase createLang(String language, Map<String, String> entries) {
 
-        DirHandler.createDir(this.namespaceAssetsDir.resolve("lang"));
+        DirHandler.create(this.namespaceAssetsDir.resolve("lang"));
 
         createJsonFile(this.namespaceAssetsDir.resolve("lang/" + language))
                 .writeJsonIfEmpty(LangJson.createLangJson(entries), this.namespaceAssetsDir.resolve("lang/" + language));

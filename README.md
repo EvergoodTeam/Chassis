@@ -3,7 +3,7 @@
 Creating hundreds of Json files for some Blocks is REALLY time consuming, so you should automate that
 
 Chassis is a Library providing utilities for dynamic asset generation (Blockstates, Models, Tags, Recipes, Loot Tables,
-Textures) and configuration for your Mod
+Textures) and simple configuration for your Mod
 
 ## Adding to your own project
 
