@@ -7,19 +7,15 @@ import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.util.Util;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.slf4j.Logger;
 
-import java.io.*;
+import java.io.File;
 import java.nio.file.Path;
 import java.util.*;
-
-import static evergoodteam.chassis.configs.ConfigHandler.getOption;
-import static evergoodteam.chassis.util.Reference.getLogger;
 
 @Log4j2
 public class ConfigBase {
 
-    public static final Logger LOGGER = getLogger("Config");
+    //public static final Logger LOGGER = getLogger("Config");
 
     public static final Map<String, ConfigBase> CONFIGURATIONS = new HashMap<>();
     private static final Path CONFIG_DIR = FabricLoader.getInstance().getConfigDir();
@@ -62,7 +58,7 @@ public class ConfigBase {
         if (!this.configLocked) {
             this.createConfigRoot();
             this.configLocked = true;
-        } else LOGGER.info("Configs for \"{}\" already exist, skipping generation", this.namespace);
+        } else log.info("Configs for \"{}\" already exist, skipping generation", this.namespace);
     }
 
     /**
@@ -88,7 +84,7 @@ public class ConfigBase {
 
         builder.setupDefaultProperties();
 
-        LOGGER.info("Generated Configs for \"{}\"", this.namespace);
+        log.info("Generated Configs for \"{}\"", this.namespace);
 
         return this;
     }

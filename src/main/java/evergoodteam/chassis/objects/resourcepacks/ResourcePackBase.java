@@ -8,9 +8,9 @@ import evergoodteam.chassis.util.StringUtils;
 import evergoodteam.chassis.util.handlers.DirHandler;
 import evergoodteam.chassis.util.handlers.FileHandler;
 import evergoodteam.chassis.util.handlers.JsonHandler;
+import lombok.extern.log4j.Log4j2;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.slf4j.Logger;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -23,11 +23,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static evergoodteam.chassis.util.Reference.getLogger;
-
+@Log4j2
 public class ResourcePackBase {
 
-    private static final Logger LOGGER = getLogger("Resources");
+    //private static final Logger LOGGER = getLogger("Resources");
 
     public static final Map<String, List<ResourcePackBase>> RESOURCE_PACKS = new HashMap<>(); // Used for identifying RPs
 
@@ -119,7 +118,7 @@ public class ResourcePackBase {
             config.resourcesLocked.put(namespace + "ResourceLocked", true);
             config.builder.setupResourceProperties();
 
-            LOGGER.info("Generated Resources for \"{}\"", this.namespace);
+            log.info("Generated Resources for \"{}\"", this.namespace);
         } else if (!Boolean.parseBoolean(String.valueOf(ConfigHandler.getOption(config, namespace + "ResourceLocked")))) {
             FileHandler.delete(this.path);
             createRoot();
@@ -127,9 +126,9 @@ public class ResourcePackBase {
             config.resourcesLocked.put(namespace + "ResourceLocked", true);
             config.overwrite(namespace + "ResourceLocked", "true");
 
-            LOGGER.info("Regenerated Resources for \"{}\"", this.namespace);
+            log.info("Regenerated Resources for \"{}\"", this.namespace);
         } else {
-            LOGGER.info("Resources for \"{}\" already exist, skipping generation", this.namespace);
+            log.info("Resources for \"{}\" already exist, skipping generation", this.namespace);
         }
     }
 
@@ -278,7 +277,7 @@ public class ResourcePackBase {
             }
 
         } catch (IOException e) {
-            LOGGER.warn("Error on creating Texture .png", e);
+            log.warn("Error on creating Texture .png", e);
         }
 
         return this;
@@ -316,7 +315,7 @@ public class ResourcePackBase {
     private ResourcePackBase writeJsonIfEmpty(String json, @NotNull Path path) {
 
         if (Paths.get(path + ".json").toFile().length() == 0) {
-            LOGGER.info("File is empty, writing at {}", path);
+            log.info("File is empty, writing at {}", path);
             writeJson(json, path);
         }
 
@@ -361,7 +360,7 @@ public class ResourcePackBase {
         try (InputStream in = new URL(iconURL).openStream()) {
             if (!Files.exists(iconPath)) Files.copy(in, iconPath);
         } catch (IOException e) {
-            LOGGER.warn("Error on creating Pack Icon file, falling back to Unknown Icon", e);
+            log.warn("Error on creating Pack Icon file, falling back to Unknown Icon", e);
             this.hide();
         }
     }

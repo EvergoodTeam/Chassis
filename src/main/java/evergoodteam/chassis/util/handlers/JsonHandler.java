@@ -6,17 +6,16 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import evergoodteam.chassis.util.JsonUtils;
 import evergoodteam.chassis.util.StringUtils;
-import org.slf4j.Logger;
+import lombok.extern.log4j.Log4j2;
 
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Path;
 
-import static evergoodteam.chassis.util.Reference.getLogger;
-
+@Log4j2
 public class JsonHandler {
 
-    private static final Logger LOGGER = getLogger("Json");
+    //private static final Logger LOGGER = getLogger("Json");
 
     public static final Gson GSON = new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).setPrettyPrinting().create();
 
@@ -50,10 +49,10 @@ public class JsonHandler {
             try (FileWriter fileWriter = new FileWriter(actual.toFile())) {
                 fileWriter.write(jsonString);
             } catch (IOException e) {
-                LOGGER.error("Error on writing to Json file with path {}", path, e);
+                log.error("Error on writing to Json file with path {}", path, e);
             }
         } else {
-            LOGGER.warn("Provided JsonObject is not valid");
+            log.warn("Provided JsonObject is not valid");
         }
     }
 }

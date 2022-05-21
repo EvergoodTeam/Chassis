@@ -1,19 +1,18 @@
 package evergoodteam.chassis.util.handlers;
 
+import lombok.extern.log4j.Log4j2;
 import org.apache.commons.io.FileUtils;
 import org.jetbrains.annotations.NotNull;
-import org.slf4j.Logger;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-import static evergoodteam.chassis.util.Reference.getLogger;
-
+@Log4j2
 public class DirHandler {
 
-    private static final Logger LOGGER = getLogger("Dir");
+    //private static final Logger LOGGER = getLogger("Dir");
 
     /**
      * <p> Creates a Directory at the specified Path if one doesn't exist already </p>
@@ -52,7 +51,7 @@ public class DirHandler {
                 //log.info("Deleted {}", this.propertiesPath);
             }
         } catch (IOException e) {
-            LOGGER.error("Error on cleaning {}", path, e);
+            log.error("Error on cleaning {}", path, e);
         }
     }
 }

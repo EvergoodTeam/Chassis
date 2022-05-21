@@ -32,7 +32,8 @@ public class Reference {
     public static Map<String, Map<String, JsonObject>> RECIPES = RECIPESTABLE.rowMap();
     public static Map<String, Map<String, JsonObject>> LOOT = LOOTTABLE.rowMap();
 
+    /*
     public static Logger getLogger(@NotNull String comment) {
         return LoggerFactory.getLogger(StringUtils.capitalize(MODID) + "/" + comment);
-    }
+    }*/
 }

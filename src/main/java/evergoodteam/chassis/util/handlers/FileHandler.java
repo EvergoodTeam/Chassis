@@ -1,8 +1,8 @@
 package evergoodteam.chassis.util.handlers;
 
 import evergoodteam.chassis.util.StringUtils;
+import lombok.extern.log4j.Log4j2;
 import org.apache.commons.io.FileUtils;
-import org.slf4j.Logger;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -12,11 +12,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import static evergoodteam.chassis.util.Reference.getLogger;
-
+@Log4j2
 public class FileHandler {
 
-    private static final Logger LOGGER = getLogger("File");
+    //private static final Logger LOGGER = getLogger("File");
 
     public static void emptyFile(Path path) {
         emptyFile(path.toFile());
@@ -28,10 +27,10 @@ public class FileHandler {
             try {
                 new FileWriter(file, false).close();
             } catch (IOException e) {
-                LOGGER.error("Error on emptying File at {}", file.getPath(), e);
+                log.error("Error on emptying File at {}", file.getPath(), e);
             }
         } else {
-            LOGGER.warn("Provided Path is not valid: {}", file.getPath());
+            log.warn("Provided Path is not valid: {}", file.getPath());
         }
     }
 
@@ -49,10 +48,10 @@ public class FileHandler {
             try (Writer fileWriter = new FileWriter(path.toFile())) {
                 fileWriter.write(text);
             } catch (IOException e) {
-                LOGGER.error("Error on writing to File at {}", path, e);
+                log.error("Error on writing to File at {}", path, e);
             }
         } else {
-            LOGGER.warn("Provided Path is not valid: {}", path);
+            log.warn("Provided Path is not valid: {}", path);
         }
     }
 
@@ -84,7 +83,7 @@ public class FileHandler {
             try {
                 Files.createFile(path);
             } catch (IOException e) {
-                LOGGER.error("Error on creating File at {}", path, e);
+                log.error("Error on creating File at {}", path, e);
             }
         }
         //else log.info("Unable to create file as it already exists at {}", path);
@@ -103,7 +102,7 @@ public class FileHandler {
                 //log.info("Deleted File at {}", path);
             }
         } catch (IOException e) {
-            LOGGER.error("Error on deleting File at {}", path, e);
+            log.error("Error on deleting File at {}", path, e);
         }
     }
 }

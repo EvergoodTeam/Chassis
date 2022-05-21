@@ -5,7 +5,6 @@ import evergoodteam.chassis.util.StringUtils;
 import evergoodteam.chassis.util.handlers.FileHandler;
 import lombok.extern.log4j.Log4j2;
 import org.jetbrains.annotations.NotNull;
-import org.slf4j.Logger;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -14,12 +13,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 
-import static evergoodteam.chassis.util.Reference.getLogger;
-
 @Log4j2
 public class ConfigBuilder {
 
-    private static final Logger LOGGER = getLogger("ConfigBuilder");
+    //private static final Logger LOGGER = getLogger("ConfigBuilder");
 
     private final String N = System.lineSeparator();
 
@@ -127,7 +124,7 @@ public class ConfigBuilder {
         }
     }
 
-    public void updateHeader(){
+    public void updateHeader() {
 
         if (Files.exists(this.path)) {
 
@@ -141,15 +138,14 @@ public class ConfigBuilder {
 
                 BufferedWriter bw = new BufferedWriter(fw);
 
-                LOGGER.info("Attempting to update Header");
+                log.info("Attempting to update Header");
 
                 bw.write(header());
 
-                for(int i = 2; i < contents.size(); i++){
-                    if(i == 2){
+                for (int i = 2; i < contents.size(); i++) {
+                    if (i == 2) {
                         bw.write(contents.get(i).strip());
-                    }
-                    else{
+                    } else {
                         bw.write(contents.get(i));
                         bw.write(System.lineSeparator());
                     }
@@ -222,7 +218,7 @@ public class ConfigBuilder {
             int index = SetUtils.getIndex(config.addonOptions.keySet(), name);
 
             if (p.getProperty(name) == null) { // Property is missing, add with default value
-                LOGGER.info("Found missing property \"{}\", adding to File", name);
+                log.info("Found missing property \"{}\", adding to File", name);
 
                 if (!"".equals(config.addonComments.get(index)))
                     sb.append(N).append("# " + config.addonComments.get(index)).append(N);
