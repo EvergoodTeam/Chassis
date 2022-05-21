@@ -1,12 +1,12 @@
 package evergoodteam.chassis.mixin;
 
-import lombok.extern.log4j.Log4j2;
 import net.minecraft.client.gui.screen.pack.PackListWidget;
 import net.minecraft.client.gui.screen.pack.PackScreen;
 import net.minecraft.client.gui.screen.pack.ResourcePackOrganizer;
 import net.minecraft.client.texture.TextureManager;
 import net.minecraft.resource.ResourcePackProfile;
 import net.minecraft.util.Identifier;
+import org.slf4j.Logger;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -20,10 +20,12 @@ import java.util.stream.Stream;
 
 import static evergoodteam.chassis.objects.resourcepacks.ResourcePackBase.HIDDEN;
 import static evergoodteam.chassis.objects.resourcepacks.ResourcePackBase.NO_ICON;
+import static evergoodteam.chassis.util.Reference.getLogger;
 
-@Log4j2
 @Mixin(PackScreen.class)
 public class PackScreenMixin {
+
+    private static final Logger LOGGER = getLogger("Screen");
 
     // Fix random selection of icon when icon is missing
     @Inject(at = @At("HEAD"), method = "Lnet/minecraft/client/gui/screen/pack/PackScreen;loadPackIcon(Lnet/minecraft/client/texture/TextureManager;Lnet/minecraft/resource/ResourcePackProfile;)Lnet/minecraft/util/Identifier;", cancellable = true)
@@ -66,7 +68,7 @@ public class PackScreenMixin {
 
             return (ResourcePackOrganizer.Pack) field.get(entry);
         } catch (Exception e) {
-            log.error(e);
+            LOGGER.error("Error on getting pack", e);
         }
 
         return null;
@@ -82,7 +84,7 @@ public class PackScreenMixin {
                 field.setAccessible(true);
                 break;
             } catch (Exception e) {
-                log.error(e);
+                LOGGER.error("Error on finding field", e);
             }
         }
 

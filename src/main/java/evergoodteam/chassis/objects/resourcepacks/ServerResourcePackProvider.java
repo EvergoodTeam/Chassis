@@ -1,6 +1,5 @@
 package evergoodteam.chassis.objects.resourcepacks;
 
-import lombok.extern.log4j.Log4j2;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.resource.ResourcePackProfile;
 import net.minecraft.resource.ResourcePackProvider;
@@ -10,7 +9,6 @@ import net.minecraft.text.TranslatableText;
 
 import java.util.function.Consumer;
 
-@Log4j2
 public class ServerResourcePackProvider implements ResourcePackProvider {
 
     public ResourcePackBuilder groupResourcePack;
@@ -43,7 +41,7 @@ public class ServerResourcePackProvider implements ResourcePackProvider {
                 resourcePackSource
         );
 
-        //log.info("Attempting to register Server ResourcePackProfile - {}", profile);
+        //LOGGER.info("Attempting to register Server ResourcePackProfile - {}", profile);
         profileAdder.accept(new ResourcePackProfile(
                 profile.getName(),
                 profile.isAlwaysEnabled(),

@@ -8,9 +8,9 @@ import evergoodteam.chassis.util.StringUtils;
 import evergoodteam.chassis.util.handlers.DirHandler;
 import evergoodteam.chassis.util.handlers.FileHandler;
 import evergoodteam.chassis.util.handlers.JsonHandler;
-import lombok.extern.log4j.Log4j2;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -23,10 +23,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static evergoodteam.chassis.util.Reference.LOGGER;
+import static evergoodteam.chassis.util.Reference.getLogger;
 
-@Log4j2
 public class ResourcePackBase {
+
+    private static final Logger LOGGER = getLogger("Resources");
 
     public static final Map<String, List<ResourcePackBase>> RESOURCE_PACKS = new HashMap<>(); // Used for identifying RPs
 
@@ -103,11 +104,12 @@ public class ResourcePackBase {
         return RESOURCE_PACKS.get(id).get(index);
     }
 
-    //region Config Handler
+    //region Configs
+
     private void configInit(ConfigBase config) {
         config.resourcesLocked.put(namespace + "ResourceLocked", false);
 
-        config.readProperties();
+        ConfigHandler.readOptions(config);
 
         if (ConfigHandler.getOption(config, namespace + "ResourceLocked") == null) {
             //log.info("Attempting to generate Resources");
@@ -115,7 +117,7 @@ public class ResourcePackBase {
             createRoot();
 
             config.resourcesLocked.put(namespace + "ResourceLocked", true);
-            config.setupResourceProperties();
+            config.builder.setupResourceProperties();
 
             LOGGER.info("Generated Resources for \"{}\"", this.namespace);
         } else if (!Boolean.parseBoolean(String.valueOf(ConfigHandler.getOption(config, namespace + "ResourceLocked")))) {
@@ -130,6 +132,7 @@ public class ResourcePackBase {
             LOGGER.info("Resources for \"{}\" already exist, skipping generation", this.namespace);
         }
     }
+
     //endregion
 
     //region File Generation
@@ -275,7 +278,7 @@ public class ResourcePackBase {
             }
 
         } catch (IOException e) {
-            log.warn("Error on creating Texture .png", (e));
+            LOGGER.warn("Error on creating Texture .png", e);
         }
 
         return this;
@@ -313,7 +316,7 @@ public class ResourcePackBase {
     private ResourcePackBase writeJsonIfEmpty(String json, @NotNull Path path) {
 
         if (Paths.get(path + ".json").toFile().length() == 0) {
-            log.info("File is empty, writing at {}", path);
+            LOGGER.info("File is empty, writing at {}", path);
             writeJson(json, path);
         }
 
@@ -358,7 +361,7 @@ public class ResourcePackBase {
         try (InputStream in = new URL(iconURL).openStream()) {
             if (!Files.exists(iconPath)) Files.copy(in, iconPath);
         } catch (IOException e) {
-            log.warn("Error on creating Pack Icon file, falling back to Unknown Icon", (e));
+            LOGGER.warn("Error on creating Pack Icon file, falling back to Unknown Icon", e);
             this.hide();
         }
     }

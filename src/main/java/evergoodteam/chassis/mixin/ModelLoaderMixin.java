@@ -2,7 +2,6 @@ package evergoodteam.chassis.mixin;
 
 import com.google.gson.JsonObject;
 import evergoodteam.chassis.objects.assets.ModelJson;
-import lombok.extern.log4j.Log4j2;
 import net.minecraft.client.render.model.ModelLoader;
 import net.minecraft.client.render.model.json.JsonUnbakedModel;
 import net.minecraft.util.Identifier;
@@ -18,7 +17,6 @@ import static evergoodteam.chassis.util.Reference.MODEL_INJECTION;
 import static evergoodteam.chassis.util.handlers.RegistryHandler.ITEM_TYPES;
 import static evergoodteam.chassis.util.handlers.RegistryHandler.REGISTERED_BLOCKS;
 
-@Log4j2
 @Mixin(ModelLoader.class)
 public class ModelLoaderMixin {
 

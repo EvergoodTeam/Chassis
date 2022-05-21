@@ -3,15 +3,18 @@ package evergoodteam.chassis.util;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import lombok.extern.log4j.Log4j2;
 import org.jetbrains.annotations.NotNull;
+import org.slf4j.Logger;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.nio.file.Path;
 
-@Log4j2
+import static evergoodteam.chassis.util.Reference.getLogger;
+
 public class JsonUtils {
+
+    private static final Logger LOGGER = getLogger("Json");
 
     /**
      * @param file Path of a valid .json File
@@ -24,7 +27,7 @@ public class JsonUtils {
         try {
             jsonElement = JsonParser.parseReader(new FileReader(file.toString()));
         } catch (FileNotFoundException e) {
-            log.error(e);
+            LOGGER.error("File not found", e);
         }
 
         JsonObject jsonObject = jsonElement.getAsJsonObject();
@@ -39,7 +42,6 @@ public class JsonUtils {
      * @return
      */
     public static JsonObject getJsonObject(@NotNull String json) {
-
         return JsonParser.parseString(json).getAsJsonObject();
     }
 
@@ -50,7 +52,6 @@ public class JsonUtils {
      * @return
      */
     public static String getString(@NotNull JsonObject jsonObject) {
-
         return jsonObject.toString();
     }
 }

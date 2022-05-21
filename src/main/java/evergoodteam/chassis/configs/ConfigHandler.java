@@ -8,10 +8,48 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
+import java.util.List;
 import java.util.Properties;
 
 @Log4j2
 public class ConfigHandler {
+
+    public static List<String> getContents(@NotNull ConfigBase config){
+        try {
+            return Files.readAllLines(config.propertiesPath);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static void readOptions(@NotNull ConfigBase config) {
+
+        if (Files.exists(config.propertiesPath)) {
+
+            Properties c = new Properties();
+
+            try (InputStream input = new FileInputStream(config.propertiesFile)) {
+                c.load(input);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+
+            if (c.isEmpty()) {   // File can exist AND be empty at the same time
+                log.warn("Can't read as the Config File is empty, trying to regenerate");
+                config.builder.setupDefaultProperties();
+            }
+
+            config.configLocked = getBooleanOption(config, config.namespace + "ConfigLocked", false);
+
+            config.resourcesLocked.forEach((name, value) -> {
+                config.resourcesLocked.put(name, getOption(config, name, value));
+            });
+
+            config.addonOptions.forEach((name, value) -> {
+                config.addonOptions.put(name, getOption(config, name, value));
+            });
+        }
+    }
 
     /**
      * Get a Property's Boolean value from the .properties file of the specified Config
@@ -41,7 +79,7 @@ public class ConfigHandler {
      * @param config owner of the Boolean
      * @param name   name of your Property
      */
-    public static @Nullable Object getOption(ConfigBase config, String name) {
+    public static @Nullable Object getOption(@NotNull ConfigBase config, String name) {
 
         Properties p = new Properties();
 

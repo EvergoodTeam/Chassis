@@ -1,10 +1,8 @@
 package evergoodteam.chassis.objects.assets;
 
 import com.google.gson.JsonObject;
-import lombok.extern.log4j.Log4j2;
 import net.minecraft.util.Identifier;
 
-@Log4j2
 public class BlockstateJson {
 
     public static JsonObject createBlockstateJson(String namespace, String path) {

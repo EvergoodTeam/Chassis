@@ -3,7 +3,6 @@ package evergoodteam.chassis.mixin;
 import evergoodteam.chassis.objects.resourcepacks.ClientResourcePackProvider;
 import evergoodteam.chassis.objects.resourcepacks.ResourcePackBase;
 import evergoodteam.chassis.objects.resourcepacks.ServerResourcePackProvider;
-import lombok.extern.log4j.Log4j2;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.resource.ResourcePackManager;
@@ -20,7 +19,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-@Log4j2
 @Mixin(ResourcePackManager.class)
 public class ResourcePackManagerMixin {
 
@@ -61,10 +59,10 @@ public class ResourcePackManagerMixin {
 
                     if (client) {
                         this.providers.add(new ClientResourcePackProvider(id, r.namespace, r.hexDescColor));
-                        //log.info("Injected our ClientProvider into providers: {}", this.providers);
+                        //LOGGER.info("Injected our ClientProvider into providers: {}", this.providers);
                     } else {
                         this.providers.add(new ServerResourcePackProvider(id, r.namespace));
-                        //log.info("Injected our ServerProvider into providers: {}", this.providers);
+                        //LOGGER.info("Injected our ServerProvider into providers: {}", this.providers);
                     }
                 }
             }

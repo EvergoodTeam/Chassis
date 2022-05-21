@@ -1,8 +1,6 @@
 package evergoodteam.chassis.objects.resourcepacks;
 
 import evergoodteam.chassis.util.StringUtils;
-import lombok.ToString;
-import lombok.extern.log4j.Log4j2;
 import net.minecraft.SharedConstants;
 import net.minecraft.resource.AbstractFileResourcePack;
 import net.minecraft.resource.ResourcePack;
@@ -13,6 +11,7 @@ import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.InvalidIdentifierException;
 import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -23,9 +22,11 @@ import java.util.*;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
-@Log4j2
-@ToString
+import static evergoodteam.chassis.util.Reference.getLogger;
+
 public class ResourcePackBuilder extends AbstractFileResourcePack implements ResourcePack {
+
+    private static final Logger LOGGER = getLogger("Resources");
 
     private static final Pattern RESOURCEPACK_PATH = Pattern.compile("[a-z0-9-_]+");
     public static final List<ResourcePackBuilder> BUILT = new ArrayList<>();
@@ -104,11 +105,11 @@ public class ResourcePackBuilder extends AbstractFileResourcePack implements Res
                                 try {
                                     ids.add(new Identifier(namespace, string));
                                 } catch (InvalidIdentifierException e) {
-                                    log.error(e.getMessage(), e);
+                                    LOGGER.error(e.getMessage(), e);
                                 }
                             });
                 } catch (IOException e) {
-                    log.error("findResources at {} in namespace {} failed: {}", path, namespace, e);
+                    LOGGER.error("findResources at {} in namespace {} failed: {}", path, namespace, e);
                 }
             }
         }
@@ -123,7 +124,7 @@ public class ResourcePackBuilder extends AbstractFileResourcePack implements Res
 
             Path file = getPath(type.getDirectory());
 
-            if(file == null) log.error("Invalid Path");
+            if (file == null) LOGGER.error("Invalid Path");
 
             if (!Files.isDirectory(file)) {
                 return Collections.emptySet();
@@ -139,11 +140,11 @@ public class ResourcePackBuilder extends AbstractFileResourcePack implements Res
                     if (RESOURCEPACK_PATH.matcher(s).matches()) {
                         namespaces.add(s);
                     } else {
-                        log.error("Invalid namespace format at {}", path);
+                        LOGGER.error("Invalid namespace format at {}", path);
                     }
                 }
             } catch (IOException e) {
-                log.error("Could not get namespaces", e);
+                LOGGER.error("Could not get namespaces", e);
             }
 
             this.namespaces = namespaces;

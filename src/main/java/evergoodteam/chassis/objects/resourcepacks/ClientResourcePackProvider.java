@@ -1,7 +1,6 @@
 package evergoodteam.chassis.objects.resourcepacks;
 
 import evergoodteam.chassis.util.ColorConverter;
-import lombok.extern.log4j.Log4j2;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.resource.ResourcePackProfile;
 import net.minecraft.resource.ResourcePackProvider;
@@ -12,7 +11,6 @@ import net.minecraft.text.TranslatableText;
 
 import java.util.function.Consumer;
 
-@Log4j2
 public class ClientResourcePackProvider implements ResourcePackProvider {
 
     public ResourcePackBuilder groupResourcePack;
@@ -79,7 +77,7 @@ public class ClientResourcePackProvider implements ResourcePackProvider {
                 resourcePackSource // Description/source of RP, displayed in the GUI
         );
 
-        //log.info("Attempting to register Client ResourcePackProfile - {}", profile);
+        //LOGGER.info("Attempting to register Client ResourcePackProfile - {}", profile);
         profileAdder.accept(new ResourcePackProfile(
                 profile.getName(),
                 profile.isAlwaysEnabled(),
