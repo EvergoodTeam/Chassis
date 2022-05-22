@@ -2,20 +2,22 @@ package evergoodteam.chassis.configs;
 
 import evergoodteam.chassis.util.handlers.DirHandler;
 import evergoodteam.chassis.util.handlers.FileHandler;
-import lombok.extern.log4j.Log4j2;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.util.Util;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
 
 import java.io.File;
 import java.nio.file.Path;
 import java.util.*;
 
-@Log4j2
+import static evergoodteam.chassis.util.Reference.MODID;
+import static org.slf4j.LoggerFactory.getLogger;
+
 public class ConfigBase {
 
-    //public static final Logger LOGGER = getLogger("Config");
+    private static final Logger LOGGER = getLogger(MODID + "/Config");
 
     public static final Map<String, ConfigBase> CONFIGURATIONS = new HashMap<>();
     private static final Path CONFIG_DIR = FabricLoader.getInstance().getConfigDir();
@@ -56,9 +58,9 @@ public class ConfigBase {
         ConfigHandler.readOptions(this); // Look for existing values
 
         if (!this.configLocked) {
-            this.createConfigRoot();
             this.configLocked = true;
-        } else log.info("Configs for \"{}\" already exist, skipping generation", this.namespace);
+            this.createConfigRoot();
+        } else LOGGER.info("Configs for \"{}\" already exist, skipping generation", this.namespace);
     }
 
     /**
@@ -84,14 +86,14 @@ public class ConfigBase {
 
         builder.setupDefaultProperties();
 
-        log.info("Generated Configs for \"{}\"", this.namespace);
+        LOGGER.info("Generated Configs for \"{}\"", this.namespace);
 
         return this;
     }
 
     //endregion
 
-    //region Config Builder
+    //region User Content
 
     /**
      * Add a Property to the Config File

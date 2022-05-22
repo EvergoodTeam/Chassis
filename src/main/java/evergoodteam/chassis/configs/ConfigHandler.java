@@ -1,8 +1,8 @@
 package evergoodteam.chassis.configs;
 
-import lombok.extern.log4j.Log4j2;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -11,10 +11,14 @@ import java.nio.file.Files;
 import java.util.List;
 import java.util.Properties;
 
-@Log4j2
+import static evergoodteam.chassis.util.Reference.MODID;
+import static org.slf4j.LoggerFactory.getLogger;
+
 public class ConfigHandler {
 
-    public static List<String> getContents(@NotNull ConfigBase config){
+    private static final Logger LOGGER = getLogger(MODID + "/CHandler");
+
+    public static List<String> getContents(@NotNull ConfigBase config) {
         try {
             return Files.readAllLines(config.propertiesPath);
         } catch (IOException e) {
@@ -35,7 +39,7 @@ public class ConfigHandler {
             }
 
             if (c.isEmpty()) {   // File can exist AND be empty at the same time
-                log.warn("Can't read as the Config File is empty, trying to regenerate");
+                LOGGER.warn("Can't read as the Config File is empty, trying to regenerate");
                 config.builder.setupDefaultProperties();
             }
 

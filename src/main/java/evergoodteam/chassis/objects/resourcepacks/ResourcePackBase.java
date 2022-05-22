@@ -8,9 +8,9 @@ import evergoodteam.chassis.util.StringUtils;
 import evergoodteam.chassis.util.handlers.DirHandler;
 import evergoodteam.chassis.util.handlers.FileHandler;
 import evergoodteam.chassis.util.handlers.JsonHandler;
-import lombok.extern.log4j.Log4j2;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -23,10 +23,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@Log4j2
+import static evergoodteam.chassis.util.Reference.MODID;
+import static org.slf4j.LoggerFactory.getLogger;
+
 public class ResourcePackBase {
 
-    //private static final Logger LOGGER = getLogger("Resources");
+    private static final Logger LOGGER = getLogger(MODID + "/Resource");
 
     public static final Map<String, List<ResourcePackBase>> RESOURCE_PACKS = new HashMap<>(); // Used for identifying RPs
 
@@ -57,7 +59,7 @@ public class ResourcePackBase {
 
         this.namespace = namespace;
         this.path = Paths.get(config.dirPath.toString(), "resourcepacks/" + namespace.toLowerCase()); // Root of every ResourcePack
-        //log.info(this.path);
+        //LOGGER.info(this.path);
         this.hexDescColor = hexDescColor;
 
         RESOURCE_PACKS.computeIfAbsent(config.namespace, k -> new ArrayList<>()).add(this);
@@ -111,14 +113,14 @@ public class ResourcePackBase {
         ConfigHandler.readOptions(config);
 
         if (ConfigHandler.getOption(config, namespace + "ResourceLocked") == null) {
-            //log.info("Attempting to generate Resources");
+            //LOGGER.info("Attempting to generate Resources");
             DirHandler.clean(this.path);
             createRoot();
 
             config.resourcesLocked.put(namespace + "ResourceLocked", true);
             config.builder.setupResourceProperties();
 
-            log.info("Generated Resources for \"{}\"", this.namespace);
+            LOGGER.info("Generated Resources for \"{}\"", this.namespace);
         } else if (!Boolean.parseBoolean(String.valueOf(ConfigHandler.getOption(config, namespace + "ResourceLocked")))) {
             FileHandler.delete(this.path);
             createRoot();
@@ -126,9 +128,9 @@ public class ResourcePackBase {
             config.resourcesLocked.put(namespace + "ResourceLocked", true);
             config.overwrite(namespace + "ResourceLocked", "true");
 
-            log.info("Regenerated Resources for \"{}\"", this.namespace);
+            LOGGER.info("Regenerated Resources for \"{}\"", this.namespace);
         } else {
-            log.info("Resources for \"{}\" already exist, skipping generation", this.namespace);
+            LOGGER.info("Resources for \"{}\" already exist, skipping generation", this.namespace);
         }
     }
 
@@ -277,7 +279,7 @@ public class ResourcePackBase {
             }
 
         } catch (IOException e) {
-            log.warn("Error on creating Texture .png", e);
+            LOGGER.warn("Error on creating Texture .png", e);
         }
 
         return this;
@@ -305,7 +307,7 @@ public class ResourcePackBase {
     private ResourcePackBase writeJsonIfEmpty(JsonObject jsonObject, @NotNull Path path) {
 
         if (Paths.get(path + ".json").toFile().length() == 0) {
-            //log.info("File is empty, writing at {}", path);
+            //LOGGER.info("File is empty, writing at {}", path);
             writeJson(jsonObject, path);
         }
 
@@ -315,7 +317,7 @@ public class ResourcePackBase {
     private ResourcePackBase writeJsonIfEmpty(String json, @NotNull Path path) {
 
         if (Paths.get(path + ".json").toFile().length() == 0) {
-            log.info("File is empty, writing at {}", path);
+            LOGGER.info("File is empty, writing at {}", path);
             writeJson(json, path);
         }
 
@@ -360,7 +362,7 @@ public class ResourcePackBase {
         try (InputStream in = new URL(iconURL).openStream()) {
             if (!Files.exists(iconPath)) Files.copy(in, iconPath);
         } catch (IOException e) {
-            log.warn("Error on creating Pack Icon file, falling back to Unknown Icon", e);
+            LOGGER.warn("Error on creating Pack Icon file, falling back to Unknown Icon", e);
             this.hide();
         }
     }

@@ -3,8 +3,8 @@ package evergoodteam.chassis.configs;
 import evergoodteam.chassis.util.SetUtils;
 import evergoodteam.chassis.util.StringUtils;
 import evergoodteam.chassis.util.handlers.FileHandler;
-import lombok.extern.log4j.Log4j2;
 import org.jetbrains.annotations.NotNull;
+import org.slf4j.Logger;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -13,18 +13,20 @@ import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 
-@Log4j2
+import static evergoodteam.chassis.util.Reference.MODID;
+import static org.slf4j.LoggerFactory.getLogger;
+
 public class ConfigBuilder {
 
-    //private static final Logger LOGGER = getLogger("ConfigBuilder");
+    private static final Logger LOGGER = getLogger(MODID + "/CBuilder");
 
-    private final String N = System.lineSeparator();
+    private final String NL = System.lineSeparator();
 
     private ConfigBase config;
     private Path path;
     private File file;
 
-    public ConfigBuilder(@NotNull ConfigBase config) {
+    public ConfigBuilder(@NotNull ConfigBase config) { // TODO: Rewrites everything, doesnt preserve
         this.config = config;
         this.path = config.propertiesPath;
         this.file = config.propertiesFile;
@@ -77,18 +79,16 @@ public class ConfigBuilder {
                 String additional = additionalOptions();
 
                 if (!additional.isEmpty()) { // Avoid rewriting when nothing is missing
+
                     FileWriter fw = new FileWriter(this.file, true);
+                    BufferedWriter bw = new BufferedWriter(fw);
 
                     String original = Files.readString(this.path).strip();
 
-
                     new FileWriter(this.file, false).close();
 
-                    BufferedWriter bw = new BufferedWriter(fw);
-
                     bw.write(original);
-                    bw.write(System.lineSeparator());
-
+                    bw.write(System.lineSeparator()); // TODO: Improve header update
                     bw.write(additional);
 
                     bw.close();
@@ -138,7 +138,7 @@ public class ConfigBuilder {
 
                 BufferedWriter bw = new BufferedWriter(fw);
 
-                log.info("Attempting to update Header");
+                //LOGGER.info("Attempting to update Header");
 
                 bw.write(header());
 
@@ -158,11 +158,13 @@ public class ConfigBuilder {
         }
     }
 
+    // TODO: Reduce append calls
+
     public String header() {
         StringBuilder sb = new StringBuilder();
 
-        sb.append("# %s Configs".formatted(StringUtils.capitalize(config.namespace))).append(N);
-        sb.append("# " + new Date()).append(N + N);
+        sb.append("# %s Configs".formatted(StringUtils.capitalize(config.namespace))).append(NL);
+        sb.append("# " + new Date()).append(NL + NL);
 
         return sb.toString();
     }
@@ -172,7 +174,7 @@ public class ConfigBuilder {
 
         String line = "#".repeat(81);
 
-        sb.append(line).append(N).append("# " + text).append(N).append(line).append(N + N);
+        sb.append(line).append(NL).append("# " + text).append(NL).append(line).append(NL + NL);
 
         return sb.toString();
     }
@@ -181,8 +183,8 @@ public class ConfigBuilder {
 
         StringBuilder sb = new StringBuilder();
 
-        sb.append("# Lock " + StringUtils.capitalize(config.namespace) + " configs from being regenerated").append(N);
-        sb.append(config.namespace + "ConfigLocked = " + config.configLocked).append(N);
+        sb.append("# Lock " + StringUtils.capitalize(config.namespace) + " configs from being regenerated").append(NL);
+        sb.append(config.namespace + "ConfigLocked = " + config.configLocked).append(NL);
 
         return sb.toString();
     }
@@ -191,12 +193,12 @@ public class ConfigBuilder {
 
         StringBuilder sb = new StringBuilder();
 
-        sb.append("# Lock " + StringUtils.capitalize(config.namespace) + " resources from being regenerated").append(N);
+        sb.append("# Lock " + StringUtils.capitalize(config.namespace) + " resources from being regenerated").append(NL);
         config.resourcesLocked.forEach((name, value) -> {
-            sb.append(name + " = " + value).append(N);
+            sb.append(name + " = " + value).append(NL);
         });
 
-        sb.append(N);
+        sb.append(NL);
 
         return sb.toString();
     }
@@ -213,16 +215,17 @@ public class ConfigBuilder {
             throw new RuntimeException(e);
         }
 
-        config.addonOptions.forEach((name, value) -> {
+        config.addonOptions.forEach((name, value) -> { // TODO: Additionals get deleted
 
             int index = SetUtils.getIndex(config.addonOptions.keySet(), name);
 
             if (p.getProperty(name) == null) { // Property is missing, add with default value
-                log.info("Found missing property \"{}\", adding to File", name);
+                LOGGER.info("Found missing property \"{}\", adding to File", name);
 
                 if (!"".equals(config.addonComments.get(index)))
-                    sb.append(N).append("# " + config.addonComments.get(index)).append(N);
-                else sb.append(N);
+                    sb.append(NL).append("# " + config.addonComments.get(index)).append(NL);
+                else sb.append(NL);
+
                 sb.append(name + " = " + value);
 
             } else { // Property exists, fetch the value and overwrite Map

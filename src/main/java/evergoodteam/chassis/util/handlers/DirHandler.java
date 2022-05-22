@@ -1,18 +1,20 @@
 package evergoodteam.chassis.util.handlers;
 
-import lombok.extern.log4j.Log4j2;
 import org.apache.commons.io.FileUtils;
 import org.jetbrains.annotations.NotNull;
+import org.slf4j.Logger;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-@Log4j2
+import static evergoodteam.chassis.util.Reference.MODID;
+import static org.slf4j.LoggerFactory.getLogger;
+
 public class DirHandler {
 
-    //private static final Logger LOGGER = getLogger("Dir");
+    private static final Logger LOGGER = getLogger(MODID + "/Dir");
 
     /**
      * <p> Creates a Directory at the specified Path if one doesn't exist already </p>
@@ -28,7 +30,7 @@ public class DirHandler {
             new File(path.toString()).mkdirs();
             //LOGGER.info("Created Dir at {}", path);
         }
-        //else log.info("Dir {} exists already", path);
+        //else LOGGER.info("Dir {} exists already", path);
     }
 
     /**
@@ -48,10 +50,10 @@ public class DirHandler {
         try {
             if (Files.exists(path)) {
                 FileUtils.cleanDirectory(path.toFile());
-                //log.info("Deleted {}", this.propertiesPath);
+                //LOGGER.info("Deleted {}", this.propertiesPath);
             }
         } catch (IOException e) {
-            log.error("Error on cleaning {}", path, e);
+            LOGGER.error("Error on cleaning {}", path, e);
         }
     }
 }
