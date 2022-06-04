@@ -3,8 +3,6 @@ package evergoodteam.chassis.util;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import com.google.gson.JsonObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +11,7 @@ import java.util.Map;
 public class Reference {
 
     public static final String MODID = "chassis";
-    public static final Logger LOGGER = LoggerFactory.getLogger(StringUtils.capitalize(MODID));
+    public static final String CMI = StringUtils.capitalize(MODID);
 
     /*
     public static final ConfigBase CHASSIS_CONFIGS = new ConfigBase(MODID);

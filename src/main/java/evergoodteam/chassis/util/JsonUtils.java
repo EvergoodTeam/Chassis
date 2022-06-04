@@ -10,12 +10,12 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.nio.file.Path;
 
-import static evergoodteam.chassis.util.Reference.MODID;
+import static evergoodteam.chassis.util.Reference.CMI;
 import static org.slf4j.LoggerFactory.getLogger;
 
 public class JsonUtils {
 
-    private static final Logger LOGGER = getLogger(MODID + "/Json");
+    private static final Logger LOGGER = getLogger(CMI + "/U/Json");
 
     /**
      * @param file Path of a valid .json File

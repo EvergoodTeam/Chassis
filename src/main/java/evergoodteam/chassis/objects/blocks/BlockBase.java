@@ -11,7 +11,6 @@ import java.util.List;
 public class BlockBase extends Block {
 
     public static final List<Block> TRANSPARENT = new ArrayList<>();
-    public static int blockCount = 0;
 
     /**
      * Generates a Block that you can later register
@@ -69,7 +68,5 @@ public class BlockBase extends Block {
 
     public BlockBase(FabricBlockSettings blockSettings) {
         super(blockSettings);
-
-        if (this != null) blockCount++;
     }
 }

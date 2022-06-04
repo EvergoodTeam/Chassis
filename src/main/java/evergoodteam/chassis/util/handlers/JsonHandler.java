@@ -17,7 +17,7 @@ import static org.slf4j.LoggerFactory.getLogger;
 
 public class JsonHandler {
 
-    private static final Logger LOGGER = getLogger(MODID + "/JHandler");
+    private static final Logger LOGGER = getLogger(MODID + "/H/Json");
 
     public static final Gson GSON = new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).setPrettyPrinting().create();
 
@@ -28,7 +28,6 @@ public class JsonHandler {
      * @param path
      */
     public static void writeToJson(String json, Path path) {
-
         writeToJson(JsonUtils.getJsonObject(json), path);
     }
 
@@ -42,7 +41,7 @@ public class JsonHandler {
 
         Path actual = StringUtils.checkMissingExtension(path, ".json");
 
-        //log.info("Attempting to write to path {}", actual);
+        //LOGGER.info("Attempting to write to path {}", actual);
 
         if (jsonObject.size() != 0) {
 

@@ -14,7 +14,7 @@ import static org.slf4j.LoggerFactory.getLogger;
 
 public class DirHandler {
 
-    private static final Logger LOGGER = getLogger(MODID + "/Dir");
+    private static final Logger LOGGER = getLogger(MODID + "/H/Dir");
 
     /**
      * <p> Creates a Directory at the specified Path if one doesn't exist already </p>

@@ -15,7 +15,6 @@ public class InjectionHandler {
      * @param type eg. basalt
      */
     public static void addColumnType(String type) {
-
         COLUMNS.addAll(Arrays.asList(type));
     }
 
@@ -25,7 +24,6 @@ public class InjectionHandler {
      * @param types array of columns (eg. basalt, blackstone)
      */
     public static void addColumnType(String[] types) {
-
         COLUMNS.addAll(Arrays.stream(types).toList());
     }
 
@@ -35,7 +33,6 @@ public class InjectionHandler {
      * @param namespace your ModId
      */
     public static void addAssetInjection(@NotNull String namespace) {
-
         MODEL_INJECTION.add(namespace.toLowerCase());
     }
 
@@ -48,7 +45,6 @@ public class InjectionHandler {
      * @see evergoodteam.chassis.objects.assets.LootJson
      */
     public static void addLoot(@NotNull String namespace, @NotNull String path, JsonObject jsonLoot) {
-
         LOOTTABLE.put(namespace.toLowerCase(), path.toLowerCase(), jsonLoot); // Identifiers don't like uppercase
     }
 
@@ -61,7 +57,6 @@ public class InjectionHandler {
      * @see evergoodteam.chassis.objects.assets.RecipeJson
      */
     public static void addRecipe(@NotNull String namespace, @NotNull String path, JsonObject jsonRecipe) {
-
         RECIPESTABLE.put(namespace.toLowerCase(), path.toLowerCase(), jsonRecipe);
     }
 }

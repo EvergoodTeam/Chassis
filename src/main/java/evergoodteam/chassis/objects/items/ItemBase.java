@@ -8,8 +8,6 @@ import java.util.List;
 
 public class ItemBase extends Item {
 
-    public static int itemCount = 0;
-
     public ItemBase(ItemGroup group) {
         this(new FabricItemSettings().group(group));
     }
@@ -21,6 +19,5 @@ public class ItemBase extends Item {
 
     public ItemBase(FabricItemSettings itemSettings) {
         super(itemSettings);
-        itemCount++;
     }
 }

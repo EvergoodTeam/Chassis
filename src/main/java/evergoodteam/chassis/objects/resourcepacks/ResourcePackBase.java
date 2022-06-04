@@ -130,7 +130,7 @@ public class ResourcePackBase {
 
             LOGGER.info("Regenerated Resources for \"{}\"", this.namespace);
         } else {
-            LOGGER.info("Resources for \"{}\" already exist, skipping generation", this.namespace);
+            LOGGER.info("Resources for \"{}\" already exist, skipping first generation", this.namespace);
         }
     }
 

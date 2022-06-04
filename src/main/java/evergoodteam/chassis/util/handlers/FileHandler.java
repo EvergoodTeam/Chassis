@@ -17,7 +17,8 @@ import static org.slf4j.LoggerFactory.getLogger;
 
 public class FileHandler {
 
-    private static final Logger LOGGER = getLogger(MODID + "/File");
+    private static final Logger LOGGER = getLogger(MODID + "/H/File");
+
     public static void emptyFile(Path path) {
         emptyFile(path.toFile());
     }

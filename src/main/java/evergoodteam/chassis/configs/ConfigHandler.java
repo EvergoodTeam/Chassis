@@ -16,7 +16,7 @@ import static org.slf4j.LoggerFactory.getLogger;
 
 public class ConfigHandler {
 
-    private static final Logger LOGGER = getLogger(MODID + "/CHandler");
+    private static final Logger LOGGER = getLogger(MODID + "/C/H");
 
     public static List<String> getContents(@NotNull ConfigBase config) {
         try {

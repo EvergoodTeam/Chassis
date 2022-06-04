@@ -27,7 +27,7 @@ import static org.slf4j.LoggerFactory.getLogger;
 
 public class ResourcePackBuilder extends AbstractFileResourcePack implements ResourcePack {
 
-    private static final Logger LOGGER = getLogger(MODID + "/RBuilder");
+    private static final Logger LOGGER = getLogger(MODID + "/R/Builder");
 
     private static final Pattern RESOURCEPACK_PATH = Pattern.compile("[a-z0-9-_]+");
     public static final List<ResourcePackBuilder> BUILT = new ArrayList<>();

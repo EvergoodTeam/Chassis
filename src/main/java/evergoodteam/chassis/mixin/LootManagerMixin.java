@@ -5,6 +5,7 @@ import net.minecraft.loot.LootManager;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.profiler.Profiler;
+import org.slf4j.Logger;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -12,11 +13,14 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.Map;
 
-import static evergoodteam.chassis.util.Reference.LOGGER;
+import static evergoodteam.chassis.util.Reference.CMI;
 import static evergoodteam.chassis.util.Reference.LOOT;
+import static org.slf4j.LoggerFactory.getLogger;
 
 @Mixin(LootManager.class)
 public class LootManagerMixin {
+
+    private static final Logger LOGGER = getLogger(CMI + "/Loot");
 
     @Inject(method = "apply", at = @At("HEAD"))
     private void interceptApply(Map<Identifier, JsonObject> objectMap, ResourceManager manager, Profiler profiler, CallbackInfo info) {

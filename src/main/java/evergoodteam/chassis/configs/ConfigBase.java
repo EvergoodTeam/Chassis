@@ -12,12 +12,12 @@ import java.io.File;
 import java.nio.file.Path;
 import java.util.*;
 
-import static evergoodteam.chassis.util.Reference.MODID;
+import static evergoodteam.chassis.util.Reference.CMI;
 import static org.slf4j.LoggerFactory.getLogger;
 
 public class ConfigBase {
 
-    private static final Logger LOGGER = getLogger(MODID + "/Config");
+    private static final Logger LOGGER = getLogger(CMI + "/Config");
 
     public static final Map<String, ConfigBase> CONFIGURATIONS = new HashMap<>();
     private static final Path CONFIG_DIR = FabricLoader.getInstance().getConfigDir();
@@ -60,7 +60,7 @@ public class ConfigBase {
         if (!this.configLocked) {
             this.configLocked = true;
             this.createConfigRoot();
-        } else LOGGER.info("Configs for \"{}\" already exist, skipping generation", this.namespace);
+        } else LOGGER.info("Configs for \"{}\" already exist, skipping first generation", this.namespace);
     }
 
     /**

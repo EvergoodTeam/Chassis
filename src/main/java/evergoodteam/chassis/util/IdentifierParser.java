@@ -17,9 +17,7 @@ public class IdentifierParser {
      * @return Id of the Object from the specified Identifier
      */
     public static String getIdFromIdentifier(@NotNull Identifier identifier) {
-
-        String result = identifier.toString().substring(identifier.toString().lastIndexOf("/") + 1);
-        return result;
+        return identifier.toString().substring(identifier.toString().lastIndexOf("/") + 1);
     }
 
     /**
@@ -29,8 +27,6 @@ public class IdentifierParser {
      * @return Object Type of the Object from the specified Identifier
      */
     public static String getTypeFromIdentifier(@NotNull Identifier identifier) {
-
-        String result = StringUtils.substringBetween(identifier.toString(), ":", "/");
-        return result;
+        return StringUtils.substringBetween(identifier.toString(), ":", "/");
     }
 }

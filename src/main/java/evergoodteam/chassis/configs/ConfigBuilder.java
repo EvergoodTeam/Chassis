@@ -18,7 +18,7 @@ import static org.slf4j.LoggerFactory.getLogger;
 
 public class ConfigBuilder {
 
-    private static final Logger LOGGER = getLogger(MODID + "/CBuilder");
+    private static final Logger LOGGER = getLogger(MODID + "/C/B");
 
     private final String NL = System.lineSeparator();
 
