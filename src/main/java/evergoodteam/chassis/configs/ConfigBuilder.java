@@ -13,12 +13,12 @@ import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 
-import static evergoodteam.chassis.util.Reference.MODID;
+import static evergoodteam.chassis.util.Reference.CMI;
 import static org.slf4j.LoggerFactory.getLogger;
 
 public class ConfigBuilder {
 
-    private static final Logger LOGGER = getLogger(MODID + "/C/B");
+    private static final Logger LOGGER = getLogger(CMI + "/C/B");
 
     private final String NL = System.lineSeparator();
 
@@ -26,7 +26,7 @@ public class ConfigBuilder {
     private Path path;
     private File file;
 
-    public ConfigBuilder(@NotNull ConfigBase config) { // TODO: Rewrites everything, doesnt preserve
+    public ConfigBuilder(@NotNull ConfigBase config) {
         this.config = config;
         this.path = config.propertiesPath;
         this.file = config.propertiesFile;
@@ -88,7 +88,7 @@ public class ConfigBuilder {
                     new FileWriter(this.file, false).close();
 
                     bw.write(original);
-                    bw.write(System.lineSeparator()); // TODO: Improve header update
+                    bw.write(System.lineSeparator());
                     bw.write(additional);
 
                     bw.close();
@@ -158,44 +158,35 @@ public class ConfigBuilder {
         }
     }
 
-    // TODO: Reduce append calls
-
     public String header() {
-        StringBuilder sb = new StringBuilder();
 
-        sb.append("# %s Configs".formatted(StringUtils.capitalize(config.namespace))).append(NL);
-        sb.append("# " + new Date()).append(NL + NL);
+        String result = "# %s Configs".formatted(StringUtils.capitalize(config.namespace)) + NL
+                + "# " + new Date() + NL + NL;
 
-        return sb.toString();
+        return result;
     }
 
     public String header(String text) {
-        StringBuilder sb = new StringBuilder();
-
         String line = "#".repeat(81);
+        String result = line + NL + "# " + text + NL + line + NL + NL;
 
-        sb.append(line).append(NL).append("# " + text).append(NL).append(line).append(NL + NL);
-
-        return sb.toString();
+        return result;
     }
 
     public String defaultOptions() {
+        String result = "# Lock " + StringUtils.capitalize(config.namespace) + " configs from being regenerated" + NL
+                + config.namespace + "ConfigLocked = " + config.configLocked + NL;
 
-        StringBuilder sb = new StringBuilder();
-
-        sb.append("# Lock " + StringUtils.capitalize(config.namespace) + " configs from being regenerated").append(NL);
-        sb.append(config.namespace + "ConfigLocked = " + config.configLocked).append(NL);
-
-        return sb.toString();
+        return result;
     }
 
     public String resourceOptions() {
 
         StringBuilder sb = new StringBuilder();
 
-        sb.append("# Lock " + StringUtils.capitalize(config.namespace) + " resources from being regenerated").append(NL);
+        sb.append("# Lock " + StringUtils.capitalize(config.namespace) + " resources from being regenerated" + NL);
         config.resourcesLocked.forEach((name, value) -> {
-            sb.append(name + " = " + value).append(NL);
+            sb.append(name + " = " + value + NL);
         });
 
         sb.append(NL);
@@ -215,7 +206,7 @@ public class ConfigBuilder {
             throw new RuntimeException(e);
         }
 
-        config.addonOptions.forEach((name, value) -> { // TODO: Additionals get deleted
+        config.addonOptions.forEach((name, value) -> {
 
             int index = SetUtils.getIndex(config.addonOptions.keySet(), name);
 
@@ -223,7 +214,7 @@ public class ConfigBuilder {
                 LOGGER.info("Found missing property \"{}\", adding to File", name);
 
                 if (!"".equals(config.addonComments.get(index)))
-                    sb.append(NL).append("# " + config.addonComments.get(index)).append(NL);
+                    sb.append(NL + "# " + config.addonComments.get(index) + NL);
                 else sb.append(NL);
 
                 sb.append(name + " = " + value);

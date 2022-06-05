@@ -1,5 +1,5 @@
 package evergoodteam.chassis;
-/*
+
 import evergoodteam.chassis.configs.ConfigHandler;
 import evergoodteam.chassis.objects.assets.LootJson;
 import evergoodteam.chassis.objects.assets.RecipeJson;
@@ -8,9 +8,9 @@ import evergoodteam.chassis.objects.groups.ItemGroupBase;
 import evergoodteam.chassis.objects.items.ItemBase;
 import evergoodteam.chassis.util.handlers.InjectionHandler;
 import evergoodteam.chassis.util.handlers.RegistryHandler;
-*/
+
 import net.fabricmc.api.ModInitializer;
-/*
+
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.block.Block;
@@ -19,34 +19,34 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.util.Identifier;
-*/
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-/*
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-*/
+
 import static evergoodteam.chassis.util.Reference.*;
 
 public class Chassis implements ModInitializer {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CMI);
-    /*
+
     static final List<Block> BLOCKS = new ArrayList<>();
     static final Block TEST_BLOCK = new BlockBase(BLOCKS, FabricBlockSettings.of(Material.METAL).requiresTool().hardness(1.5f).resistance(6.0f).sounds(BlockSoundGroup.METAL).nonOpaque(), true);
     static final Item TEST_ITEM = new ItemBase(new FabricItemSettings().maxCount(65));
-    */
+
 
     @Override
     public void onInitialize() {
 
         LOGGER.info("Initializing Chassis");
 
-        //testFeatures();
+        testFeatures();
     }
 
-    /*
+
     private static void testFeatures() {
 
         // Configs
@@ -87,5 +87,5 @@ public class Chassis implements ModInitializer {
 
         if (ConfigHandler.getBooleanOption(CHASSIS_CONFIGS, "hideResourcePack", false)) CHASSIS_RESOURCES.hide();
     }
-    */
+
 }
