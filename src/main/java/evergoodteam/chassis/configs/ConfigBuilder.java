@@ -211,7 +211,7 @@ public class ConfigBuilder {
             int index = SetUtils.getIndex(config.addonOptions.keySet(), name);
 
             if (p.getProperty(name) == null) { // Property is missing, add with default value
-                LOGGER.info("Found missing property \"{}\", adding to File", name);
+                //LOGGER.info("Found missing property \"{}\", adding to File", name);
 
                 if (!"".equals(config.addonComments.get(index)))
                     sb.append(NL + "# " + config.addonComments.get(index) + NL);
