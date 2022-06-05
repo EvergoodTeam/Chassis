@@ -3,8 +3,6 @@ package evergoodteam.chassis.util;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import com.google.gson.JsonObject;
-import evergoodteam.chassis.configs.ConfigBase;
-import evergoodteam.chassis.objects.resourcepacks.ResourcePackBase;
 
 import java.util.ArrayList;
 import java.util.List;
