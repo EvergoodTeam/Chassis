@@ -23,12 +23,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static evergoodteam.chassis.util.Reference.MODID;
+import static evergoodteam.chassis.util.Reference.CMI;
 import static org.slf4j.LoggerFactory.getLogger;
 
 public class ResourcePackBase {
 
-    private static final Logger LOGGER = getLogger(MODID + "/Resource");
+    private static final Logger LOGGER = getLogger(CMI + "/Resource");
 
     public static final Map<String, List<ResourcePackBase>> RESOURCE_PACKS = new HashMap<>(); // Used for identifying RPs
 
