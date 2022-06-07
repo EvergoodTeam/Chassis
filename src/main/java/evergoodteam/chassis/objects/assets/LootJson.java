@@ -2,8 +2,10 @@ package evergoodteam.chassis.objects.assets;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import lombok.extern.log4j.Log4j2;
 import net.minecraft.util.Identifier;
 
+@Log4j2
 public class LootJson {
 
     public static JsonObject createBlockBreakLootJson(String namespace, String path) {
@@ -20,6 +22,7 @@ public class LootJson {
         JsonObject poolContents = new JsonObject();
 
         poolContents.addProperty("rolls", 1);
+        poolContents.addProperty("bonus_rolls", 0.0);
 
         JsonArray entries = new JsonArray();
         JsonObject entriesContents = new JsonObject();
@@ -39,6 +42,8 @@ public class LootJson {
         pools.add(poolContents);
 
         json.add("pools", pools);
+
+        log.info(json);
 
         return json;
     }

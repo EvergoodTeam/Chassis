@@ -1,6 +1,9 @@
 package evergoodteam.chassis.mixin;
 
+
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import lombok.extern.log4j.Log4j2;
 import net.minecraft.loot.LootManager;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.util.Identifier;
@@ -17,13 +20,14 @@ import static evergoodteam.chassis.util.Reference.CMI;
 import static evergoodteam.chassis.util.Reference.LOOT;
 import static org.slf4j.LoggerFactory.getLogger;
 
+@Log4j2
 @Mixin(LootManager.class)
 public class LootManagerMixin {
 
     private static final Logger LOGGER = getLogger(CMI + "/Loot");
 
-    @Inject(method = "apply", at = @At("HEAD"))
-    private void interceptApply(Map<Identifier, JsonObject> objectMap, ResourceManager manager, Profiler profiler, CallbackInfo info) {
+    @Inject(method = "apply*", at = @At("HEAD"))
+    private void interceptApply(Map<Identifier, JsonElement> objectMap, ResourceManager manager, Profiler profiler, CallbackInfo info) {
 
         if (LOOT.isEmpty()) return;
 
@@ -45,10 +49,9 @@ public class LootManagerMixin {
                 path = DEEP.keySet().toArray()[j].toString();
                 json = DEEP.get(DEEP.keySet().toArray()[j]);
 
-                //LOGGER.info("Working on {} of {}: \"{}\"", (DEEP.size() - 1), namespace, path);
+                LOGGER.info("Working on {} of {}: \"{}\"", (DEEP.size() - 1), namespace, path);
 
                 if (json != null) {
-                    // Path is unique, using the same path will override
                     objectMap.put(new Identifier(namespace, path), json);
                 }
             }
