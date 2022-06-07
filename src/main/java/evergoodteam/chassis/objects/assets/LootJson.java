@@ -43,8 +43,6 @@ public class LootJson {
 
         json.add("pools", pools);
 
-        log.info(json);
-
         return json;
     }
 }
