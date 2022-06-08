@@ -4,8 +4,6 @@
   "package": "evergoodteam.chassis.mixin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
-    "LootManagerMixin",
-    "LootUtilMixin",
     "RecipeManagerMixin",
     "ResourcePackManagerMixin"
   ],

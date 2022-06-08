@@ -32,20 +32,8 @@ public class InjectionHandler {
      *
      * @param namespace your ModId
      */
-    public static void addAssetInjection(@NotNull String namespace) {
+    public static void addModelInjection(@NotNull String namespace) {
         MODEL_INJECTION.add(namespace.toLowerCase());
-    }
-
-    /**
-     * Sends {@link evergoodteam.chassis.mixin.LootManagerMixin} Loot Tables to inject
-     *
-     * @param namespace namespace of your loot table (your ModId)
-     * @param path      name to identify your loot table from other entries in the same namespace
-     * @param jsonLoot  {@link JsonObject} formatted for loot tables
-     * @see evergoodteam.chassis.objects.assets.LootJson
-     */
-    public static void addLoot(@NotNull String namespace, @NotNull String path, JsonObject jsonLoot) {
-        LOOTTABLE.put(namespace.toLowerCase(), path.toLowerCase(), jsonLoot); // Identifiers don't like uppercase
     }
 
     /**
