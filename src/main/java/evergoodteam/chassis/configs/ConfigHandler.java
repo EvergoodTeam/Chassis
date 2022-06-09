@@ -18,6 +18,12 @@ public class ConfigHandler {
 
     private static final Logger LOGGER = getLogger(MODID + "/C/H");
 
+    /**
+     * Get all the contents of a Config file
+     *
+     * @param config
+     * @return List with all the lines
+     */
     public static List<String> getContents(@NotNull ConfigBase config) {
         try {
             return Files.readAllLines(config.propertiesPath);
@@ -26,6 +32,12 @@ public class ConfigHandler {
         }
     }
 
+    /**
+     * <p>Read the properties present in the provided Config file and writes them to their respective variables</p>
+     * <p>If the Config file is empty, it will be regenerated</p>
+     *
+     * @param config
+     */
     public static void readOptions(@NotNull ConfigBase config) {
 
         if (Files.exists(config.propertiesPath)) {

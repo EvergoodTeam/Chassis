@@ -69,7 +69,7 @@ public class ConfigBuilder {
     }
 
     /**
-     * Write the Properties added with {@link #} to the Config File
+     * Write the Properties added with {@link ConfigBase#addProperty} to the Config File
      */
     public void registerProperties() {
 
