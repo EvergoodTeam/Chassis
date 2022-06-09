@@ -2,10 +2,8 @@ package evergoodteam.chassis.objects.assets;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import lombok.extern.log4j.Log4j2;
 import net.minecraft.util.Identifier;
 
-@Log4j2
 public class LootJson {
 
     public static JsonObject createBlockBreakLootJson(String namespace, String path) {
