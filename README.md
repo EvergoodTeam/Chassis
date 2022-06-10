@@ -4,9 +4,10 @@ Creating hundreds of Json files for some Blocks is REALLY time-consuming, so you
 
 Chassis is a Library providing utilities for dynamic asset generation (Blockstates, Models, Tags, Recipes, Loot Tables,
 Textures) and simple configuration.  
-A showcase of the available features can be found (commented) in the source code or in [Compressor](https://www.curseforge.com/minecraft/mc-mods/compressor).
+A showcase of the available features can be found (commented) in the source code or
+in [Compressor](https://www.curseforge.com/minecraft/mc-mods/compressor).
 
-## Adding to your own project
+## Adding to your own Project
 
 ### How versions work
 
@@ -15,7 +16,8 @@ A showcase of the available features can be found (commented) in the source code
 [GitHub Releases](https://github.com/EvergoodTeam/Chassis/releases) include different Builds of the project, spanning
 from those in active development to final ones.
 
-Each version name is composed of two main parts: a <ins>version number</ins> (`1.2.34`) and a <ins>suffix</ins> (`-suffix`).
+Each version name is composed of two main parts: a <ins>version number</ins> (`1.2.34`) and a <ins>
+suffix</ins> (`-suffix`).
 
 Different <ins>suffixes</ins> are used to highlight the nature and state of a Build:
 
@@ -44,6 +46,7 @@ repositories {
     maven { url 'https://jitpack.io' }
 }
 ```
+
 ```
 dependencies {
     ...
@@ -52,7 +55,7 @@ dependencies {
 }
 ```
 
-Don't forget to change `<releaseVersion>` to an appropriate version, as explained [before](#how-versions-work)  
+Don't forget to change `<releaseVersion>` to an appropriate version, as explained **[before](#how-versions-work)**  
 We recommend using `${project.chassis_version}` and specifying the version in your `gradle.properties` for easier access
 
 ### fabric.mod.json
@@ -66,23 +69,25 @@ In your `fabric.mod.json`, add the Project as a dependency
 },
 ```
 
+***
+
 ## Support us!
 
-Want to support us? Make sure to use **CODE `Libra`** for **25% OFF** your order when renting a server over at [**
-BisectHosting**](https://www.bisecthosting.com/Libra)
+Want to support us? Make sure to use **CODE `Libra`** for **25% OFF** your order when renting a server over at **[
+BisectHosting](https://www.bisecthosting.com/Libra)**
 
 ## Discord
 
-Join us on [**Discord**](https://discord.gg/k2P68Y8) for support and updates on upcoming versions
+Join us on **[Discord](https://discord.gg/k2P68Y8)** for support and updates on upcoming versions
 
 ## Issues
 
-If you encounter any issue during your playthrough, make sure to report it either here on [**
-GitHub**](https://github.com/EvergoodTeam/Chassis/issues) or on [**Discord**](https://discord.gg/k2P68Y8) in the
+If you encounter any issue during your playthrough, make sure to report it either here on **[
+GitHub](https://github.com/EvergoodTeam/Chassis/issues)** or on **[Discord](https://discord.gg/k2P68Y8)** in the
 designated ```#issues``` channel
 
 ***
 
 ## License
 
-[**Read Here**](https://github.com/EvergoodTeam/Chassis/blob/main/LICENSE)
+[Read Here](https://github.com/EvergoodTeam/Chassis/blob/main/LICENSE)
