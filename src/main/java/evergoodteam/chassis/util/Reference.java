@@ -3,9 +3,10 @@ package evergoodteam.chassis.util;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import com.google.gson.JsonObject;
+/*
 import evergoodteam.chassis.configs.ConfigBase;
 import evergoodteam.chassis.objects.resourcepacks.ResourcePackBase;
-
+*/
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -24,8 +25,8 @@ public class Reference {
     // Map inside Map -> {Test={son=something, son2=something2}, Test2={son=something}}
     public static Map<String, Map<String, JsonObject>> RECIPES = RECIPESTABLE.rowMap();
 
-
+    /*
     public static final ConfigBase CHASSIS_CONFIGS = new ConfigBase(MODID);
     public static final ResourcePackBase CHASSIS_RESOURCES = new ResourcePackBase(CHASSIS_CONFIGS, MODID, "https://evergoodteam.github.io/utils/icons/chassisIcon.png", "53a074");
-
+    */
 }
