@@ -21,10 +21,10 @@ with specific suffixes:
 
 Versions are grouped using Minecraft Versions
 
-| Minecraft Version | `1.18.1` | `1.18.2` | `1.19` |
-|:-----------------:|:--------:|:--------:|:------:|
-|      Support      |    ✔️    |    ✔️    |   ❌    |
-|  Chassis Version  | `1.0.x`  | `1.1.x`  |        |
+| Minecraft Version | `1.18.1` | `1.18.2` | `1.19`  |
+|:-----------------:|:--------:|:--------:|:-------:|
+|      Support      |    ✔️    |    ✔️    |   ✔️    |
+|  Chassis Version  | `1.0.x`  | `1.1.x`  | `1.2.x` |
 
 Versions from the same Minecraft Version group have backwards compatibility
 
@@ -64,7 +64,8 @@ We recommend using `${project.chassis_version}` and specifying the version in yo
 
 ## Support us!
 
-Want to support us? Make sure to use **CODE `Libra`** for **25% OFF** your order when renting a server over at [**BisectHosting**](https://www.bisecthosting.com/Libra)
+Want to support us? Make sure to use **CODE `Libra`** for **25% OFF** your order when renting a server over at [**
+BisectHosting**](https://www.bisecthosting.com/Libra)
 
 ## Discord
 
@@ -72,7 +73,8 @@ Join us on [**Discord**](https://discord.gg/k2P68Y8) for support and updates on 
 
 ## Issues
 
-If you encounter any issue during your playthrough, make sure to report it either here on [**GitHub**](https://github.com/EvergoodTeam/Chassis/issues) or on [**Discord**](https://discord.gg/k2P68Y8) in the
+If you encounter any issue during your playthrough, make sure to report it either here on [**
+GitHub**](https://github.com/EvergoodTeam/Chassis/issues) or on [**Discord**](https://discord.gg/k2P68Y8) in the
 designated ```#issues``` channel
 
 ***
