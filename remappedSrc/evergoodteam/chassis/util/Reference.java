@@ -24,8 +24,8 @@ public class Reference {
     // Map inside Map -> {Test={son=something, son2=something2}, Test2={son=something}}
     public static Map<String, Map<String, JsonObject>> RECIPES = RECIPESTABLE.rowMap();
 
-
+    /*
     public static final ConfigBase CHASSIS_CONFIGS = new ConfigBase(MODID);
     public static final ResourcePackBase CHASSIS_RESOURCES = new ResourcePackBase(CHASSIS_CONFIGS, MODID, "https://evergoodteam.github.io/utils/icons/chassisIcon.png", "53a074");
-
+    */
 }

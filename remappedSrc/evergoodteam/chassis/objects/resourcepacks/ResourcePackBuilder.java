@@ -1,14 +1,13 @@
 package evergoodteam.chassis.objects.resourcepacks;
 
 import evergoodteam.chassis.util.StringUtils;
-import net.fabricmc.fabric.impl.resource.loader.ModNioResourcePack;
 import net.minecraft.SharedConstants;
 import net.minecraft.resource.AbstractFileResourcePack;
 import net.minecraft.resource.ResourcePack;
 import net.minecraft.resource.ResourceType;
 import net.minecraft.resource.metadata.PackResourceMetadata;
 import net.minecraft.resource.metadata.ResourceMetadataReader;
-import net.minecraft.text.Text;
+import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.InvalidIdentifierException;
 import org.jetbrains.annotations.Nullable;
@@ -16,18 +15,19 @@ import org.slf4j.Logger;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.*;
-import java.nio.file.attribute.BasicFileAttributes;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.*;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
-import static evergoodteam.chassis.util.Reference.CMI;
+import static evergoodteam.chassis.util.Reference.MODID;
 import static org.slf4j.LoggerFactory.getLogger;
 
 public class ResourcePackBuilder extends AbstractFileResourcePack implements ResourcePack {
 
-    private static final Logger LOGGER = getLogger(CMI + "/R/Builder");
+    private static final Logger LOGGER = getLogger(MODID + "/R/Builder");
 
     private static final Pattern RESOURCEPACK_PATH = Pattern.compile("[a-z0-9-_]+");
     public static final List<ResourcePackBuilder> BUILT = new ArrayList<>();
@@ -44,7 +44,7 @@ public class ResourcePackBuilder extends AbstractFileResourcePack implements Res
         this.id = id;
         this.resourceType = resourceType;
 
-        this.packMetadata = new PackResourceMetadata(Text.translatable(id + ".metadata.description"), ResourceType.CLIENT_RESOURCES.getPackVersion(SharedConstants.getGameVersion()));
+        this.packMetadata = new PackResourceMetadata(new TranslatableText(id + ".metadata.description"), ResourceType.CLIENT_RESOURCES.getPackVersion(SharedConstants.getGameVersion()));
 
         this.basePath = basePath.resolve(id).resolve("resources").toAbsolutePath().normalize();
         this.separator = basePath.getFileSystem().getSeparator();
@@ -79,17 +79,13 @@ public class ResourcePackBuilder extends AbstractFileResourcePack implements Res
         return InputStream.nullInputStream();
     }
 
-
-    /**
-     * From {@link ModNioResourcePack#findResources}
-     */
     @Override
-    public Collection<Identifier> findResources(ResourceType type, String namespace, String suffix, Predicate<Identifier> allowedPathPredicate) {
+    public Collection<Identifier> findResources(ResourceType type, String namespace, String prefix, int maxDepth, Predicate<String> pathFilter) {
 
         List<Identifier> ids = new ArrayList<>();
+        String path = prefix.replace("/", separator);
 
-        String path = suffix.replace("/", separator);
-        Path namespacePath = getPath(type.getDirectory() + "/" + namespace); // assets || data / namespace
+        Path namespacePath = getPath(type.getDirectory() + "/" + namespace);
 
         if (namespacePath != null) {
 
@@ -97,31 +93,30 @@ public class ResourcePackBuilder extends AbstractFileResourcePack implements Res
 
             if (Files.exists(searchPath)) {
                 try {
-                    Files.walkFileTree(searchPath, new SimpleFileVisitor<Path>() {
-                        @Override
-                        public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-                            String fileName = file.getFileName().toString();
-                            if (fileName.endsWith(".mcmeta")) return FileVisitResult.CONTINUE;
+                    Files.walk(searchPath, maxDepth)
+                            .filter(Files::isRegularFile)
+                            .filter((p) -> {
+                                String filename = p.getFileName().toString();
+                                return !filename.endsWith(".mcmeta") && pathFilter.test(filename);
+                            })
+                            .map(namespacePath::relativize)
+                            .map((p) -> p.toString().replace(separator, "/"))
+                            .forEach((string) -> {
 
-                            try {
-                                Identifier id = new Identifier(namespace, namespacePath.relativize(file).toString().replace(separator, "/"));
-                                if (allowedPathPredicate.test(id)) ids.add(id);
-                            } catch (InvalidIdentifierException e) {
-                                LOGGER.error(e.getMessage());
-                            }
-
-                            return FileVisitResult.CONTINUE;
-                        }
-                    });
+                                try {
+                                    ids.add(new Identifier(namespace, string));
+                                } catch (InvalidIdentifierException e) {
+                                    LOGGER.error(e.getMessage(), e);
+                                }
+                            });
                 } catch (IOException e) {
-                    LOGGER.error("findResources failed at path {} in namespace {}", path, namespace, e);
+                    LOGGER.error("findResources at {} in namespace {} failed: {}", path, namespace, e);
                 }
             }
         }
 
         return ids;
     }
-
 
     @Override
     public Set<String> getNamespaces(ResourceType type) {
@@ -171,6 +166,7 @@ public class ResourcePackBuilder extends AbstractFileResourcePack implements Res
 
     @Override
     public String getName() {
+
         return StringUtils.capitalize(this.id);
     }
 

@@ -5,7 +5,7 @@ import net.minecraft.resource.ResourcePackProfile;
 import net.minecraft.resource.ResourcePackProvider;
 import net.minecraft.resource.ResourcePackSource;
 import net.minecraft.resource.ResourceType;
-import net.minecraft.text.Text;
+import net.minecraft.text.TranslatableText;
 
 import java.util.function.Consumer;
 
@@ -26,7 +26,7 @@ public class ServerResourcePackProvider implements ResourcePackProvider {
         this.groupResourcePack = new ResourcePackBuilder(path, ResourceType.SERVER_DATA, FabricLoader.getInstance().getConfigDir().resolve(namespace + "/resourcepacks").toAbsolutePath().normalize());
         this.namespace = namespace;
         this.path = path;
-        this.resourcePackSource = text -> Text.translatable("pack.source." + namespace, text);
+        this.resourcePackSource = text -> new TranslatableText("pack.source." + namespace, text);
     }
 
     @Override

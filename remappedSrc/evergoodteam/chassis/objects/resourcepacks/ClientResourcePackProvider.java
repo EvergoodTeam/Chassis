@@ -6,9 +6,8 @@ import net.minecraft.resource.ResourcePackProfile;
 import net.minecraft.resource.ResourcePackProvider;
 import net.minecraft.resource.ResourcePackSource;
 import net.minecraft.resource.ResourceType;
-import net.minecraft.text.MutableText;
 import net.minecraft.text.Style;
-import net.minecraft.text.Text;
+import net.minecraft.text.TranslatableText;
 
 import java.util.function.Consumer;
 
@@ -34,19 +33,19 @@ public class ClientResourcePackProvider implements ResourcePackProvider {
      */
     public ClientResourcePackProvider(String namespace, String path, String hexDescColor) {
         this(namespace, path);
-        this.resourcePackSource = text -> Text.translatable("pack.source." + namespace, text).setStyle(Style.EMPTY.withColor(ColorConverter.getDecimalFromHex(hexDescColor)));
+        this.resourcePackSource = text -> new TranslatableText("pack.source." + namespace, text).setStyle(Style.EMPTY.withColor(ColorConverter.getDecimalFromHex(hexDescColor)));
     }
 
     /**
      * Provider responsible for the ResourcePackProfile, which displays your ResourcePack in the GUI with a description
-     * provided with {@link MutableText}
+     * provided with {@link TranslatableText}
      *
      * @param namespace   name of the Config Folder, root of all the Resources
      * @param path        name of your ResourcePack
      * @param description
      * @see evergoodteam.chassis.mixin.ResourcePackManagerMixin
      */
-    public ClientResourcePackProvider(String namespace, String path, MutableText description) {
+    public ClientResourcePackProvider(String namespace, String path, TranslatableText description) {
         this(namespace, path);
         this.resourcePackSource = text -> description;
     }
@@ -63,7 +62,7 @@ public class ClientResourcePackProvider implements ResourcePackProvider {
         this.groupResourcePack = new ResourcePackBuilder(path, ResourceType.CLIENT_RESOURCES, FabricLoader.getInstance().getConfigDir().resolve(namespace + "/resourcepacks").toAbsolutePath().normalize());
         this.namespace = namespace;
         this.path = path;
-        this.resourcePackSource = text -> Text.translatable("pack.source." + namespace, text);
+        this.resourcePackSource = text -> new TranslatableText("pack.source." + namespace, text);
     }
 
     @Override

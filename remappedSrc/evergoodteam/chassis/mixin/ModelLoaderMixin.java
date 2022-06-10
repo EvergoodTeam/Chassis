@@ -20,7 +20,7 @@ import static evergoodteam.chassis.util.handlers.RegistryHandler.REGISTERED_BLOC
 @Mixin(ModelLoader.class)
 public class ModelLoaderMixin {
 
-    @Inject(method = "loadModelFromJson", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "loadModelFromJson", at = @At(value = "INVOKE", target = "Lnet/minecraft/resource/ResourceManager;getResource(Lnet/minecraft/util/Identifier;)Lnet/minecraft/resource/Resource;"), cancellable = true)
     public void loadModelFromJson(Identifier id, CallbackInfoReturnable<JsonUnbakedModel> cir) {
 
         if (MODEL_INJECTION.isEmpty()) {
