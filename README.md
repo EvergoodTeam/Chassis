@@ -1,38 +1,42 @@
 # Chassis <a href=https://www.curseforge.com/minecraft/mc-mods/chassis> <img src="http://cf.way2muchnoise.eu/596615.svg"> </a>
 
-Creating hundreds of Json files for some Blocks is REALLY time consuming, so you should automate that
+Creating hundreds of Json files for some Blocks is REALLY time-consuming, so you should automate that
 
 Chassis is a Library providing utilities for dynamic asset generation (Blockstates, Models, Tags, Recipes, Loot Tables,
-Textures) and simple configuration for your Mod
+Textures) and simple configuration.  
+A showcase of the available features can be found (commented) in the source code or in [Compressor](https://www.curseforge.com/minecraft/mc-mods/compressor).
 
 ## Adding to your own project
 
 ### How versions work
 
-*Note that this system could be changed in the near future*
+*NOTE: this system could be changed in the near future*
 
-Our [GitHub Releases](https://github.com/EvergoodTeam/Chassis/releases) include many Builds of the project, each marked
-with specific suffixes:
+[GitHub Releases](https://github.com/EvergoodTeam/Chassis/releases) include different Builds of the project, spanning
+from those in active development to final ones.
 
-- `-dev`: in active development, unstable
-- `-pre`: in the final stages of development and next to being finalised
-- *no suffix*: final releases, that can also be found
-  on [Curseforge](https://www.curseforge.com/minecraft/mc-mods/chassis)
+Each version name is composed of two main parts: a <ins>version number</ins> (`1.2.34`) and a <ins>suffix</ins> (`-suffix`).
 
-Versions are grouped using Minecraft Versions
+Different <ins>suffixes</ins> are used to highlight the nature and state of a Build:
 
-| Minecraft Version | `1.18.1` | `1.18.2` | `1.19` |
-|:-----------------:|:--------:|:--------:|:------:|
-|      Support      |    ✔️    |    ✔️    |   ❌    |
-|  Chassis Version  | `1.0.x`  | `1.1.x`  |        |
+- `-dev`: in active development, likely unstable and temporary
+- `-pre`: in the final stages of development, next to being finalised and released officially
+- *no suffix*: final releases, can be found on [Curseforge](https://www.curseforge.com/minecraft/mc-mods/chassis)
 
-Versions from the same Minecraft Version group have backwards compatibility
+<ins>Version numbers</ins> are grouped together based on Minecraft's Versions:  
+this means that Builds from the same group are compatible only with that specific Minecraft Version and that they're
+interchangeable with one another.
 
-eg. `1.0.0` can be substituted with `1.0.5` and viceversa
+The table below summarizes the supported Minecraft Versions
+
+| Minecraft Version | `1.12.2` | `1.18.1` | `1.18.2` | `1.19`  |
+|:-----------------:|:--------:|:--------:|:--------:|:-------:|
+|      Support      |    ❌     |    ✔️    |    ✔️    |   ✔️    |
+|  Chassis Version  |    ?     | `1.0.x`  | `1.1.x`  | `1.2.x` |
 
 ### Gradle
 
-In your `build.grade`
+In your `build.grade`, add the Project as a dependency
 
 ```
 repositories {
@@ -40,7 +44,6 @@ repositories {
     maven { url 'https://jitpack.io' }
 }
 ```
-
 ```
 dependencies {
     ...
@@ -49,11 +52,12 @@ dependencies {
 }
 ```
 
-Make sure to change the `<releaseVersion>` to an
-appropriate [GitHub Release version](https://github.com/EvergoodTeam/Chassis/releases)  
-We recommend using `${project.chassis_version}` and specifying the version in your `gradle.properties`
+Don't forget to change `<releaseVersion>` to an appropriate version, as explained [before](#how-versions-work)  
+We recommend using `${project.chassis_version}` and specifying the version in your `gradle.properties` for easier access
 
 ### fabric.mod.json
+
+In your `fabric.mod.json`, add the Project as a dependency
 
 ```
 "depends": {
@@ -64,7 +68,8 @@ We recommend using `${project.chassis_version}` and specifying the version in yo
 
 ## Support us!
 
-Want to support us? Make sure to use **CODE `Libra`** for **25% OFF** your order when renting a server over at [**BisectHosting**](https://www.bisecthosting.com/Libra)
+Want to support us? Make sure to use **CODE `Libra`** for **25% OFF** your order when renting a server over at [**
+BisectHosting**](https://www.bisecthosting.com/Libra)
 
 ## Discord
 
@@ -72,7 +77,8 @@ Join us on [**Discord**](https://discord.gg/k2P68Y8) for support and updates on 
 
 ## Issues
 
-If you encounter any issue during your playthrough, make sure to report it either here on [**GitHub**](https://github.com/EvergoodTeam/Chassis/issues) or on [**Discord**](https://discord.gg/k2P68Y8) in the
+If you encounter any issue during your playthrough, make sure to report it either here on [**
+GitHub**](https://github.com/EvergoodTeam/Chassis/issues) or on [**Discord**](https://discord.gg/k2P68Y8) in the
 designated ```#issues``` channel
 
 ***
