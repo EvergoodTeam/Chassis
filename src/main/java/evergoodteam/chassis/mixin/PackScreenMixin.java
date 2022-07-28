@@ -20,17 +20,17 @@ import java.util.stream.Stream;
 
 import static evergoodteam.chassis.objects.resourcepacks.ResourcePackBase.HIDDEN;
 import static evergoodteam.chassis.objects.resourcepacks.ResourcePackBase.NO_ICON;
-import static evergoodteam.chassis.util.Reference.MODID;
+import static evergoodteam.chassis.util.Reference.CMI;
 import static org.slf4j.LoggerFactory.getLogger;
 
 @Mixin(PackScreen.class)
 public class PackScreenMixin {
 
-    private static final Logger LOGGER = getLogger(MODID + "/Screen");
+    private static final Logger LOGGER = getLogger(CMI + "/Screen");
 
     // Fix random selection of icon when icon is missing
-    @Inject(at = @At("HEAD"), method = "Lnet/minecraft/client/gui/screen/pack/PackScreen;loadPackIcon(Lnet/minecraft/client/texture/TextureManager;Lnet/minecraft/resource/ResourcePackProfile;)Lnet/minecraft/util/Identifier;", cancellable = true)
-    public void injectLoadPackIcon(TextureManager textureManager, ResourcePackProfile resourcePackProfile, CallbackInfoReturnable<Identifier> cir) {
+    @Inject(at = @At("HEAD"), method = "loadPackIcon(Lnet/minecraft/client/texture/TextureManager;Lnet/minecraft/resource/ResourcePackProfile;)Lnet/minecraft/util/Identifier;", cancellable = true)
+    private void injectLoadPackIcon(TextureManager textureManager, ResourcePackProfile resourcePackProfile, CallbackInfoReturnable<Identifier> cir) {
 
         if (NO_ICON.contains(resourcePackProfile.getName())) {
             //LOGGER.info("Attempting to set unknown pack icon before error is thrown / random texture issue");
@@ -39,7 +39,7 @@ public class PackScreenMixin {
     }
 
     // Hide ResourcePack from GUI
-    @Inject(at = @At("TAIL"), method = "Lnet/minecraft/client/gui/screen/pack/PackScreen;updatePackList(Lnet/minecraft/client/gui/screen/pack/PackListWidget;Ljava/util/stream/Stream;)V")
+    @Inject(at = @At("TAIL"), method = "updatePackList(Lnet/minecraft/client/gui/screen/pack/PackListWidget;Ljava/util/stream/Stream;)V")
     private void injectUpdatePackList(PackListWidget widget, Stream<ResourcePackOrganizer.Pack> packs, CallbackInfo info) {
 
         List<PackListWidget.ResourcePackEntry> toRemove = new ArrayList<>();
@@ -50,7 +50,10 @@ public class PackScreenMixin {
 
             if (packFromEntry != null) {
                 String name = packFromEntry.getDisplayName().getString();
-                if (HIDDEN.contains(name)) toRemove.add(resourcePackEntry);
+
+                if (HIDDEN.contains(name)) {
+                    toRemove.add(resourcePackEntry);
+                }
             }
         }
 
@@ -64,7 +67,7 @@ public class PackScreenMixin {
     private ResourcePackOrganizer.Pack getPackFromEntry(PackListWidget.ResourcePackEntry entry) {
 
         try {
-            Field field = findField(PackListWidget.ResourcePackEntry.class, "pack", "field_19129");
+            Field field = findField("pack", "field_19129");
             field.setAccessible(true);
 
             return (ResourcePackOrganizer.Pack) field.get(entry);
@@ -75,21 +78,17 @@ public class PackScreenMixin {
         return null;
     }
 
-    private Field findField(Class<?> aClass, String... names) throws NoSuchFieldException {
+    private Field findField(String... names) {
 
         Field field = null;
 
         for (String string : names) {
             try {
-                field = aClass.getDeclaredField(string);
+                field = PackListWidget.ResourcePackEntry.class.getDeclaredField(string);
                 field.setAccessible(true);
                 break;
-            } catch (Exception e) {
-                LOGGER.error("Error on finding field", e);
-            }
+            } catch (Exception ignored) {}
         }
-
-        if (field == null) throw new NoSuchFieldException("No field matching: " + names);
 
         return field;
     }

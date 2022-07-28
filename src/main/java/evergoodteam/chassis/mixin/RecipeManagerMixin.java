@@ -24,7 +24,7 @@ public class RecipeManagerMixin {
 
     private static final Logger LOGGER = getLogger(CMI + "/Recipe");
 
-    @Inject(method = "apply", at = @At("HEAD"))
+    @Inject(method = "apply*", at = @At("HEAD"))
     public void interceptApply(Map<Identifier, JsonElement> map, ResourceManager resourceManager, Profiler profiler, CallbackInfo info) {
 
         if (RECIPES.isEmpty()) return;

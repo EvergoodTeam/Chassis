@@ -4,7 +4,6 @@ import java.util.Set;
 
 public class SetUtils {
 
-
     /**
      * Get index of provided value from provided set
      */

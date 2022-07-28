@@ -43,14 +43,12 @@ public class BlockBase extends Block {
     }
 
     public BlockBase(List<Block> namespaceGroup, FabricBlockSettings blockSettings) {
-        //super(blockSettings);
         this(blockSettings);
 
         if (this != null) namespaceGroup.add(this);
     }
 
     public BlockBase(Material material, Float hardness, Float resistance, BlockSoundGroup sound) {
-        //super(FabricBlockSettings.of(block).requiresTool().strength(hardness, resistance).sounds(sound));
         this(FabricBlockSettings.of(material).requiresTool().hardness(hardness).resistance(resistance).sounds(sound));
     }
 

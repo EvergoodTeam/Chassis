@@ -21,17 +21,9 @@ import static evergoodteam.chassis.util.handlers.RegistryHandler.REGISTERED_BLOC
 public class ModelLoaderMixin {
 
     @Inject(method = "loadModelFromJson", at = @At("HEAD"), cancellable = true)
-    public void loadModelFromJson(Identifier id, CallbackInfoReturnable<JsonUnbakedModel> cir) {
+    private void loadModelFromJson(Identifier id, CallbackInfoReturnable<JsonUnbakedModel> cir) {
 
-        if (MODEL_INJECTION.isEmpty()) {
-            return;
-        }
-
-        for (int i = 0; i < MODEL_INJECTION.size(); i++) {
-            if (!MODEL_INJECTION.contains(id.getNamespace())) {
-                return;
-            }
-        }
+        if (MODEL_INJECTION.isEmpty() || !MODEL_INJECTION.contains(id.getNamespace())) return;
 
         String entryNamespace = id.getNamespace();
         String entryPath = getIdFromIdentifier(id);
@@ -57,7 +49,6 @@ public class ModelLoaderMixin {
                 }
             }
         } else return;
-
 
         if (modelJson == null) return;
 

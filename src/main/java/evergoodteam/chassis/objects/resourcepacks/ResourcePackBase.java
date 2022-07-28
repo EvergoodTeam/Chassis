@@ -28,9 +28,9 @@ import static org.slf4j.LoggerFactory.getLogger;
 
 public class ResourcePackBase {
 
-    private static final Logger LOGGER = getLogger(CMI + "/Resource");
+    private static Logger LOGGER = getLogger(CMI + "/Resource");
 
-    public static final Map<String, List<ResourcePackBase>> RESOURCE_PACKS = new HashMap<>(); // Used for identifying RPs
+    public static Map<String, List<ResourcePackBase>> RESOURCE_PACKS = new HashMap<>(); // Used for identifying RPs
 
     public static final List<String> HIDDEN = new ArrayList<>(); // Requires capitalized namespaces
     public static final List<String> NO_ICON = new ArrayList<>();
@@ -59,7 +59,6 @@ public class ResourcePackBase {
 
         this.namespace = namespace;
         this.path = Paths.get(config.dirPath.toString(), "resourcepacks/" + namespace.toLowerCase()); // Root of every ResourcePack
-        //LOGGER.info(this.path);
         this.hexDescColor = hexDescColor;
 
         RESOURCE_PACKS.computeIfAbsent(config.namespace, k -> new ArrayList<>()).add(this);

@@ -21,9 +21,6 @@
     ],
     "main": [
       "evergoodteam.chassis.Chassis"
-    ],
-    "modmenu": [
-      "evergoodteam.chassis.configs.ChassisModMenu"
     ]
   },
   "mixins": [
@@ -32,7 +29,7 @@
   "depends": {
     "fabricloader": ">=0.13.3",
     "fabric": "*",
-    "minecraft": "1.19"
+    "minecraft": "1.19.x"
   },
   "custom": {
     "modmenu": {
