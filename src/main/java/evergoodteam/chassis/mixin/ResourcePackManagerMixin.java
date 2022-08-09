@@ -1,9 +1,9 @@
 package evergoodteam.chassis.mixin;
 
 import com.google.common.collect.ImmutableSet;
-import evergoodteam.chassis.objects.resourcepacks.ClientResourcePackProvider;
 import evergoodteam.chassis.objects.resourcepacks.ResourcePackBase;
-import evergoodteam.chassis.objects.resourcepacks.ServerResourcePackProvider;
+import evergoodteam.chassis.objects.resourcepacks.providers.ClientResourcePackProvider;
+import evergoodteam.chassis.objects.resourcepacks.providers.ServerResourcePackProvider;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.resource.ResourcePackManager;
@@ -38,8 +38,6 @@ public class ResourcePackManagerMixin {
 
     @Inject(method = "providePackProfiles", at = @At(value = "HEAD"))
     private void injectProvidePackProfiles(CallbackInfoReturnable<Map<String, ResourcePackProfile>> cir) {
-
-        LOGGER.info("Injecting Chassis' resource providers");
 
         boolean providerAlreadyExists = false;
         boolean client;

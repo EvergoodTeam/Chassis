@@ -18,8 +18,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
-import static evergoodteam.chassis.objects.resourcepacks.ResourcePackBase.HIDDEN;
 import static evergoodteam.chassis.objects.resourcepacks.ResourcePackBase.DEFAULT_ICON;
+import static evergoodteam.chassis.objects.resourcepacks.ResourcePackBase.HIDDEN;
 import static evergoodteam.chassis.util.Reference.CMI;
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -33,7 +33,7 @@ public class PackScreenMixin {
     private void injectLoadPackIcon(TextureManager textureManager, ResourcePackProfile resourcePackProfile, CallbackInfoReturnable<Identifier> cir) {
 
         if (DEFAULT_ICON.contains(resourcePackProfile.getName())) {
-            //LOGGER.info("Attempting to set unknown pack icon before error is thrown / random texture issue");
+            //LOGGER.info("Attempting to set unknown pack icon before error is thrown / random texture");
             cir.setReturnValue(new Identifier("textures/misc/unknown_pack.png"));
         }
     }
@@ -87,7 +87,8 @@ public class PackScreenMixin {
                 field = PackListWidget.ResourcePackEntry.class.getDeclaredField(string);
                 field.setAccessible(true);
                 break;
-            } catch (Exception ignored) {}
+            } catch (Exception ignored) {
+            }
         }
 
         return field;

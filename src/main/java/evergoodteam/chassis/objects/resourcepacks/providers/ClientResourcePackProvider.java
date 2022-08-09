@@ -1,5 +1,6 @@
-package evergoodteam.chassis.objects.resourcepacks;
+package evergoodteam.chassis.objects.resourcepacks.providers;
 
+import evergoodteam.chassis.objects.resourcepacks.ResourcePackBuilder;
 import evergoodteam.chassis.util.ColorConverter;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.resource.ResourcePackProfile;
