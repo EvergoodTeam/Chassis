@@ -30,10 +30,10 @@ public class ResourcePackBase {
 
     private static Logger LOGGER = getLogger(CMI + "/Resource");
 
-    public static Map<String, List<ResourcePackBase>> RESOURCE_PACKS = new HashMap<>(); // Used for identifying RPs
+    public static final Map<String, List<ResourcePackBase>> RESOURCE_PACKS = new HashMap<>(); // Used for identifying RPs
 
     public static final List<String> HIDDEN = new ArrayList<>(); // Requires capitalized namespaces
-    public static final List<String> NO_ICON = new ArrayList<>();
+    public static final List<String> DEFAULT_ICON = new ArrayList<>();
 
     public String namespace;
     public Path path;
@@ -65,7 +65,7 @@ public class ResourcePackBase {
 
         configInit(config);
 
-        if (iconUrl == null) NO_ICON.add(namespace);
+        if (iconUrl == null) this.useDefaultIcon();
         else createPackIcon(config, namespace, iconUrl);
 
         assignDirs();
@@ -235,7 +235,7 @@ public class ResourcePackBase {
 
     /**
      * @param miningLevel stone, iron, diamond, etc.
-     * @param inputs      Block name
+     * @param inputs      block name
      * @return
      */
     public ResourcePackBase createMiningLevelTag(String miningLevel, String[] inputs) {
@@ -254,11 +254,11 @@ public class ResourcePackBase {
     }
 
     /**
-     * Add a Texture using a valid URL
+     * Add a texture using a valid URL
      *
-     * @param block       True to specify it's a Block Texture
-     * @param textureURL  Direct Link to your .png Image <br> (eg. https://i.imgur.com/BAStRdD.png)
-     * @param textureName Name of the Texture File
+     * @param block       true to specify it's a block texture
+     * @param textureURL  direct link to your .png image <br> (eg. https://i.imgur.com/BAStRdD.png)
+     * @param textureName name of the texture File
      * @return
      */
     public ResourcePackBase createTexture(Boolean block, String textureURL, String textureName) {
@@ -345,12 +345,19 @@ public class ResourcePackBase {
     //region GUI
 
     /**
+     * Use the default icon for the ResourcePack <p>
+     * NOTE: this overwrites any icon specified previously
+     */
+    public ResourcePackBase useDefaultIcon() {
+        DEFAULT_ICON.add(this.namespace);
+        return this;
+    }
+
+    /**
      * Hide ResourcePack from the GUI
-     *
-     * @return
      */
     public ResourcePackBase hide() {
-        HIDDEN.add(net.fabricmc.loader.impl.util.StringUtil.capitalize(this.namespace));
+        HIDDEN.add(StringUtils.capitalize(this.namespace));
         return this;
     }
 
@@ -362,7 +369,7 @@ public class ResourcePackBase {
             if (!Files.exists(iconPath)) Files.copy(in, iconPath);
         } catch (IOException e) {
             LOGGER.warn("Error on creating Pack Icon file, falling back to Unknown Icon", e);
-            this.hide();
+            this.useDefaultIcon();
         }
     }
     //endregion

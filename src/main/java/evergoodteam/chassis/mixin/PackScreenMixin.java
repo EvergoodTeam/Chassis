@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import static evergoodteam.chassis.objects.resourcepacks.ResourcePackBase.HIDDEN;
-import static evergoodteam.chassis.objects.resourcepacks.ResourcePackBase.NO_ICON;
+import static evergoodteam.chassis.objects.resourcepacks.ResourcePackBase.DEFAULT_ICON;
 import static evergoodteam.chassis.util.Reference.CMI;
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -32,7 +32,7 @@ public class PackScreenMixin {
     @Inject(at = @At("HEAD"), method = "loadPackIcon(Lnet/minecraft/client/texture/TextureManager;Lnet/minecraft/resource/ResourcePackProfile;)Lnet/minecraft/util/Identifier;", cancellable = true)
     private void injectLoadPackIcon(TextureManager textureManager, ResourcePackProfile resourcePackProfile, CallbackInfoReturnable<Identifier> cir) {
 
-        if (NO_ICON.contains(resourcePackProfile.getName())) {
+        if (DEFAULT_ICON.contains(resourcePackProfile.getName())) {
             //LOGGER.info("Attempting to set unknown pack icon before error is thrown / random texture issue");
             cir.setReturnValue(new Identifier("textures/misc/unknown_pack.png"));
         }
