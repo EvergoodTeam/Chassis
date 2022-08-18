@@ -5,6 +5,7 @@ import evergoodteam.chassis.configs.ConfigBase;
 import evergoodteam.chassis.configs.ConfigHandler;
 import evergoodteam.chassis.objects.assets.*;
 import evergoodteam.chassis.util.StringUtils;
+import evergoodteam.chassis.util.URLUtils;
 import evergoodteam.chassis.util.handlers.DirHandler;
 import evergoodteam.chassis.util.handlers.FileHandler;
 import evergoodteam.chassis.util.handlers.JsonHandler;
@@ -258,27 +259,31 @@ public class ResourcePackBase {
      *
      * @param block       true to specify it's a block texture
      * @param textureURL  direct link to your .png image <br> (eg. https://i.imgur.com/BAStRdD.png)
-     * @param textureName name of the texture File
+     * @param textureName name of the texture file
      * @return
      */
     public ResourcePackBase createTexture(Boolean block, String textureURL, String textureName) {
+        if (URLUtils.isImage(textureURL)) {
 
-        String actual = StringUtils.checkMissingExtension(textureName, ".png");
+            String actual = StringUtils.checkMissingExtension(textureName, ".png");
 
-        DirHandler.create(this.namespaceAssetsDir.resolve("textures"), new String[]{"block", "item"});
+            DirHandler.create(this.namespaceAssetsDir.resolve("textures"), new String[]{"block", "item"});
 
-        Path blockDir = this.namespaceAssetsDir.resolve("textures/block");
-        Path itemDir = this.namespaceAssetsDir.resolve("textures/item");
+            Path blockDir = this.namespaceAssetsDir.resolve("textures/block");
+            Path itemDir = this.namespaceAssetsDir.resolve("textures/item");
 
-        try (InputStream in = new URL(textureURL).openStream()) {
-            if (block) {
-                if (!Files.exists(blockDir.resolve(actual))) Files.copy(in, blockDir.resolve(actual));
-            } else {
-                if (!Files.exists(itemDir.resolve(actual))) Files.copy(in, itemDir.resolve(actual));
+            try (InputStream in = new URL(textureURL).openStream()) {
+                if (block) {
+                    if (!Files.exists(blockDir.resolve(actual))) Files.copy(in, blockDir.resolve(actual));
+                } else {
+                    if (!Files.exists(itemDir.resolve(actual))) Files.copy(in, itemDir.resolve(actual));
+                }
+            } catch (IOException e) {
+                LOGGER.error("Error on creating a texture .png", e);
             }
-
-        } catch (IOException e) {
-            LOGGER.warn("Error on creating Texture .png", e);
+        }
+        else {
+            LOGGER.warn("Invalid URL for a texture is being used");
         }
 
         return this;
@@ -362,13 +367,18 @@ public class ResourcePackBase {
     }
 
     private void createPackIcon(@NotNull ConfigBase config, @NotNull String namespace, String iconURL) {
+        if(URLUtils.isImage(iconURL)){
+            Path iconPath = Paths.get(config.dirPath.toString(), "resourcepacks/" + namespace.toLowerCase() + "/resources/pack.png");
 
-        Path iconPath = Paths.get(config.dirPath.toString(), "resourcepacks/" + namespace.toLowerCase() + "/resources/pack.png");
-
-        try (InputStream in = new URL(iconURL).openStream()) {
-            if (!Files.exists(iconPath)) Files.copy(in, iconPath);
-        } catch (IOException e) {
-            LOGGER.warn("Error on creating Pack Icon file, falling back to Unknown Icon", e);
+            try (InputStream in = new URL(iconURL).openStream()) {
+                if (!Files.exists(iconPath)) Files.copy(in, iconPath);
+            } catch (IOException e) {
+                LOGGER.error("Error on creating pack icon .png, falling back to default icon", e);
+                this.useDefaultIcon();
+            }
+        }
+        else {
+            LOGGER.warn("Invalid URL for the pack icon is being used, falling back to default icon");
             this.useDefaultIcon();
         }
     }
