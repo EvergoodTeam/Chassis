@@ -1,7 +1,7 @@
 package evergoodteam.chassis.mixin;
 
 import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
+import evergoodteam.chassis.objects.injected.RecipeBase;
 import net.minecraft.recipe.RecipeManager;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.util.Identifier;
@@ -12,47 +12,30 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import java.util.List;
 import java.util.Map;
 
 
 import static evergoodteam.chassis.util.Reference.CMI;
-import static evergoodteam.chassis.util.Reference.RECIPES;
 import static org.slf4j.LoggerFactory.getLogger;
 
 @Mixin(RecipeManager.class)
 public class RecipeManagerMixin {
 
-    private static final Logger LOGGER = getLogger(CMI + "/Recipe");
+    private static final Logger LOG = getLogger(CMI + "/Recipe");
 
     @Inject(method = "apply*", at = @At("HEAD"))
     public void interceptApply(Map<Identifier, JsonElement> map, ResourceManager resourceManager, Profiler profiler, CallbackInfo info) {
 
-        if (RECIPES.isEmpty()) return;
+        List<RecipeBase> recipeList = RecipeBase.getRecipeList();
 
-        String namespace;
-        String path;
-        JsonObject json;
+        if (!recipeList.isEmpty()) {
 
-        // Go through every namespace
-        for (int i = 0; i < RECIPES.size(); i++) {
-
-            Map<String, JsonObject> DEEP = RECIPES.get(RECIPES.keySet().toArray()[i]);
-
-            LOGGER.info("Scanning recipes from \"{}\": found {} recipe(s)", RECIPES.keySet().toArray()[i], DEEP.size());
-
-            // Go through everything from that namespace
-            for (int j = 0; j < DEEP.size(); j++) {
-
-                namespace = RECIPES.keySet().toArray()[i].toString();
-                path = DEEP.keySet().toArray()[j].toString();
-                json = DEEP.get(DEEP.keySet().toArray()[j]);
-
-                //LOGGER.info("Working on {} of {}: \"{}\"", (DEEP.size() - 1), namespace, path);
-
-                if (json != null) {
-                    // Path is unique, using the same path will override
-                    map.put(new Identifier(namespace, path), json);
-                } else LOGGER.info("Recipe on {} ( {}:{} ) has an invalid Json", (DEEP.size() - 1), namespace, path);
+            // TODO: missing: - countRecipes - how many entries per namespace
+            for (RecipeBase recipe : recipeList) {
+                if (recipe.getRecipe() != null) {
+                    map.put(recipe.getIdentifier(), recipe.getRecipe());
+                } else LOG.error("Recipe \"{}:{}\" has an invalid Json", recipe.getNamespace(), recipe.getPath());
             }
         }
     }

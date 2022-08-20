@@ -1,20 +1,19 @@
 package evergoodteam.chassis.objects.assets;
 
 import com.google.gson.JsonObject;
+import org.jetbrains.annotations.Nullable;
 
 public class ModelJson {
 
     /**
-     * <p> Generates a {@link JsonObject} with the required information for the Item's Model </p>
+     * Generates a {@link JsonObject} with the required information for an item's model
      *
-     * @param namespace   your ModId
-     * @param type        <p> "handheld": used mostly for tools </p> <p> "generated": everything else item related </p>
-     *                    <p> "block": item generated from block </p>
-     * @param textureName name of your .png Texture File
-     * @return
+     * @param namespace   your modId
+     * @param type        "handheld": used mostly for tools <p> "generated": everything else item related <p>
+     *                    "block": item generated from block
+     * @param textureName name of your texture
      */
-    public static JsonObject createItemModelJson(String namespace, String type, String textureName) {
-
+    public static @Nullable JsonObject createItemModelJson(String namespace, String type, String textureName) {
         if ("generated".equals(type) || "handheld".equals(type)) {
 
             JsonObject json = new JsonObject();
@@ -39,17 +38,15 @@ public class ModelJson {
     }
 
     /**
-     * <p> Generates a {@link JsonObject} with the required information for the Block's Model </p>
-     * <p> When dealing with Columns, have every texture with the same prefix (eg. example_block) and
-     * with either the "_end" or "_side" suffix to specify top/bottom textures and side textures </p>
-     * <p> (eg. example_block_side, example_block_end) </p>
+     * Generates a {@link JsonObject} with the required information for a block's model <p>
+     * When dealing with columns, have every texture with the same prefix (eg. "example_block") and
+     * with the "_end"/"_side" suffix to specify top/bottom textures and side textures <p>
+     * eg. "example_block_side", "example_block_end" <p>
      *
-     * @param cubeType    <p> "all": same texture on all 6 sides </p><p> "column": uses a specific textures for top/bottom and sides </p>
+     * @param cubeType    "all": same texture on all 6 sides <p> "column": uses a specific textures for top/bottom and sides <p>
      * @param textureName name of your .png Texture File
-     * @return
      */
     public static JsonObject createBlockModelJson(String cubeType, String textureName) {
-
         if ("all".equals(cubeType)) {
 
             JsonObject json = new JsonObject();
