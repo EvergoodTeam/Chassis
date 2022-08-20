@@ -34,10 +34,10 @@ public class ResourcePackManagerMixin {
     @Shadow
     @Final
     @Mutable
-    private Set<ResourcePackProvider> providers;
+    private Set<ResourcePackProvider> providers; // Turned into an ImmutableSet later, treat as such
 
     @Inject(method = "providePackProfiles", at = @At(value = "HEAD"))
-    private void injectProvidePackProfiles(CallbackInfoReturnable<Map<String, ResourcePackProfile>> cir) {
+    public void injectProvidePackProfiles(CallbackInfoReturnable<Map<String, ResourcePackProfile>> cir) {
 
         boolean providerAlreadyExists = false;
         boolean client;
@@ -56,30 +56,23 @@ public class ResourcePackManagerMixin {
             }
         }
 
-        Map<String, List<ResourcePackBase>> m = ResourcePackBase.RESOURCE_PACKS;
-
-        Set<ResourcePackProvider> prov = new HashSet<>(this.providers);
+        Map<String, List<ResourcePackBase>> resourceMap = ResourcePackBase.RESOURCE_PACKS;
+        Set<ResourcePackProvider> providersCopy = new HashSet<>(this.providers);
 
         if (!providerAlreadyExists) {
-            for (int i = 0; i < m.keySet().size(); i++) {
-
-                String id = m.keySet().toArray()[i].toString();
-
-                for (int j = 0; j < m.get(m.keySet().toArray()[i]).size(); j++) {
-
-                    ResourcePackBase r = m.get(m.keySet().toArray()[i]).get(j);
-
+            for (String namespace : resourceMap.keySet()) {
+                for (ResourcePackBase resourcePack : resourceMap.get(namespace)) {
                     if (client) {
-                        prov.add(new ClientResourcePackProvider(id, r.namespace, r.hexDescColor));
+                        providersCopy.add(new ClientResourcePackProvider(namespace, resourcePack.namespace, resourcePack.hexDescColor));
                         //LOGGER.info("Injected our ClientProvider into providers: {}", this.providers);
                     } else {
-                        prov.add(new ServerResourcePackProvider(id, r.namespace));
+                        providersCopy.add(new ServerResourcePackProvider(namespace, resourcePack.namespace));
                         //LOGGER.info("Injected our ServerProvider into providers: {}", this.providers);
                     }
                 }
             }
         }
 
-        this.providers = ImmutableSet.copyOf(prov);
+        this.providers = ImmutableSet.copyOf(providersCopy);
     }
 }

@@ -30,7 +30,7 @@ public class PackScreenMixin {
 
     // Fix random selection of icon when icon is missing
     @Inject(at = @At("HEAD"), method = "loadPackIcon(Lnet/minecraft/client/texture/TextureManager;Lnet/minecraft/resource/ResourcePackProfile;)Lnet/minecraft/util/Identifier;", cancellable = true)
-    private void injectLoadPackIcon(TextureManager textureManager, ResourcePackProfile resourcePackProfile, CallbackInfoReturnable<Identifier> cir) {
+    public void injectLoadPackIcon(TextureManager textureManager, ResourcePackProfile resourcePackProfile, CallbackInfoReturnable<Identifier> cir) {
 
         if (DEFAULT_ICON.contains(resourcePackProfile.getName())) {
             //LOGGER.info("Attempting to set unknown pack icon before error is thrown / random texture");
@@ -40,12 +40,11 @@ public class PackScreenMixin {
 
     // Hide ResourcePack from GUI
     @Inject(at = @At("TAIL"), method = "updatePackList(Lnet/minecraft/client/gui/screen/pack/PackListWidget;Ljava/util/stream/Stream;)V")
-    private void injectUpdatePackList(PackListWidget widget, Stream<ResourcePackOrganizer.Pack> packs, CallbackInfo info) {
+    public void injectUpdatePackList(PackListWidget widget, Stream<ResourcePackOrganizer.Pack> packs, CallbackInfo info) {
 
         List<PackListWidget.ResourcePackEntry> toRemove = new ArrayList<>();
 
         for (PackListWidget.ResourcePackEntry resourcePackEntry : widget.children()) {
-
             ResourcePackOrganizer.Pack packFromEntry = this.getPackFromEntry(resourcePackEntry);
 
             if (packFromEntry != null) {
@@ -58,14 +57,12 @@ public class PackScreenMixin {
         }
 
         for (PackListWidget.ResourcePackEntry resourcePackEntry : toRemove) {
-
             widget.children().remove(resourcePackEntry);
         }
 
     }
 
     private ResourcePackOrganizer.Pack getPackFromEntry(PackListWidget.ResourcePackEntry entry) {
-
         try {
             Field field = findField("pack", "field_19129");
             field.setAccessible(true);
