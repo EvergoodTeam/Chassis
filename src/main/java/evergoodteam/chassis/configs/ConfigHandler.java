@@ -19,10 +19,10 @@ public class ConfigHandler {
     private static final Logger LOGGER = getLogger(MODID + "/C/H");
 
     /**
-     * Get all the contents of a Config file
+     * Gets all the contents of a .properties config file
      *
-     * @param config
-     * @return List with all the lines
+     * @param config owner of the .properties config file
+     * @return the lines from the file as a {@link List}
      */
     public static List<String> getContents(@NotNull ConfigBase config) {
         try {
@@ -33,13 +33,11 @@ public class ConfigHandler {
     }
 
     /**
-     * <p>Read the properties present in the provided Config file and writes them to their respective variables</p>
-     * <p>If the Config file is empty, it will be regenerated</p>
-     *
-     * @param config
+     * Reads the properties present in the .properties config file owned by the provided {@link ConfigBase}
+     * and writes them to their respective variables <p>
+     * NOTE: if the .properties config file is empty, it will be regenerated with the default values
      */
     public static void readOptions(@NotNull ConfigBase config) {
-
         if (Files.exists(config.propertiesPath)) {
 
             Properties c = new Properties();
@@ -52,7 +50,7 @@ public class ConfigHandler {
 
             if (c.isEmpty()) {   // File can exist AND be empty at the same time
                 LOGGER.warn("Can't read as the Config File is empty, trying to regenerate");
-                config.builder.setupDefaultProperties();
+                config.getBuilder().setupDefaultProperties();
             }
 
             config.configLocked = getBooleanOption(config, config.namespace + "ConfigLocked", false);
@@ -68,35 +66,34 @@ public class ConfigHandler {
     }
 
     /**
-     * Get a Property's Boolean value from the .properties file of the specified Config
+     * Gets a property's boolean value from the .properties config file of the specified Config
      *
-     * @param config       owner of the Boolean
-     * @param name         name of your Boolean
-     * @param defaultValue default value of your Boolean, used when the .properties File doesn't exist
+     * @param config       owner of the property
+     * @param name         name of the property
+     * @param defaultValue default value of the property to use as fallback
      */
     public static @NotNull Boolean getBooleanOption(@NotNull ConfigBase config, String name, Boolean defaultValue) {
         return Boolean.valueOf(String.valueOf(getOption(config, name, defaultValue)));
     }
 
     /**
-     * Get a Property's value from the .properties file of the specified Config
+     * Gets a property's value from the .properties config file of the specified Config
      *
-     * @param config       owner of the Boolean
-     * @param name         name of your Object
-     * @param defaultValue default value of your Object, used when the .properties File or the Property doesn't exist
+     * @param config       owner of the property
+     * @param name         name of the property
+     * @param defaultValue default value of the property to use as fallback
      */
-    public static Object getOption(@NotNull ConfigBase config, String name, Object defaultValue) {
+    public static Object getOption(@NotNull ConfigBase config, String name, @NotNull Object defaultValue) {
         return getOption(config, name) != null ? getOption(config, name) : defaultValue;
     }
 
     /**
-     * Get a Property's value from the .properties file of the specified Config
+     * Gets a property's value from the .properties config file of the specified Config
      *
-     * @param config owner of the Boolean
-     * @param name   name of your Property
+     * @param config owner of the property
+     * @param name   name of the property
      */
     public static @Nullable Object getOption(@NotNull ConfigBase config, String name) {
-
         Properties p = new Properties();
 
         if (Files.exists(config.propertiesPath)) {
