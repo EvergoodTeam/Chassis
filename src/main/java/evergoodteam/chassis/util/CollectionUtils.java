@@ -2,10 +2,10 @@ package evergoodteam.chassis.util;
 
 import java.util.Set;
 
-public class SetUtils {
+public class CollectionUtils {
 
     /**
-     * Get index of provided value from provided set
+     * Gets the index of the specified value from the provided set
      */
     public static <T> int getIndex(Set<T> set, T value) {
         int result = 0;
