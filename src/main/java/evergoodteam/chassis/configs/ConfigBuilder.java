@@ -1,6 +1,6 @@
 package evergoodteam.chassis.configs;
 
-import evergoodteam.chassis.util.SetUtils;
+import evergoodteam.chassis.util.CollectionUtils;
 import evergoodteam.chassis.util.StringUtils;
 import evergoodteam.chassis.util.handlers.FileHandler;
 import org.jetbrains.annotations.NotNull;
@@ -18,7 +18,7 @@ import static org.slf4j.LoggerFactory.getLogger;
 
 public class ConfigBuilder {
 
-    private static final Logger LOGGER = getLogger(CMI + "/C/B");
+    private static final Logger LOGGER = getLogger(CMI + "/C/Builder");
 
     private final String NL = System.lineSeparator();
 
@@ -32,8 +32,11 @@ public class ConfigBuilder {
         this.file = config.propertiesFile;
     }
 
-    public void setupDefaultProperties() {
+    public ConfigBase getConfig() {
+        return this.config;
+    }
 
+    public void setupDefaultProperties() {
         FileOutputStream pos;
         try {
             pos = new FileOutputStream(this.file);
@@ -53,7 +56,6 @@ public class ConfigBuilder {
     }
 
     public void setupResourceProperties() {
-
         try {
             FileWriter fw = new FileWriter(this.file, true);
 
@@ -69,10 +71,9 @@ public class ConfigBuilder {
     }
 
     /**
-     * Write the Properties added with {@link ConfigBase#addProperty} to the Config File
+     * Write the properties added with {@link ConfigBase#addProperty} to the .properties config file
      */
     public void registerProperties() {
-
         if (Files.exists(this.path)) {
             try {
 
@@ -102,7 +103,6 @@ public class ConfigBuilder {
     }
 
     public void overwrite(String name, String newValue) {
-
         Properties config = new Properties();
 
         try (InputStream input = new FileInputStream(this.file)) {
@@ -125,7 +125,6 @@ public class ConfigBuilder {
     }
 
     public void updateHeader() {
-
         if (Files.exists(this.path)) {
 
             List<String> contents = ConfigHandler.getContents(this.config);
@@ -133,9 +132,7 @@ public class ConfigBuilder {
             FileHandler.emptyFile(this.file);
 
             try {
-
                 FileWriter fw = new FileWriter(this.file, true);
-
                 BufferedWriter bw = new BufferedWriter(fw);
 
                 //LOGGER.info("Attempting to update Header");
@@ -159,29 +156,24 @@ public class ConfigBuilder {
     }
 
     public String header() {
-
         String result = "# %s Configs".formatted(StringUtils.capitalize(config.namespace)) + NL
                 + "# " + new Date() + NL + NL;
-
         return result;
     }
 
     public String header(String text) {
         String line = "#".repeat(81);
         String result = line + NL + "# " + text + NL + line + NL + NL;
-
         return result;
     }
 
     public String defaultOptions() {
         String result = "# Lock " + StringUtils.capitalize(config.namespace) + " configs from being regenerated" + NL
                 + config.namespace + "ConfigLocked = " + config.configLocked + NL;
-
         return result;
     }
 
     public String resourceOptions() {
-
         StringBuilder sb = new StringBuilder();
 
         sb.append("# Lock " + StringUtils.capitalize(config.namespace) + " resources from being regenerated" + NL);
@@ -195,9 +187,7 @@ public class ConfigBuilder {
     }
 
     public String additionalOptions() {
-
         StringBuilder sb = new StringBuilder();
-
         Properties p = new Properties();
 
         try (InputStream input = new FileInputStream(config.propertiesFile)) {
@@ -208,10 +198,10 @@ public class ConfigBuilder {
 
         config.addonOptions.forEach((name, value) -> {
 
-            int index = SetUtils.getIndex(config.addonOptions.keySet(), name);
+            int index = CollectionUtils.getIndex(config.addonOptions.keySet(), name);
 
             if (p.getProperty(name) == null) { // Property is missing, add with default value
-                //LOGGER.info("Found missing property \"{}\", adding to File", name);
+                //LOGGER.info("Found missing property \"{}\", adding to file", name);
 
                 if (!"".equals(config.addonComments.get(index)))
                     sb.append(NL + "# " + config.addonComments.get(index) + NL);
@@ -219,7 +209,7 @@ public class ConfigBuilder {
 
                 sb.append(name + " = " + value);
 
-            } else { // Property exists, fetch the value and overwrite Map
+            } else { // Property exists, fetch the value and overwrite map
                 config.addonOptions.put(name, p.getProperty(name));
             }
         });
