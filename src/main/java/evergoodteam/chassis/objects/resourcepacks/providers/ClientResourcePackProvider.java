@@ -44,7 +44,7 @@ public class ClientResourcePackProvider implements ResourcePackProvider {
      *
      * @param namespace   name of the Config Folder, root of all the Resources
      * @param path        name of your ResourcePack
-     * @param description
+     * @param description description of the resources to be displayed in the GUI
      * @see evergoodteam.chassis.mixin.ResourcePackManagerMixin
      */
     public ClientResourcePackProvider(String namespace, String path, MutableText description) {
@@ -76,7 +76,7 @@ public class ClientResourcePackProvider implements ResourcePackProvider {
                 () -> groupResourcePack,
                 factory,
                 ResourcePackProfile.InsertionPosition.BOTTOM,
-                resourcePackSource // Description/source of RP, displayed in the GUI
+                resourcePackSource // Description/source, displayed in the GUI
         );
 
         //LOGGER.info("Attempting to register Client ResourcePackProfile - {}", profile);

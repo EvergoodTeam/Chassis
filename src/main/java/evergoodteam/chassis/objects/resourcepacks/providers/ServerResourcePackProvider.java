@@ -19,7 +19,7 @@ public class ServerResourcePackProvider implements ResourcePackProvider {
     private ResourcePackSource resourcePackSource;
 
     /**
-     * @param namespace name of the Config Folder, root of all the Resources
+     * @param namespace name of your {@link evergoodteam.chassis.configs.ConfigBase ConfigBase}
      * @param path      name of your ResourcePack
      * @see evergoodteam.chassis.mixin.ResourcePackManagerMixin
      */
