@@ -19,7 +19,7 @@ public class ConfigBase {
 
     private static final Logger LOGGER = getLogger(CMI + "/Config");
 
-    public static final Map<String, ConfigBase> CONFIGURATIONS = new HashMap<>();
+    private static final Map<String, ConfigBase> CONFIGURATIONS = new HashMap<>();
     private static final Path CONFIG_DIR = FabricLoader.getInstance().getConfigDir();
 
     public String namespace;
@@ -30,11 +30,10 @@ public class ConfigBase {
 
     public Boolean configLocked = false;        // Part of default set of options
     public Map<String, Object> resourcesLocked; // Part of default set of options
-
     public Map<String, Object> addonOptions; // Properties added by the user
     public List<String> addonComments;       // Properties comments
 
-    public ConfigBuilder builder;
+    private ConfigBuilder builder;
 
     /**
      * Object from which Configs will be generated
@@ -63,22 +62,32 @@ public class ConfigBase {
         } else LOGGER.info("Configs for \"{}\" already exist, skipping first generation", this.namespace);
     }
 
+    public ConfigBuilder getBuilder() {
+        return this.builder;
+    }
+
     /**
-     * Get the Configs associated to a namespace
+     * Gets the configs associated to the provided namespace
      *
-     * @param namespace name of the Configs
+     * @param namespace name of the configs
      */
     public static @Nullable ConfigBase getConfig(String namespace) {
-        return CONFIGURATIONS.containsKey(namespace) ? CONFIGURATIONS.get(namespace) : null;
+        return CONFIGURATIONS.getOrDefault(namespace, null);
+    }
+
+    /**
+     * Gets all the existing Configs created through {@link ConfigBase}
+     */
+    public static Map<String, ConfigBase> getConfigurations() {
+        return CONFIGURATIONS;
     }
 
     //region Root Init
 
     /**
-     * Creates all the needed dirs and the .properties Confile File
+     * Creates all the needed dirs and the .properties config file
      */
     private ConfigBase createConfigRoot() {
-
         FileHandler.delete(this.propertiesPath);
         // Regenerate everything
         DirHandler.create(this.dirPath);
@@ -90,16 +99,15 @@ public class ConfigBase {
 
         return this;
     }
-
     //endregion
 
-    //region User Content
+    //region User content
 
     /**
-     * Add a Property to the Config File
+     * Adds a property with a comment to the .properties config file
      *
-     * @param name    name of your Property
-     * @param value   what the Property is equal to
+     * @param name    name of your property
+     * @param value   what the property is equal to
      * @param comment description of the property
      */
     public ConfigBase addProperty(String name, Object value, @NotNull String comment) {
@@ -109,10 +117,10 @@ public class ConfigBase {
     }
 
     /**
-     * Add a Property to the Config File
+     * Adds a property with no comment to the .properties config file
      *
-     * @param name  name of your Property
-     * @param value what the Property is equal to
+     * @param name  name of your property
+     * @param value what the property is equal to
      */
     public ConfigBase addProperty(String name, Object value) {
         this.addonOptions.put(name, value);
@@ -121,13 +129,28 @@ public class ConfigBase {
     }
 
     /**
-     * Write the Properties added with {@link #addProperty} to the Config File
+     * Writes the properties added with {@link #addProperty} to the .properties config file <p>
+     * NOTE: call only after you added all your properties!
      */
     public ConfigBase registerProperties() {
         builder.registerProperties();
         return this;
     }
 
+    public boolean getBooleanProperty(String name, boolean defaultValue) {
+        return ConfigHandler.getBooleanOption(this, name, defaultValue);
+    }
+
+    public Object getProperty(String name, Object defaultValue) {
+        return ConfigHandler.getOption(this, name, defaultValue);
+    }
+
+    /**
+     * Overwrites the property specified by the provided name with the provided value
+     *
+     * @param name     name of your property
+     * @param newValue what the property is equal to
+     */
     public ConfigBase overwrite(String name, String newValue) {
         builder.overwrite(name, newValue);
         return this;
@@ -135,8 +158,10 @@ public class ConfigBase {
 
     //endregion
 
-    public ConfigBase openConfigFile() {
+    /**
+     * Opens the .properties file with the system's default text editor for the ".properties" file extension
+     */
+    public void openConfigFile() {
         Util.getOperatingSystem().open(this.propertiesFile);
-        return this;
     }
 }
