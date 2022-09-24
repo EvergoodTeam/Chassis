@@ -1,7 +1,6 @@
 package evergoodteam.chassis.mixin;
 
 import evergoodteam.chassis.objects.resourcepacks.ResourcePackBase;
-import lombok.extern.log4j.Log4j2;
 import net.minecraft.client.gui.screen.pack.PackListWidget;
 import net.minecraft.client.gui.screen.pack.PackScreen;
 import net.minecraft.client.gui.screen.pack.ResourcePackOrganizer;
@@ -28,7 +27,9 @@ public class PackScreenMixin {
 
     private static final Logger LOG = getLogger(CMI + "/Screen");
 
-    /** Fixex random selection of icon when icon is missing */
+    /**
+     * Fixex random selection of icon when icon is missing
+     */
     @Inject(at = @At("HEAD"), method = "loadPackIcon(Lnet/minecraft/client/texture/TextureManager;Lnet/minecraft/resource/ResourcePackProfile;)Lnet/minecraft/util/Identifier;", cancellable = true)
     public void injectLoadPackIcon(TextureManager textureManager, ResourcePackProfile resourcePackProfile, CallbackInfoReturnable<Identifier> cir) {
 
@@ -38,7 +39,9 @@ public class PackScreenMixin {
         }
     }
 
-    /** Hides ResourcePack from GUI */
+    /**
+     * Hides ResourcePack from GUI
+     */
     @Inject(at = @At("TAIL"), method = "updatePackList(Lnet/minecraft/client/gui/screen/pack/PackListWidget;Ljava/util/stream/Stream;)V")
     public void injectUpdatePackList(PackListWidget widget, Stream<ResourcePackOrganizer.Pack> packs, CallbackInfo info) {
 
@@ -51,7 +54,7 @@ public class PackScreenMixin {
                 String name = packFromEntry.getDisplayName().getString();
 
                 if (ResourcePackBase.getHiddenBooleans().containsKey(name)) {
-                    if(ResourcePackBase.getHiddenBooleans().get(name).getValue()) toRemove.add(resourcePackEntry);
+                    if (ResourcePackBase.getHiddenBooleans().get(name).getValue()) toRemove.add(resourcePackEntry);
                 }
             }
         }
