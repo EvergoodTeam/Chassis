@@ -1,5 +1,6 @@
 package evergoodteam.chassis.util.handlers;
 
+import evergoodteam.chassis.client.models.ItemModelType;
 import evergoodteam.chassis.util.IdentifierParser;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.minecraft.block.Block;
@@ -12,9 +13,9 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
+import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -25,27 +26,22 @@ import static org.slf4j.LoggerFactory.getLogger;
 
 public class RegistryHandler {
 
-    private static final Logger LOGGER = getLogger(CMI + "/Registry");
+    private static final Logger LOGGER = getLogger(CMI + "/H/Registry");
 
     public static final Map<String, List<String>> REGISTERED_BLOCKS = new HashMap<>();
     public static final Map<String, List<String>> REGISTERED_ITEMS = new HashMap<>();
-    public static final Map<String, List<String>> ITEM_TYPES = new HashMap<>(); // Uses Identifier in String
+    public static final Map<String, ItemModelType> ITEM_TYPES = new HashMap<>(); // Uses Identifier in String
 
-    static {
-        ITEM_TYPES.put("generated", new ArrayList<String>());
-        ITEM_TYPES.put("handheld", new ArrayList<String>());
-    }
-
-    //region Block Registration
+    //region Block registration
 
     /**
-     * Registers the Block and its Item version of the provided Block
+     * Registers the provided block and its item form
      *
-     * @param namespace  your ModId
-     * @param path       name to identify your Block from other entries in the same namespace
-     * @param block      your Block
-     * @param itemGroup  tab inside the Creative Inventory to which add the Block
-     * @param tooltipKey text shown as a Tooltip under the Item
+     * @param namespace  your modId
+     * @param path       name to identify your block from other entries in the same namespace
+     * @param block      your block
+     * @param itemGroup  tab inside the creative inventory to add the block to
+     * @param tooltipKey text shown as a tooltip under the item name
      * @see evergoodteam.chassis.objects.blocks.BlockBase
      */
     public static void registerBlockAndItem(String namespace, String path, Block block, ItemGroup itemGroup, String tooltipKey) {
@@ -54,12 +50,12 @@ public class RegistryHandler {
     }
 
     /**
-     * Registers the Block and its Item version of the provided Block
+     * Registers the provided block and its item form
      *
-     * @param namespace your ModId
-     * @param path      name to identify your Block from other entries in the same namespace
-     * @param block     your Block
-     * @param itemGroup tab inside the Creative Inventory to which add the Block
+     * @param namespace your modId
+     * @param path      name to identify your block from other entries in the same namespace
+     * @param block     your block
+     * @param itemGroup tab inside the creative inventory to add the block to
      * @see evergoodteam.chassis.objects.blocks.BlockBase
      */
     public static void registerBlockAndItem(String namespace, String path, Block block, ItemGroup itemGroup) {
@@ -68,11 +64,11 @@ public class RegistryHandler {
     }
 
     /**
-     * Registers the Block and its Item version of the provided Block
+     * Registers the provided block and its item form
      *
-     * @param namespace your ModId
-     * @param path      name to identify your Block from other entries in the same namespace
-     * @param block     your Block
+     * @param namespace your modId
+     * @param path      name to identify your block from other entries in the same namespace
+     * @param block     your block
      * @see evergoodteam.chassis.objects.blocks.BlockBase
      */
     public static void registerBlockAndItem(String namespace, String path, Block block) {
@@ -81,11 +77,11 @@ public class RegistryHandler {
     }
 
     /**
-     * Registers a Block
+     * Registers the provided block
      *
-     * @param namespace your ModId
-     * @param path      name to identify your Block from other entries in the same namespace
-     * @param block     your Block
+     * @param namespace your modId
+     * @param path      name to identify your block from other entries in the same namespace
+     * @param block     your block
      * @see evergoodteam.chassis.objects.blocks.BlockBase
      */
     public static void registerBlock(String namespace, String path, Block block) {
@@ -103,6 +99,7 @@ public class RegistryHandler {
                 }, false);
     }
 
+    // TODO: [NU] count them anyway
     private static void registerBlockItem(String namespace, String path, Block block, ItemGroup itemGroup) {
         registerItem(namespace, path, new BlockItem(block, new FabricItemSettings().group(itemGroup)), false);
     }
@@ -112,31 +109,31 @@ public class RegistryHandler {
     }
     //endregion
 
-    //region Item Categorization and Registration
+    //region Item categories and registration
 
     /**
-     * Registers a Tool
+     * Registers the provided item, specifying that it needs a handheld model (tool model)
      *
-     * @param namespace your ModId
-     * @param path      name to identify your Item from other entries in the same namespace
-     * @param item      your Item
+     * @param namespace your modId
+     * @param path      name to identify your item from other entries in the same namespace
+     * @param item      your item
      * @see evergoodteam.chassis.objects.items.ItemBase
      */
     public static void registerHandheldItem(String namespace, String path, Item item) {
-        ITEM_TYPES.get("handheld").add(IdentifierParser.getString(namespace, path));
+        ITEM_TYPES.put(IdentifierParser.getString(namespace, path), ItemModelType.HANDHELD);
         registerItem(namespace, path, item, true);
     }
 
     /**
-     * Registers a generic Item
+     * Registers the provided item
      *
-     * @param namespace your ModId
-     * @param path      name to identify your Item from other entries in the same namespace
-     * @param item      your Item
+     * @param namespace your modId
+     * @param path      name to identify your item from other entries in the same namespace
+     * @param item      your item
      * @see evergoodteam.chassis.objects.items.ItemBase
      */
     public static void registerGeneratedItem(String namespace, String path, Item item) {
-        ITEM_TYPES.get("generated").add(IdentifierParser.getString(namespace, path));
+        ITEM_TYPES.put(IdentifierParser.getString(namespace, path), ItemModelType.GENERATED);
         registerItem(namespace, path, item, true);
     }
 
