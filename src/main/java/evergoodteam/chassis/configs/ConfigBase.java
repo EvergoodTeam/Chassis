@@ -7,14 +7,11 @@ import evergoodteam.chassis.util.handlers.FileHandler;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
-import net.minecraft.util.Language;
 import net.minecraft.util.Util;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
@@ -26,7 +23,7 @@ import static org.slf4j.LoggerFactory.getLogger;
 public class ConfigBase {
 
     private static final Logger LOGGER = getLogger(CMI + "/Config");
-    private static final Map<String, ConfigBase> CONFIGURATIONS = new HashMap<>();
+    public static final Map<String, ConfigBase> CONFIGURATIONS = new HashMap<>();
     private static final Path CONFIG_DIR = FabricLoader.getInstance().getConfigDir();
 
     public String namespace;
@@ -115,6 +112,15 @@ public class ConfigBase {
     //endregion
 
     //region User content
+
+    /**
+     * @deprecated as of release 1.2.3, replaced by {@link #addBooleanProperty(BooleanOption)}
+     */
+    @Deprecated
+    public ConfigBase addProperty(String name, boolean defaultValue, String comment){
+        optionStorage.storeBoolean(new BooleanOption(name, defaultValue).setComment(comment));
+        return this;
+    }
 
     /**
      * Adds a boolean property from the provided {@link BooleanOption} <p>
