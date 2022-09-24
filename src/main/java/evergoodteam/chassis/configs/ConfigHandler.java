@@ -53,47 +53,23 @@ public class ConfigHandler {
                 config.getBuilder().setupDefaultProperties();
             }
 
-            config.configLocked = getBooleanOption(config, config.namespace + "ConfigLocked", false);
-
-            config.resourcesLocked.forEach((name, value) -> {
-                config.resourcesLocked.put(name, getOption(config, name, value));
-            });
-
-            config.addonOptions.forEach((name, value) -> {
-                config.addonOptions.put(name, getOption(config, name, value));
-            });
+            config.configLocked.setValue(getBooleanOption(config, config.namespace + "ConfigLocked", false));
+            config.resourcesLocked.forEach((name, value) -> value.updateValueFromString(config.getWrittenValue(value.getName())));
+            config.getOptionStorage().getOptions().forEach(option -> option.updateValueFromString(config.getWrittenValue(option.getName())));
         }
     }
 
-    /**
-     * Gets a property's boolean value from the .properties config file of the specified Config
-     *
-     * @param config       owner of the property
-     * @param name         name of the property
-     * @param defaultValue default value of the property to use as fallback
-     */
     public static @NotNull Boolean getBooleanOption(@NotNull ConfigBase config, String name, Boolean defaultValue) {
-        return Boolean.valueOf(String.valueOf(getOption(config, name, defaultValue)));
+        return getOption(config, name) != null ? Boolean.valueOf(getOption(config, name)) : defaultValue;
     }
 
     /**
-     * Gets a property's value from the .properties config file of the specified Config
+     * Gets a property's value from the .properties config file linked to the provided {@link ConfigBase}
      *
-     * @param config       owner of the property
-     * @param name         name of the property
-     * @param defaultValue default value of the property to use as fallback
+     * @param config property's owner
+     * @param name   property's name
      */
-    public static Object getOption(@NotNull ConfigBase config, String name, @NotNull Object defaultValue) {
-        return getOption(config, name) != null ? getOption(config, name) : defaultValue;
-    }
-
-    /**
-     * Gets a property's value from the .properties config file of the specified Config
-     *
-     * @param config owner of the property
-     * @param name   name of the property
-     */
-    public static @Nullable Object getOption(@NotNull ConfigBase config, String name) {
+    public static @Nullable String getOption(@NotNull ConfigBase config, String name) {
         Properties p = new Properties();
 
         if (Files.exists(config.propertiesPath)) {

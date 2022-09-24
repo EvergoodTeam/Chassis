@@ -1,6 +1,7 @@
 package evergoodteam.chassis.configs;
 
-import evergoodteam.chassis.util.CollectionUtils;
+import evergoodteam.chassis.configs.options.OptionBase;
+import evergoodteam.chassis.configs.options.OptionStorage;
 import evergoodteam.chassis.util.StringUtils;
 import evergoodteam.chassis.util.handlers.FileHandler;
 import org.jetbrains.annotations.NotNull;
@@ -71,7 +72,7 @@ public class ConfigBuilder {
     }
 
     /**
-     * Write the properties added with {@link ConfigBase#addProperty} to the .properties config file
+     * Write the properties added to the .properties config file
      */
     public void registerProperties() {
         if (Files.exists(this.path)) {
@@ -89,7 +90,7 @@ public class ConfigBuilder {
                     new FileWriter(this.file, false).close();
 
                     bw.write(original);
-                    bw.write(System.lineSeparator());
+                    bw.write(NL);
                     bw.write(additional);
 
                     bw.close();
@@ -113,7 +114,7 @@ public class ConfigBuilder {
 
         String oldValue = config.getProperty(name);
 
-        if (oldValue != null) {
+        if (oldValue != null && !oldValue.equals(newValue)) {
             try {
                 String file = Files.readString(this.path);
                 file = file.replace(name + " = " + oldValue, name + " = " + newValue);
@@ -144,7 +145,7 @@ public class ConfigBuilder {
                         bw.write(contents.get(i).strip());
                     } else {
                         bw.write(contents.get(i));
-                        bw.write(System.lineSeparator());
+                        bw.write(NL);
                     }
                 }
                 bw.close();
@@ -156,21 +157,18 @@ public class ConfigBuilder {
     }
 
     public String header() {
-        String result = "# %s Configs".formatted(StringUtils.capitalize(config.namespace)) + NL
+        return "# %s Configs".formatted(StringUtils.capitalize(config.namespace)) + NL
                 + "# " + new Date() + NL + NL;
-        return result;
     }
 
     public String header(String text) {
         String line = "#".repeat(81);
-        String result = line + NL + "# " + text + NL + line + NL + NL;
-        return result;
+        return line + NL + "# " + text + NL + line + NL + NL;
     }
 
     public String defaultOptions() {
-        String result = "# Lock " + StringUtils.capitalize(config.namespace) + " configs from being regenerated" + NL
-                + config.namespace + "ConfigLocked = " + config.configLocked + NL;
-        return result;
+        return "# Lock " + StringUtils.capitalize(config.namespace) + " configs from being regenerated" + NL
+                + config.namespace + "ConfigLocked = " + config.configLocked.getValue() + NL;
     }
 
     public String resourceOptions() {
@@ -178,7 +176,7 @@ public class ConfigBuilder {
 
         sb.append("# Lock " + StringUtils.capitalize(config.namespace) + " resources from being regenerated" + NL);
         config.resourcesLocked.forEach((name, value) -> {
-            sb.append(name + " = " + value + NL);
+            sb.append(value.getName() + " = " + value.getValue() + NL);
         });
 
         sb.append(NL);
@@ -196,24 +194,41 @@ public class ConfigBuilder {
             throw new RuntimeException(e);
         }
 
-        config.addonOptions.forEach((name, value) -> {
+        buildAdditionalString(p, sb, config.getOptionStorage());
+        return sb.toString();
+    }
 
-            int index = CollectionUtils.getIndex(config.addonOptions.keySet(), name);
-
-            if (p.getProperty(name) == null) { // Property is missing, add with default value
+    private void buildAdditionalString(Properties p, StringBuilder sb, OptionStorage optionStorage) {
+        for (OptionBase option : optionStorage.getOptions()) {
+            if (p.getProperty(option.getName()) == null) { // Property is missing, add with default value
                 //LOGGER.info("Found missing property \"{}\", adding to file", name);
 
-                if (!"".equals(config.addonComments.get(index)))
-                    sb.append(NL + "# " + config.addonComments.get(index) + NL);
-                else sb.append(NL);
-
-                sb.append(name + " = " + value);
+                sb.append(this.comment(option));
+                sb.append(this.property(option));
 
             } else { // Property exists, fetch the value and overwrite map
-                config.addonOptions.put(name, p.getProperty(name));
+                option.setValue(option.getWrittenValue(config)); // TODO: unify reading
             }
-        });
+        }
+    }
 
-        return sb.toString();
+    private <T> String comment(OptionBase<?> option) {
+        if (!"".equals(option.getComment())) {
+            String commentDesc = "%s# %s".formatted(NL, option.getComment());
+            if (!option.defaultHidden()) return "%s %s%s".formatted(commentDesc, defaultComment(option), NL);
+            else return commentDesc + NL;
+        }
+        return NL;
+    }
+
+    private String defaultComment(OptionBase<?> option) {
+        if (option instanceof OptionBase.Interval<?> interval) {
+            return "[range: %s ~ %s, default: %s]".formatted(interval.getMin(), interval.getMax(), option.getDefaultValue());
+        }
+        return "[default: %s]".formatted(option.getDefaultValue());
+    }
+
+    private String property(OptionBase<?> option) {
+        return "%s = %s".formatted(option.getName(), option.getValue());
     }
 }
