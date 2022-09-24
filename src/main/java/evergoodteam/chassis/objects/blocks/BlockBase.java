@@ -1,16 +1,15 @@
 package evergoodteam.chassis.objects.blocks;
 
+import evergoodteam.chassis.client.ChassisClient;
+import evergoodteam.chassis.objects.EntryBase;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.block.Block;
 import net.minecraft.block.Material;
 import net.minecraft.sound.BlockSoundGroup;
 
-import java.util.ArrayList;
 import java.util.List;
 
-public class BlockBase extends Block {
-
-    public static final List<Block> TRANSPARENT = new ArrayList<>();
+public class BlockBase extends Block implements BlockSettings, EntryBase {
 
     /**
      * Generates a Block that you can later register
@@ -22,11 +21,13 @@ public class BlockBase extends Block {
      * @param sound          {@link BlockSoundGroup}
      */
     public BlockBase(List<Block> namespaceGroup, Material material, Float hardness, Float resistance, BlockSoundGroup sound) {
-        this(namespaceGroup, FabricBlockSettings.of(material).requiresTool().strength(hardness, resistance).sounds(sound));
+        this(FabricBlockSettings.of(material).requiresTool().strength(hardness, resistance).sounds(sound));
+        this.addToList(namespaceGroup);
     }
 
     public BlockBase(List<Block> namespaceGroup, Material material, Float strength, BlockSoundGroup sound) {
-        this(namespaceGroup, FabricBlockSettings.of(material).requiresTool().strength(strength).sounds(sound));
+        this(FabricBlockSettings.of(material).requiresTool().strength(strength).sounds(sound));
+        this.addToList(namespaceGroup);
     }
 
     /**
@@ -35,17 +36,19 @@ public class BlockBase extends Block {
      * @param namespaceGroup list to which add the generated Block - you can use this List to later register the Block(s)
      * @param blockSettings
      * @param transparent
+     * @deprecated as of release 1.2.3, replaced by {@link BlockSettings#setTransparent() setTransparent()}
      */
+    @Deprecated
     public BlockBase(List<Block> namespaceGroup, FabricBlockSettings blockSettings, Boolean transparent) {
         this(namespaceGroup, blockSettings);
+        this.addToList(namespaceGroup);
 
-        if (this != null) if (transparent) TRANSPARENT.add(this);
+        if (transparent) this.setTransparent();
     }
 
     public BlockBase(List<Block> namespaceGroup, FabricBlockSettings blockSettings) {
         this(blockSettings);
-
-        if (this != null) namespaceGroup.add(this);
+        this.addToList(namespaceGroup);
     }
 
     public BlockBase(Material material, Float hardness, Float resistance, BlockSoundGroup sound) {
@@ -56,12 +59,13 @@ public class BlockBase extends Block {
         this(FabricBlockSettings.of(material).requiresTool().strength(strength).sounds(sound));
     }
 
+    /**
+     * @deprecated as of release 1.2.3, replaced by {@link BlockSettings#setTransparent() setTransparent()}
+     */
+    @Deprecated
     public BlockBase(FabricBlockSettings blockSettings, Boolean transparent) {
         this(blockSettings);
-
-        if (this != null) {
-            if (transparent) TRANSPARENT.add(this);
-        }
+        if (transparent) this.setTransparent();
     }
 
     public BlockBase(FabricBlockSettings blockSettings) {
