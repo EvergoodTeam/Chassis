@@ -1,8 +1,19 @@
 package evergoodteam.chassis.util;
 
+import net.minecraft.text.Style;
+import net.minecraft.text.Text;
+
 import java.awt.*;
 
 public class ColorConverter {
+
+    public static Text coloredText(String text, String hexColor){
+        return Text.literal(text).setStyle(coloredStyle(hexColor));
+    }
+
+    public static Style coloredStyle(String hex){
+        return Style.EMPTY.withColor(getDecimalFromHex(hex));
+    }
 
     //region Decimal
 
