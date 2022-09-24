@@ -34,7 +34,7 @@ public class InjectionHandler {
      */
     @Deprecated
     public static void addColumnType(@NotNull String[] paths) { // TODO: check other places where String... is misused
-        defaultColumns.addAll(List.of(paths));
+        defaultColumns = List.of(paths);
     }
 
     /**
