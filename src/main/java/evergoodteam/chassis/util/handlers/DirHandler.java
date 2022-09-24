@@ -9,43 +9,42 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-import static evergoodteam.chassis.util.Reference.MODID;
+import static evergoodteam.chassis.util.Reference.CMI;
 import static org.slf4j.LoggerFactory.getLogger;
 
 public class DirHandler {
 
-    private static final Logger LOGGER = getLogger(MODID + "/H/Dir");
+    private static final Logger LOGGER = getLogger(CMI + "/H/Dir");
 
     /**
-     * <p> Creates a Directory at the specified Path if one doesn't exist already </p>
-     * <p> Also creates missing parent Dirs from the specified Path </p>
-     *
-     * @param path
-     */
-    public static void create(Path path) {
-
-        //LOGGER.info("Attempting to create Dir at {}", path);
-
-        if (!Files.exists(path)) {
-            new File(path.toString()).mkdirs();
-            //LOGGER.info("Created Dir at {}", path);
-        }
-        //else LOGGER.info("Dir {} exists already", path);
-    }
-
-    /**
-     * Creates a Dir at the specified parent Path for each String provided
-     *
-     * @param parent
-     * @param children
+     * Creates a directory at the specified parent path for each string provided <p>
+     * NOTE: this DOES NOT create missing parent dirs and will warn you about any
      */
     public static void create(Path parent, String @NotNull [] children) {
-
-        for (String child : children) {
-            create(parent.resolve(child));
-        }
+        if (Files.isDirectory(parent)) {
+            for (String child : children) {
+                create(parent.resolve(child));
+            }
+        } else
+            LOGGER.warn("Cant create child directories at {} because parent isn't a directory or is missing!", parent);
     }
 
+    /**
+     * Creates a directory at the specified path if one doesn't exist already,
+     * while also creating the missing parent dirs
+     */
+    public static void create(Path path) {
+        //LOGGER.info("Attempting to create dir at {}", path);
+        if (!Files.exists(path)) {
+            boolean success = new File(path.toString()).mkdirs(); // TODO: [NU] debug logging?
+            //if (success) LOGGER.info("Created dir at {}", path);
+        }
+        //else LOGGER.warn("Directory at {} already exists", path);
+    }
+
+    /**
+     * Cleans the directory at the specified path
+     */
     public static void clean(Path path) {
         try {
             if (Files.exists(path)) {
