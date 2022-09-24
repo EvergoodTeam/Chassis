@@ -46,7 +46,6 @@ public class InjectionHandler {
     @Deprecated
     public static void addModelInjection(@NotNull String namespace) {
         new ModelBundler(namespace.toLowerCase()).addColumn(defaultColumns.toArray(new String[0]));
-        defaultColumns.clear();
     }
     //endregion
 
