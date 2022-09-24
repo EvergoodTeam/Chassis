@@ -1,32 +1,46 @@
 package evergoodteam.chassis.util;
 
 import net.minecraft.util.Identifier;
-import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class IdentifierParser {
 
+    /**
+     * Returns the namespace of an identifier string
+     */
+    public static String getNamespace(String identifier) {
+        return StringUtils.firstFromSplit(identifier, ":");
+    }
+
+    /**
+     * Returns the path of an identifier string
+     */
+    public static String getPath(String identifier) {
+        return StringUtils.lastFromSplit(identifier, ":");
+    }
+
+    /**
+     * Returns a string of the form {@code <namespace>:<path>} <p>
+     * e.g. {@code minecraft:iron_ingot})
+     */
     public static String getString(String namespace, String path) {
         return namespace + ":" + path;
     }
 
     /**
-     * example_mod:block/example_block -> example_block
-     *
-     * @param identifier
-     * @return Id of the Object from the specified Identifier
+     * Extracts an entry's name from its identifier <p>
+     * e.g. {@code yourmodid:block/example_block -> example_block}
      */
-    public static String getIdFromIdentifier(@NotNull Identifier identifier) {
-        return identifier.toString().substring(identifier.toString().lastIndexOf("/") + 1);
+    public static String getNameFromIdentifier(@NotNull Identifier identifier) {
+        return StringUtils.lastFromSplit(identifier.getPath(), "/");
     }
 
     /**
-     * example_mod:block/example_block -> block
-     *
-     * @param identifier
-     * @return Object Type of the Object from the specified Identifier
+     * Extracts an entry's type from its identifier <p>
+     * e.g. {@code yourmodid:block/example_block -> block}
      */
-    public static String getTypeFromIdentifier(@NotNull Identifier identifier) {
-        return StringUtils.substringBetween(identifier.toString(), ":", "/");
+    public static @Nullable String getTypeFromIdentifier(@NotNull Identifier identifier) {
+        return StringUtils.between(identifier.toString(), ":", "/");
     }
 }

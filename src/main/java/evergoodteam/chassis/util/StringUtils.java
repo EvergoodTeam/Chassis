@@ -1,6 +1,7 @@
 package evergoodteam.chassis.util;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.nio.file.Path;
 
@@ -82,6 +83,18 @@ public class StringUtils {
     public static String firstFromSplit(String string, String regex) {
         String[] split = string.split(regex);
         return split[0];
+    }
+
+    public static @Nullable String between(String string, String open, String close){
+        int start = string.indexOf(open);
+        if (start != -1) {
+            int end = string.indexOf(close, start + open.length());
+            if (end != -1) {
+                return string.substring(start + open.length(), end);
+            }
+        }
+
+        return null;
     }
 
     /**
