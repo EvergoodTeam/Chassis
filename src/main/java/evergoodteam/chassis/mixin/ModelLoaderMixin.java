@@ -81,32 +81,36 @@ public class ModelLoaderMixin {
         }
     }
 
-    /**
-     * @deprecated will be removed in the next update
-     */
     @Deprecated
     private static @Nullable JsonObject getModel(Set<String> columns, Identifier identifier) {
         String entryNamespace = identifier.getNamespace();
-        String entryPath = IdentifierParser.getNameFromIdentifier(identifier);
-        String entryIdentifier = IdentifierParser.getString(entryNamespace, entryPath);
+        String entryName = IdentifierParser.getNameFromIdentifier(identifier);
+        String entryIdentifier = IdentifierParser.getString(entryNamespace, entryName);
 
         switch (IdentifierParser.getTypeFromIdentifier(identifier)) {
             case "block": {
-                if (columns.contains(entryPath)) {
-                    return blockModel("column", identifier.toString());
-                } else if (columns.contains(StringUtils.removeLastOccurrence(entryPath, "_horizontal", ""))) {
-                    return blockModel("column_horizontal", StringUtils.removeLastOccurrence(identifier.toString(), "_horizontal", ""));
-                } else {
+
+                if("horizontal".equals(StringUtils.lastFromSplit(entryName, "_"))){
+                    for(String column : columns){
+                        if(entryName.contains(column))
+                            return blockModel("column_horizontal", StringUtils.removeLastOccurrence(identifier.toString(), "_horizontal", ""));
+                    }
+                }
+
+                else{
+                    for(String column : columns){
+                        if(entryName.contains(column)) return blockModel("column", identifier.toString());
+                    }
                     return blockModel("all", identifier.toString());
                 }
             }
 
             case "item": {
-                if (REGISTERED_BLOCKS.get(identifier.getNamespace()).contains(entryPath)) {
-                    return itemModel(entryNamespace, "block", entryPath);
+                if (REGISTERED_BLOCKS.get(identifier.getNamespace()).contains(entryName)) {
+                    return itemModel(entryNamespace, "block", entryName);
                 } else {
                     if (ITEM_TYPES.containsKey(entryIdentifier)) {
-                        return itemModel(entryNamespace, ITEM_TYPES.get(entryIdentifier).toString(), entryPath);
+                        return itemModel(entryNamespace, ITEM_TYPES.get(entryIdentifier).toString(), entryName);
                     }
                 }
             }
