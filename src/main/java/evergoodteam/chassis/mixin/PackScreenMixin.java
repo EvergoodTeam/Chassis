@@ -1,5 +1,7 @@
 package evergoodteam.chassis.mixin;
 
+import evergoodteam.chassis.objects.resourcepacks.ResourcePackBase;
+import lombok.extern.log4j.Log4j2;
 import net.minecraft.client.gui.screen.pack.PackListWidget;
 import net.minecraft.client.gui.screen.pack.PackScreen;
 import net.minecraft.client.gui.screen.pack.ResourcePackOrganizer;
@@ -18,27 +20,25 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
-import static evergoodteam.chassis.objects.resourcepacks.ResourcePackBase.DEFAULT_ICON;
-import static evergoodteam.chassis.objects.resourcepacks.ResourcePackBase.HIDDEN;
 import static evergoodteam.chassis.util.Reference.CMI;
 import static org.slf4j.LoggerFactory.getLogger;
 
 @Mixin(PackScreen.class)
 public class PackScreenMixin {
 
-    private static final Logger LOGGER = getLogger(CMI + "/Screen");
+    private static final Logger LOG = getLogger(CMI + "/Screen");
 
-    // Fix random selection of icon when icon is missing
+    /** Fixex random selection of icon when icon is missing */
     @Inject(at = @At("HEAD"), method = "loadPackIcon(Lnet/minecraft/client/texture/TextureManager;Lnet/minecraft/resource/ResourcePackProfile;)Lnet/minecraft/util/Identifier;", cancellable = true)
     public void injectLoadPackIcon(TextureManager textureManager, ResourcePackProfile resourcePackProfile, CallbackInfoReturnable<Identifier> cir) {
 
-        if (DEFAULT_ICON.contains(resourcePackProfile.getName())) {
-            //LOGGER.info("Attempting to set unknown pack icon before error is thrown / random texture");
+        if (ResourcePackBase.getDefaultIcons().contains(resourcePackProfile.getDisplayName().getString())) {
+            //LOG.info("Attempting to set unknown pack icon before error is thrown / random texture");
             cir.setReturnValue(new Identifier("textures/misc/unknown_pack.png"));
         }
     }
 
-    // Hide ResourcePack from GUI
+    /** Hides ResourcePack from GUI */
     @Inject(at = @At("TAIL"), method = "updatePackList(Lnet/minecraft/client/gui/screen/pack/PackListWidget;Ljava/util/stream/Stream;)V")
     public void injectUpdatePackList(PackListWidget widget, Stream<ResourcePackOrganizer.Pack> packs, CallbackInfo info) {
 
@@ -50,8 +50,8 @@ public class PackScreenMixin {
             if (packFromEntry != null) {
                 String name = packFromEntry.getDisplayName().getString();
 
-                if (HIDDEN.contains(name)) {
-                    toRemove.add(resourcePackEntry);
+                if (ResourcePackBase.getHiddenBooleans().containsKey(name)) {
+                    if(ResourcePackBase.getHiddenBooleans().get(name).getValue()) toRemove.add(resourcePackEntry);
                 }
             }
         }
@@ -69,7 +69,7 @@ public class PackScreenMixin {
 
             return (ResourcePackOrganizer.Pack) field.get(entry);
         } catch (Exception e) {
-            LOGGER.error("Error on getting pack", e);
+            LOG.error("Error on getting pack", e);
         }
 
         return null;
