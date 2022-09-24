@@ -28,7 +28,6 @@ import static org.slf4j.LoggerFactory.getLogger;
 public class ResourcePackBuilder extends AbstractFileResourcePack implements ResourcePack {
 
     private static final Logger LOGGER = getLogger(CMI + "/R/Builder");
-
     private static final Pattern RESOURCEPACK_PATH = Pattern.compile("[a-z0-9-_]+");
     public static final List<ResourcePackBuilder> BUILT = new ArrayList<>();
 
@@ -39,14 +38,17 @@ public class ResourcePackBuilder extends AbstractFileResourcePack implements Res
     private final String separator;
     private Set<String> namespaces;
 
-    public ResourcePackBuilder(String id, ResourceType resourceType, Path basePath) {
+    @Deprecated
+    public ResourcePackBuilder(String namespace, ResourceType resourceType, Path basePath) {
+        this(namespace, namespace + ".metadata.description", resourceType, basePath);
+    }
+
+    public ResourcePackBuilder(String namespace, String metadataKey, ResourceType resourceType, Path basePath) {
         super(null);
-        this.id = id;
+        this.id = namespace;
         this.resourceType = resourceType;
-
-        this.packMetadata = new PackResourceMetadata(Text.translatable(id + ".metadata.description"), ResourceType.CLIENT_RESOURCES.getPackVersion(SharedConstants.getGameVersion()));
-
-        this.basePath = basePath.resolve(id).resolve("resources").toAbsolutePath().normalize();
+        this.packMetadata = new PackResourceMetadata(Text.translatable(metadataKey), ResourceType.CLIENT_RESOURCES.getPackVersion(SharedConstants.getGameVersion()));
+        this.basePath = basePath.resolve(namespace).resolve("resources").toAbsolutePath().normalize();
         this.separator = basePath.getFileSystem().getSeparator();
 
         BUILT.add(this);
@@ -54,7 +56,6 @@ public class ResourcePackBuilder extends AbstractFileResourcePack implements Res
 
     private Path getPath(String filename) {
         Path childPath = basePath.resolve(filename.replace("/", separator));
-
         if (childPath.startsWith(basePath) && Files.exists(childPath)) return childPath;
         else return null;
     }
@@ -78,7 +79,6 @@ public class ResourcePackBuilder extends AbstractFileResourcePack implements Res
 
         return InputStream.nullInputStream();
     }
-
 
     /**
      * From {@link ModNioResourcePack#findResources}
@@ -121,7 +121,6 @@ public class ResourcePackBuilder extends AbstractFileResourcePack implements Res
 
         return ids;
     }
-
 
     @Override
     public Set<String> getNamespaces(ResourceType type) {
