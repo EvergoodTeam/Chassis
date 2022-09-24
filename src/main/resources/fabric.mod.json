@@ -16,6 +16,9 @@
   "icon": "icon.png",
   "environment": "*",
   "entrypoints": {
+    "modmenu": [
+      "evergoodteam.chassis.ChassisModMenu"
+    ],
     "client": [
       "evergoodteam.chassis.client.ChassisClient"
     ],
@@ -26,6 +29,7 @@
   "mixins": [
     "chassis.mixins.json"
   ],
+  "accessWidener" : "chassis.accesswidener",
   "depends": {
     "fabricloader": ">=0.13.3",
     "fabric": "*",

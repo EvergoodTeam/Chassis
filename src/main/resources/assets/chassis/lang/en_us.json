@@ -1,4 +1,12 @@
 {
+  "config.chassis.save": "Save & Close",
+  "config.chassis.reset": "Reset",
+  "config.chassis.resetall": "Reset Options",
+  "config.chassis.open": "Open Configs",
+  "config.chassis.discard": "Discard changes?",
+  "config.chassis.discard.desc": "This will revert any changes made so far and will exit the config menu.",
   "chassis.metadata.description": "Chassis' Resources",
-  "pack.source.chassis": "Chassis' Resources"
+  "pack.source.chassis": "Chassis' Resources",
+  "config.chassis.hideResourcePack": "Hide ResourcePack",
+  "config.chassis.hideResourcePack.tooltip": "Hide the %s ResourcePack from the GUI"
 }
