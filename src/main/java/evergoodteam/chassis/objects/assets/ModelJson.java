@@ -1,77 +1,117 @@
 package evergoodteam.chassis.objects.assets;
 
 import com.google.gson.JsonObject;
+import evergoodteam.chassis.client.models.BlockModelType;
+import evergoodteam.chassis.client.models.ItemModelType;
+import evergoodteam.chassis.util.IdentifierParser;
+import evergoodteam.chassis.util.JsonUtils;
 import org.jetbrains.annotations.Nullable;
 
 public class ModelJson {
 
     /**
-     * Generates a {@link JsonObject} with the required information for an item's model
+     * Generates a {@link JsonObject} with the required information for an item model
      *
+     * @param type        check {@link ItemModelType} for the available types
      * @param namespace   your modId
-     * @param type        "handheld": used mostly for tools <p> "generated": everything else item related <p>
-     *                    "block": item generated from block
-     * @param textureName name of your texture
+     * @param textureName name of your texture .png file
      */
-    public static @Nullable JsonObject createItemModelJson(String namespace, String type, String textureName) {
-        if ("generated".equals(type) || "handheld".equals(type)) {
-
-            JsonObject json = new JsonObject();
-
-            json.addProperty("parent", "item/" + type);
-
-            JsonObject textures = new JsonObject();
-            textures.addProperty("layer0", namespace + ":item/" + textureName);
-
-            json.add("textures", textures);
-
-            return json;
-        } else if ("block".equals(type)) {
-
-            JsonObject json = new JsonObject();
-
-            json.addProperty("parent", namespace + ":block/" + textureName);
-
-            return json;
-
-        } else return null;
+    public static @Nullable JsonObject createItemModelJson(ItemModelType type, String namespace, String textureName) {
+        return createItemModelJson(namespace, type.toString(), textureName);
     }
 
     /**
-     * Generates a {@link JsonObject} with the required information for a block's model <p>
-     * When dealing with columns, have every texture with the same prefix (eg. "example_block") and
-     * with the "_end"/"_side" suffix to specify top/bottom textures and side textures <p>
-     * eg. "example_block_side", "example_block_end" <p>
+     * Generates a {@link JsonObject} with the required information for an item model
      *
-     * @param cubeType    "all": same texture on all 6 sides <p> "column": uses a specific textures for top/bottom and sides <p>
-     * @param textureName name of your .png Texture File
+     * @param namespace   your modId
+     * @param type        "handheld": used mostly for tools <p>
+     *                    "generated": every other type of item <p>
+     *                    "block": item generated from a block
+     * @param textureName name of your texture .png file
+     * @deprecated as of release 1.2.3, replaced by {@link #createItemModelJson(ItemModelType, String, String)}
      */
-    public static JsonObject createBlockModelJson(String cubeType, String textureName) {
-        if ("all".equals(cubeType)) {
+    public static @Nullable JsonObject createItemModelJson(String namespace, String type, String textureName) {
+        switch (type) {
+            case "generated":
+            case "handheld": {
+                String json = """
+                        {
+                          "parent": "item/%s",
+                          "textures": {
+                            "layer0": "%s:item/%s"
+                          }
+                        }""".formatted(type, namespace, textureName);
 
-            JsonObject json = new JsonObject();
+                return JsonUtils.toJsonObject(json);
+            }
+            case "block": {
+                String json = """
+                        {
+                          "parent": "%s:block/%s"
+                        }""".formatted(namespace, textureName);
 
-            json.addProperty("parent", "block/cube_all");
+                return JsonUtils.toJsonObject(json);
+            }
+            default:
+                return null;
+        }
+    }
 
-            JsonObject textures = new JsonObject();
-            textures.addProperty("all", textureName);
+    /**
+     * Generates a {@link JsonObject} with the required information for a block model <p>
+     * When dealing with columns, have every texture with the same prefix (e.g. "example_block") and
+     * with the "_end"/"_side" suffix to specify the bases texture and the side texture <p>
+     * e.g. "example_block_side", "example_block_end"
+     *
+     * @param type             check {@link BlockModelType} for the available types
+     * @param textureNamespace your modId
+     * @param texturePath      path to the texture .png file
+     */
+    public static @Nullable JsonObject createBlockModelJson(BlockModelType type, String textureNamespace, String texturePath) {
+        return createBlockModelJson(type.toString(), IdentifierParser.getString(textureNamespace, texturePath));
+    }
 
-            json.add("textures", textures);
+    /**
+     * Generates a {@link JsonObject} with the required information for a block model <p>
+     * When dealing with columns, have every texture with the same prefix (e.g. "example_block") and
+     * with the "_end"/"_side" suffix to specify the bases texture and the side texture <p>
+     * e.g. "example_block_side", "example_block_end"
+     *
+     * @param type              "all": same texture on all 6 sides <p>
+     *                          "column": uses a specific texture for the bases and one for the sides <p>
+     *                          "column_mirrored": sister model of a column model in a mirrored column block (e.g. deepslate)
+     * @param textureIdentifier path to your texture (e.g. "yourmodid:block/ruby_ore")
+     * @deprecated as of release 1.2.3, replaced by {@link #createBlockModelJson(BlockModelType, String, String)}
+     */
+    public static @Nullable JsonObject createBlockModelJson(String type, String textureIdentifier) {
+        switch (type) {
+            case "all": {
+                String json = """
+                        {
+                          "parent": "block/cube_%s",
+                          "textures": {
+                            "all": "%s"
+                          }
+                        }""".formatted(type, textureIdentifier);
 
-            return json;
-        } else if ("column".equals(cubeType)) {
+                return JsonUtils.toJsonObject(json);
+            }
+            case "column":
+            case "column_mirrored":
+            case "column_horizontal": {
+                String json = """
+                        {
+                          "parent": "block/cube_%1$s",
+                          "textures": {
+                            "end": "%2$s_end",
+                            "side": "%2$s_side"
+                          }
+                        }""".formatted(type, textureIdentifier);
 
-            JsonObject json = new JsonObject();
-
-            json.addProperty("parent", "block/cube_column");
-
-            JsonObject textures = new JsonObject();
-            textures.addProperty("end", textureName + "_end");
-            textures.addProperty("side", textureName + "_side");
-
-            json.add("textures", textures);
-
-            return json;
-        } else return null;
+                return JsonUtils.toJsonObject(json);
+            }
+            default:
+                return null;
+        }
     }
 }

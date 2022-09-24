@@ -49,11 +49,11 @@ public class RecipeJson {
                 "minecraft:crafting_shaped");                 //"type": "minecraft:crafting_shaped"
 
         JsonArray jsonArray = new JsonArray();                      //"pattern": [
-        jsonArray.add(pattern.get(0));                              //  "#xx",
-        jsonArray.add(pattern.get(1));                              //  "#xx",
-        jsonArray.add(pattern.get(2));                              //  "###"
-        json.add("pattern", jsonArray);                     //]
-
+        for (int j = 0; j < 3; j++) {
+            jsonArray.add(pattern.get(j));                              //  "#xx",
+        }                                                               //  "#xx",
+        json.add("pattern", jsonArray);                         //  "###"
+                                                                    //]
         JsonObject individualKey;
         JsonObject keyList = new JsonObject();                      //"key": {
         for (int i = 0; i < keys.size(); ++i) {                     //  "key1": {

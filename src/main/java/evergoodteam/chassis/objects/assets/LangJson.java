@@ -7,16 +7,16 @@ import java.util.Map;
 public class LangJson {
 
     /**
-     * Creates a language json object from the provided map <p>
+     * Generates a language {@link JsonObject} from the provided map
      *
-     * @param entryMap map composed of translation keys (eg. "modId.item.tooltip") with each their translation (eg. "Cool tooltip")
+     * @param langMap map composed of translation keys (e.g. "modId.item.tooltip") with each their translation (e.g. "Cool tooltip")
      */
-    public static JsonObject createLangJson(Map<String, String> entryMap) {
+    public static JsonObject createLangJson(Map<String, String> langMap) {
 
         JsonObject json = new JsonObject();
 
-        for (int i = 0; i < entryMap.keySet().size(); i++) {
-            json.addProperty(entryMap.keySet().toArray()[i].toString(), entryMap.get(entryMap.keySet().toArray()[i]));
+        for (String translationKey : langMap.keySet()) {
+            json.addProperty(translationKey, langMap.get(translationKey));
         }
 
         return json;
