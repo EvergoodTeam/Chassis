@@ -8,8 +8,8 @@ import net.minecraft.block.Block;
 import net.minecraft.client.render.RenderLayer;
 import org.slf4j.Logger;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import static evergoodteam.chassis.util.Reference.CMI;
 import static org.slf4j.LoggerFactory.getLogger;
@@ -17,7 +17,7 @@ import static org.slf4j.LoggerFactory.getLogger;
 @Environment(EnvType.CLIENT)
 public class ChassisClient implements ClientModInitializer {
 
-    private static final List<Block> TRANSPARENT_BLOCKS = new ArrayList<>();
+    private static final Set<Block> TRANSPARENT_BLOCKS = new HashSet<>();
     private static final Logger LOGGER = getLogger(CMI + "/Client");
 
     @Override
@@ -37,7 +37,7 @@ public class ChassisClient implements ClientModInitializer {
         TRANSPARENT_BLOCKS.remove(block);
     }
 
-    public static List<Block> getTransparentBlocks() {
+    public static Set<Block> getTransparentBlocks() {
         return TRANSPARENT_BLOCKS;
     }
 }
