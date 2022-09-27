@@ -4,6 +4,8 @@ import evergoodteam.chassis.client.models.BlockModelType;
 import evergoodteam.chassis.client.models.ItemModelType;
 import evergoodteam.chassis.configs.options.BooleanOption;
 import evergoodteam.chassis.configs.options.DoubleSliderOption;
+import evergoodteam.chassis.configs.options.IntegerSliderOption;
+import evergoodteam.chassis.configs.options.StringSetOption;
 import evergoodteam.chassis.objects.assets.RecipeJson;
 import evergoodteam.chassis.objects.blocks.BlockBase;
 import evergoodteam.chassis.objects.blocks.PillarBase;
@@ -56,12 +58,12 @@ public class Chassis implements ModInitializer {
 
         // Configs
         CHASSIS_CONFIGS.addBooleanProperty(CHASSIS_RESOURCES.getHiddenBoolean().hideDefault(false))
-                .addIntegerSliderProperty("integerSlider", 3, 8, 5, Text.literal("slider"))
-                .addStringProperty("string", "test2", Set.of("test1", "test2", "test3", "test4"), Text.literal("stringset"))
-                .addBooleanProperty(new BooleanOption("boolean", false, Text.literal("Boolean tooltip"))
+                .addBooleanProperty(new BooleanOption("boolean", false, Text.literal("Boolean"), Text.literal("Boolean Tooltip"))
                         .setComment("Boolean comment"))
-                .addDoubleProperty(new DoubleSliderOption("double", 3, 8, 4.5, Text.literal("Double tooltip"))
+                .addDoubleProperty(new DoubleSliderOption("double", 3, 8, 4.5, Text.literal("Double Slider"), Text.literal("Double Tooltip"))
                         .setComment("Double comment"))
+                .addIntegerSliderProperty(new IntegerSliderOption("integerSlider", 3, 8, 5, Text.literal("Integer Slider"), Text.literal("Integer Tooltip")))
+                .addStringProperty(new StringSetOption("string", "test2", Set.of("test1", "test2", "test3", "test4"), Text.literal("String Set"), Text.literal("String Set Tooltip")))
                 .registerProperties();
 
         // Blocks/Items
