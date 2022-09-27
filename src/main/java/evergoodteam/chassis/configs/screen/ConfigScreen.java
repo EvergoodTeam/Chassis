@@ -5,6 +5,8 @@ import evergoodteam.chassis.configs.options.OptionBase;
 import evergoodteam.chassis.configs.widgets.ResettableListWidget;
 import evergoodteam.chassis.util.ColorConverter;
 import evergoodteam.chassis.util.StringUtils;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.ConfirmScreen;
 import net.minecraft.client.gui.screen.Screen;
@@ -21,6 +23,7 @@ import java.util.List;
 import static evergoodteam.chassis.util.Reference.CMI;
 import static org.slf4j.LoggerFactory.getLogger;
 
+@Environment(EnvType.CLIENT)
 public class ConfigScreen extends ConfigOptionsScreen {
 
     private static final Logger LOGGER = getLogger(CMI + "/C/Screen");
@@ -49,6 +52,7 @@ public class ConfigScreen extends ConfigOptionsScreen {
         } else retainValues = false;
 
         this.list = new ResettableListWidget(this.client, this.width, this.height, 32, this.height - 32, 25);
+        this.list.addCategoryText("Options");
         this.list.addAll(optionList.toArray(new OptionBase[0]));
         this.addSelectableChild(this.list);
 
@@ -98,6 +102,7 @@ public class ConfigScreen extends ConfigOptionsScreen {
 
                     this.remove(this.list);
                     this.list = new ResettableListWidget(this.client, this.width, this.height, 32, this.height - 32, 25);
+                    this.list.addCategoryText("Options");
                     this.list.addAll(optionList.toArray(new OptionBase[0]));
                     this.addSelectableChild(this.list);
 

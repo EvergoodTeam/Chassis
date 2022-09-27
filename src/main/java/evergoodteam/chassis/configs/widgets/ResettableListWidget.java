@@ -27,7 +27,6 @@ public class ResettableListWidget extends ElementListWidget<ResettableListWidget
     }
 
     public void addAll(OptionBase<?>[] options) {
-        addCategoryText("General Options");
         for (OptionBase<?> option : options) addResettableSingleOptionEntry(option);
     }
 
@@ -157,9 +156,7 @@ public class ResettableListWidget extends ElementListWidget<ResettableListWidget
             });
 
             if (this.optionToButton != null) this.optionToButton.forEach((option, button) -> {
-                MinecraftClient.getInstance().textRenderer.drawWithShadow(matrices,
-                        Text.translatable(option.getName()).getString(),
-                        button.x - 142, y + (entryHeight - 8) / 2, 16777215);
+                MinecraftClient.getInstance().textRenderer.drawWithShadow(matrices, option.getDisplayName(), button.x - 142, y + (entryHeight - 8) / 2, 16777215);
             });
         }
 
