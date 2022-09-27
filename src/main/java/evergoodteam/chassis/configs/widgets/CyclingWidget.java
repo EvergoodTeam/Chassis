@@ -10,6 +10,7 @@ import net.minecraft.util.math.MathHelper;
 import java.util.List;
 import java.util.function.Function;
 
+@Environment(value = EnvType.CLIENT)
 public class CyclingWidget<T> extends WidgetBase {
 
     public int index;

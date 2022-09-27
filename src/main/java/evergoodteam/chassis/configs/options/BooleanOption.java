@@ -5,6 +5,8 @@ import evergoodteam.chassis.configs.ConfigBase;
 import evergoodteam.chassis.configs.screen.ChassisScreenTexts;
 import evergoodteam.chassis.configs.widgets.CyclingWidget;
 import evergoodteam.chassis.configs.widgets.WidgetBase;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 
@@ -19,19 +21,25 @@ public class BooleanOption implements OptionBase<Boolean> {
     private final Boolean defaultValue;
     private Boolean defaultHidden;
 
+    private Text display;
     private Text tooltip;
-    private CyclingWidget<Boolean> widget;
+    //private CyclingWidget<Boolean> widget;
 
-    public BooleanOption(String key, Boolean defaultValue) {
-        this(key, defaultValue, Text.empty());
+    public BooleanOption(String name, Boolean defaultValue) {
+        this(name, defaultValue, Text.literal(name), Text.empty());
     }
 
-    public BooleanOption(String key, Boolean defaultValue, Text tooltip) {
-        this.name = key;
+    public BooleanOption(String name, Boolean defaultValue, Text displayName) {
+        this(name, defaultValue, displayName, Text.empty());
+    }
+
+    public BooleanOption(String name, Boolean defaultValue, Text displayName, Text tooltip) {
+        this.name = name;
         this.comment = "";
         this.value = defaultValue;
         this.defaultValue = defaultValue;
         this.defaultHidden = false;
+        this.display = displayName;
         this.tooltip = tooltip;
     }
 
@@ -43,6 +51,11 @@ public class BooleanOption implements OptionBase<Boolean> {
     @Override
     public String getComment() {
         return comment;
+    }
+
+    @Override
+    public Text getDisplayName() {
+        return display;
     }
 
     @Override
@@ -75,19 +88,10 @@ public class BooleanOption implements OptionBase<Boolean> {
         return defaultHidden;
     }
 
+    @Environment(value = EnvType.CLIENT)
     @Override
     public WidgetBase getConfigWidget(int width) {
-        this.widget = new CyclingWidget<>(width, List.of(Boolean.TRUE, Boolean.FALSE), new CyclingWidget.UpdateOptionValue<>(this), value -> value ? ChassisScreenTexts.ON : ChassisScreenTexts.OFF) {
-
-            @Override
-            public void renderBackground(MatrixStack matrices, int mouseX, int mouseY) {
-                if (this.isMouseOver(mouseX, mouseY, this.x - 150, this.y - 2, 300, 24)) {
-                    this.drawRectWithOutline(matrices, this.x - 150, this.y - 2, 300, 24, 0x2B_FFFFFF);
-                }
-            }
-        };
-        this.widget.initially(this.value).setTooltip(this.tooltip);
-        return this.widget;
+        return new BooleanConfigWidget(this, width);
     }
 
     @Override
@@ -116,5 +120,21 @@ public class BooleanOption implements OptionBase<Boolean> {
     public BooleanOption hideDefault(Boolean bool) {
         this.defaultHidden = bool;
         return this;
+    }
+
+    @Environment(value = EnvType.CLIENT)
+    public static class BooleanConfigWidget extends CyclingWidget<Boolean> {
+
+        public BooleanConfigWidget(BooleanOption option, int width) {
+            super(width, List.of(Boolean.TRUE, Boolean.FALSE), new CyclingWidget.UpdateOptionValue<>(option), value -> value ? ChassisScreenTexts.ON : ChassisScreenTexts.OFF);
+            this.initially(option.getValue()).setTooltip(option.getTooltip());
+        }
+
+        @Override
+        public void renderBackground(MatrixStack matrices, int mouseX, int mouseY) {
+            if (this.isMouseOver(mouseX, mouseY, this.x - 150, this.y - 2, 300, 24)) {
+                this.drawRectWithOutline(matrices, this.x - 150, this.y - 2, 300, 24, 0x2B_FFFFFF);
+            }
+        }
     }
 }

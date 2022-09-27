@@ -1,12 +1,14 @@
 package evergoodteam.chassis.configs;
 
-import evergoodteam.chassis.configs.options.*;
+import evergoodteam.chassis.configs.options.BooleanOption;
+import evergoodteam.chassis.configs.options.DoubleSliderOption;
+import evergoodteam.chassis.configs.options.IntegerSliderOption;
+import evergoodteam.chassis.configs.options.OptionStorage;
+import evergoodteam.chassis.configs.options.StringSetOption;
 import evergoodteam.chassis.objects.resourcepacks.ResourcePackBase;
 import evergoodteam.chassis.util.handlers.DirHandler;
 import evergoodteam.chassis.util.handlers.FileHandler;
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Text;
 import net.minecraft.util.Util;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
@@ -15,7 +17,6 @@ import java.io.File;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 import static evergoodteam.chassis.util.Reference.CMI;
 import static org.slf4j.LoggerFactory.getLogger;
@@ -136,22 +137,13 @@ public class ConfigBase {
         return this;
     }
 
-    public ConfigBase addIntegerSliderProperty(String translationKey, int min, int max, int defaultValue) {
-        return addIntegerSliderProperty(translationKey, min, max, defaultValue, Text.empty());
-    }
-
     public ConfigBase addIntegerSliderProperty(IntegerSliderOption option) {
         optionStorage.storeInteger(option);
         return this;
     }
 
-    public ConfigBase addIntegerSliderProperty(String translationKey, int min, int max, int defaultValue, MutableText comment) {
-        optionStorage.storeInteger(new IntegerSliderOption(translationKey, min, max, defaultValue, comment));
-        return this;
-    }
-
-    public ConfigBase addStringProperty(String translationKey, String defaultValue, Set<String> values, MutableText comment) {
-        optionStorage.storeStringSet(new StringSetOption(translationKey, defaultValue, values, comment));
+    public ConfigBase addStringProperty(StringSetOption option) {
+        optionStorage.storeStringSet(option);
         return this;
     }
 
@@ -159,9 +151,8 @@ public class ConfigBase {
      * Writes the properties added to the .properties config file <p>
      * NOTE: call only after you added all your properties!
      */
-    public ConfigBase registerProperties() {
+    public void registerProperties() {
         builder.registerProperties();
-        return this;
     }
 
     public @Nullable String getWrittenValue(String name) {

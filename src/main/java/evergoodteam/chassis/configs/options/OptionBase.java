@@ -2,6 +2,8 @@ package evergoodteam.chassis.configs.options;
 
 import evergoodteam.chassis.configs.ConfigBase;
 import evergoodteam.chassis.configs.widgets.WidgetBase;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.text.Text;
 
 import java.util.Collection;
@@ -12,6 +14,8 @@ public interface OptionBase<T> {
     String getName();
 
     String getComment();
+
+    Text getDisplayName();
 
     Text getTooltip();
 
@@ -25,6 +29,7 @@ public interface OptionBase<T> {
 
     Boolean defaultHidden();
 
+    @Environment(value = EnvType.CLIENT)
     WidgetBase getConfigWidget(int width);
 
     void setValue(T newValue);

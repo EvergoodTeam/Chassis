@@ -206,8 +206,8 @@ public class ConfigBuilder {
                 sb.append(this.comment(option));
                 sb.append(this.property(option));
 
-            } else { // Property exists, fetch the value and overwrite map
-                option.setValue(option.getWrittenValue(config)); // TODO: unify reading
+            } else { // Property exists, fetch the value and overwrite
+                option.setValue(option.getWrittenValue(config));
             }
         }
     }

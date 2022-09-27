@@ -94,7 +94,7 @@ public class ResourcePackBase implements EntryBase {
         this.hexColor = "AAAAAA";
 
         this.locked = new BooleanOption(namespace + "ResourceLocked", false);
-        this.hidden = new BooleanOption("config." + namespace + ".hideResourcePack", false, Text.translatable("config." + namespace + ".hideResourcePack.tooltip", displayName))
+        this.hidden = new BooleanOption("hideResourcePack", false, Text.translatable("config." + namespace + ".hideResourcePack"), Text.translatable("config." + namespace + ".hideResourcePack.tooltip", displayName))
                 .setComment("Hide the %s ResourcePack from the GUI".formatted(displayName));
 
         HIDDEN.put(displayName, this.hidden);

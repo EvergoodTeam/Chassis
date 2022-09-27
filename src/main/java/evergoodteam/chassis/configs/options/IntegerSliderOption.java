@@ -3,6 +3,8 @@ package evergoodteam.chassis.configs.options;
 import evergoodteam.chassis.configs.ConfigBase;
 import evergoodteam.chassis.configs.widgets.SliderWidget;
 import evergoodteam.chassis.configs.widgets.WidgetBase;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.MathHelper;
@@ -19,14 +21,19 @@ public class IntegerSliderOption implements OptionBase<Integer>, OptionBase.Inte
     private final Integer defaultValue;
     private Boolean defaultHidden;
 
-    private IntSlider widget;
+    private Text display;
     private Text tooltip;
+    //private IntSlider widget;
 
     public IntegerSliderOption(String name, int min, int max, int defaultValue) {
-        this(name, min, max, defaultValue, Text.empty());
+        this(name, min, max, defaultValue, Text.literal(name), Text.empty());
     }
 
-    public IntegerSliderOption(String name, int min, int max, int defaultValue, Text tooltip) {
+    public IntegerSliderOption(String name, int min, int max, int defaultValue, Text displayName) {
+        this(name, min, max, defaultValue, displayName, Text.empty());
+    }
+
+    public IntegerSliderOption(String name, int min, int max, int defaultValue, Text displayName, Text tooltip) {
         this.name = name;
         this.comment = "";
         this.value = defaultValue;
@@ -34,6 +41,7 @@ public class IntegerSliderOption implements OptionBase<Integer>, OptionBase.Inte
         this.max = max;
         this.defaultValue = defaultValue;
         this.defaultHidden = false;
+        this.display = displayName;
         this.tooltip = tooltip;
     }
 
@@ -55,6 +63,11 @@ public class IntegerSliderOption implements OptionBase<Integer>, OptionBase.Inte
     @Override
     public String getComment() {
         return comment;
+    }
+
+    @Override
+    public Text getDisplayName() {
+        return display;
     }
 
     @Override
@@ -82,10 +95,10 @@ public class IntegerSliderOption implements OptionBase<Integer>, OptionBase.Inte
         return defaultHidden;
     }
 
+    @Environment(value = EnvType.CLIENT)
     @Override
     public WidgetBase getConfigWidget(int width) {
-        this.widget = new IntSlider(this, width);
-        return this.widget;
+        return new IntConfigSlider(this, width);
     }
 
     @Override
@@ -121,15 +134,16 @@ public class IntegerSliderOption implements OptionBase<Integer>, OptionBase.Inte
         return this;
     }
 
-    public static class IntSlider extends SliderWidget {
+    @Environment(value = EnvType.CLIENT)
+    public static class IntConfigSlider extends SliderWidget {
 
         public final IntegerSliderOption option;
 
-        public IntSlider(IntegerSliderOption option, int width) {
+        public IntConfigSlider(IntegerSliderOption option, int width) {
             this(width / 2, 0, 100, 20, option);
         }
 
-        public IntSlider(int x, int y, int width, int height, IntegerSliderOption option) {
+        public IntConfigSlider(int x, int y, int width, int height, IntegerSliderOption option) {
             super(x, y, width, height, option);
             this.option = option;
             this.setTooltip(option.getTooltip());

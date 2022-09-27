@@ -3,6 +3,8 @@ package evergoodteam.chassis.configs.screen;
 import com.google.common.collect.ImmutableList;
 import evergoodteam.chassis.configs.widgets.WidgetBase;
 import evergoodteam.chassis.configs.widgets.ResettableListWidget;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.option.GameOptions;
 import net.minecraft.text.OrderedText;
@@ -11,6 +13,7 @@ import net.minecraft.text.Text;
 import java.util.List;
 import java.util.Optional;
 
+@Environment(EnvType.CLIENT)
 public class ConfigOptionsScreen extends Screen {
 
     protected final Screen parent;

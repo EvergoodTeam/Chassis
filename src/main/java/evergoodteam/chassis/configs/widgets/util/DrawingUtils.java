@@ -1,8 +1,11 @@
 package evergoodteam.chassis.configs.widgets.util;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.util.math.MatrixStack;
 
+@Environment(value = EnvType.CLIENT)
 public abstract class DrawingUtils extends DrawableHelper {
 
     public void drawRectWithOutline(MatrixStack matrices, int x, int y, int width, int height, int color) {
