@@ -1,11 +1,13 @@
 package evergoodteam.chassis.objects.blocks;
 
-import evergoodteam.chassis.client.ChassisClient;
+import evergoodteam.chassis.client.models.BlockModelType;
+import evergoodteam.chassis.client.models.ModelBundler;
 import evergoodteam.chassis.objects.EntryBase;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.block.Block;
 import net.minecraft.block.Material;
 import net.minecraft.sound.BlockSoundGroup;
+import net.minecraft.util.Identifier;
 
 import java.util.List;
 
@@ -70,5 +72,9 @@ public class BlockBase extends Block implements BlockSettings, EntryBase {
 
     public BlockBase(FabricBlockSettings blockSettings) {
         super(blockSettings);
+    }
+
+    public void bundleModel(ModelBundler bundler, String namespace, String path, BlockModelType type) {
+        bundler.addBlock(new Identifier(namespace, path), type);
     }
 }
