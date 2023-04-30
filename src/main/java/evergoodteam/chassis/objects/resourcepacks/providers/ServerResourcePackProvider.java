@@ -15,7 +15,6 @@ public class ServerResourcePackProvider implements ResourcePackProvider {
     public ResourcePackBuilder groupResourcePack;
     public String namespace;
     public String path;
-
     private ResourcePackSource resourcePackSource;
 
     /**
@@ -23,8 +22,8 @@ public class ServerResourcePackProvider implements ResourcePackProvider {
      * @param path      name of your ResourcePack
      * @see evergoodteam.chassis.mixin.ResourcePackManagerMixin
      */
-    public ServerResourcePackProvider(String namespace, String path) {
-        this.groupResourcePack = new ResourcePackBuilder(path, ResourceType.SERVER_DATA, FabricLoader.getInstance().getConfigDir().resolve(namespace + "/resourcepacks").toAbsolutePath().normalize());
+    public ServerResourcePackProvider(String namespace, String path, String metadataKey) {
+        this.groupResourcePack = new ResourcePackBuilder(path, metadataKey, ResourceType.SERVER_DATA, FabricLoader.getInstance().getConfigDir().resolve(namespace + "/resourcepacks").toAbsolutePath().normalize());
         this.namespace = namespace;
         this.path = path;
         this.resourcePackSource = text -> Text.translatable("pack.source." + namespace, text);

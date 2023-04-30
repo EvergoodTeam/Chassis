@@ -1,7 +1,7 @@
 package evergoodteam.chassis.objects.resourcepacks.providers;
 
 import evergoodteam.chassis.objects.resourcepacks.ResourcePackBuilder;
-import evergoodteam.chassis.util.ColorConverter;
+import evergoodteam.chassis.util.gui.ColorUtils;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.resource.ResourcePackProfile;
 import net.minecraft.resource.ResourcePackProvider;
@@ -22,7 +22,7 @@ public class ClientResourcePackProvider implements ResourcePackProvider {
     /**
      * @see net.minecraft.text.Style
      */
-    private ResourcePackSource resourcePackSource;
+    private ResourcePackSource resourcePackSource = text -> Text.translatable("pack.source." + namespace, text);
 
     /**
      * Provider responsible for the ResourcePackProfile, which displays your ResourcePack in the GUI with a description
@@ -33,9 +33,9 @@ public class ClientResourcePackProvider implements ResourcePackProvider {
      * @param hexDescColor hex color value used for the description text in the GUI
      * @see evergoodteam.chassis.mixin.ResourcePackManagerMixin
      */
-    public ClientResourcePackProvider(String namespace, String path, String hexDescColor) {
-        this(namespace, path);
-        this.resourcePackSource = text -> Text.translatable("pack.source." + namespace, text).setStyle(Style.EMPTY.withColor(ColorConverter.getDecimalFromHex(hexDescColor)));
+    public ClientResourcePackProvider(String namespace, String path, String metadataKey, String hexDescColor) {
+        this(namespace, path, metadataKey);
+        this.resourcePackSource = text -> Text.translatable("pack.source." + namespace, text).setStyle(Style.EMPTY.withColor(ColorUtils.getDecimalFromHex(hexDescColor)));
     }
 
     /**
@@ -47,8 +47,8 @@ public class ClientResourcePackProvider implements ResourcePackProvider {
      * @param description description of the resources to be displayed in the GUI
      * @see evergoodteam.chassis.mixin.ResourcePackManagerMixin
      */
-    public ClientResourcePackProvider(String namespace, String path, MutableText description) {
-        this(namespace, path);
+    public ClientResourcePackProvider(String namespace, String path, String metadataKey, MutableText description) {
+        this(namespace, path, metadataKey);
         this.resourcePackSource = text -> description;
     }
 
@@ -60,11 +60,10 @@ public class ClientResourcePackProvider implements ResourcePackProvider {
      * @param path      name of your ResourcePack
      * @see evergoodteam.chassis.mixin.ResourcePackManagerMixin
      */
-    public ClientResourcePackProvider(String namespace, String path) {
-        this.groupResourcePack = new ResourcePackBuilder(path, ResourceType.CLIENT_RESOURCES, FabricLoader.getInstance().getConfigDir().resolve(namespace + "/resourcepacks").toAbsolutePath().normalize());
+    public ClientResourcePackProvider(String namespace, String path, String metadataKey) {
+        this.groupResourcePack = new ResourcePackBuilder(path, metadataKey, ResourceType.CLIENT_RESOURCES, FabricLoader.getInstance().getConfigDir().resolve(namespace + "/resourcepacks").toAbsolutePath().normalize());
         this.namespace = namespace;
         this.path = path;
-        this.resourcePackSource = text -> Text.translatable("pack.source." + namespace, text);
     }
 
     @Override
