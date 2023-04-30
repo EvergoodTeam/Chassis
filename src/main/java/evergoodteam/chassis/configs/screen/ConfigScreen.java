@@ -1,19 +1,18 @@
 package evergoodteam.chassis.configs.screen;
 
+import evergoodteam.chassis.client.gui.text.ChassisScreenTexts;
+import evergoodteam.chassis.client.gui.text.GradientText;
+import evergoodteam.chassis.client.gui.widgets.ResettableListWidget;
 import evergoodteam.chassis.configs.ConfigBase;
-import evergoodteam.chassis.configs.options.OptionBase;
-import evergoodteam.chassis.configs.widgets.ResettableListWidget;
-import evergoodteam.chassis.util.ColorConverter;
-import evergoodteam.chassis.util.StringUtils;
+import evergoodteam.chassis.configs.options.AbstractOption;
+import evergoodteam.chassis.configs.options.CategoryOption;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.ConfirmScreen;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.OrderedText;
-import net.minecraft.text.Text;
 import org.lwjgl.glfw.GLFW;
 import org.slf4j.Logger;
 
@@ -27,48 +26,43 @@ import static org.slf4j.LoggerFactory.getLogger;
 public class ConfigScreen extends ConfigOptionsScreen {
 
     private static final Logger LOGGER = getLogger(CMI + "/C/Screen");
-
-    public Screen parent;
-    public ResettableListWidget list;
-    public ConfigBase config;
-    public Boolean retainValues;
+    private ResettableListWidget list;
+    private List<AbstractOption<?>> optionList;
+    private Boolean retainValues;
 
     public ConfigScreen(Screen parent, ConfigBase config) {
-        super(parent, MinecraftClient.getInstance().options,
-                Text.literal(StringUtils.capitalize(config.namespace) + " Configs").setStyle(ColorConverter.coloredStyle("65c18c")));
-        this.parent = parent;
-        this.config = config;
+        super(parent, config);
         this.retainValues = false;
     }
-
-    static List<OptionBase<?>> optionList;
 
     @Override
     protected void init() {
         if (!retainValues) { // Prevent values from being reset
             optionList = new ArrayList<>();
             config.readProperties();
-            optionList.addAll(config.getOptionStorage().getOptions());
+
+            for (CategoryOption category : config.getOptionStorage().getCategories()) {
+                if (!category.equals(config.getOptionStorage().getGenericCategory())) optionList.add(category);
+                optionList.addAll(category.getOptions());
+            }
         } else retainValues = false;
 
-        this.list = new ResettableListWidget(this.client, this.width, this.height, 32, this.height - 32, 25);
-        this.list.addCategoryText("Options");
-        this.list.addAll(optionList.toArray(new OptionBase[0]));
-        this.addSelectableChild(this.list);
-
+        this.refreshList();
         this.initFooter();
     }
 
     @Override
     public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
         this.renderBackground(matrices);
-
         this.list.render(matrices, mouseX, mouseY, delta);
 
-        drawCenteredText(matrices, this.textRenderer, this.title, this.width / 2, 15, 16777215);
+        if (this.title instanceof GradientText) ((GradientText) this.title).scroll();
+        this.drawCenteredGradientText(matrices, null);
+
         super.render(matrices, mouseX, mouseY, delta);
-        List<OrderedText> list = getHoveredButtonTooltip(this.list, mouseX, mouseY);
-        this.renderOrderedTooltip(matrices, list, mouseX, mouseY);
+
+        List<OrderedText> tooltipList = getHoveredButtonTooltip(this.list, mouseX, mouseY);
+        this.renderOrderedTooltip(matrices, tooltipList, mouseX, mouseY);
     }
 
     @Override
@@ -98,13 +92,9 @@ public class ConfigScreen extends ConfigOptionsScreen {
         this.addDrawableChild(new ButtonWidget(this.width / 2 + 60, this.height - 27, 100, 20,
                 ChassisScreenTexts.RESET_A,
                 buttonWidget -> {
-                    config.getOptionStorage().getOptions().forEach(OptionBase::reset);
+                    config.getOptionStorage().getOptions().forEach(AbstractOption::reset);
 
-                    this.remove(this.list);
-                    this.list = new ResettableListWidget(this.client, this.width, this.height, 32, this.height - 32, 25);
-                    this.list.addCategoryText("Options");
-                    this.list.addAll(optionList.toArray(new OptionBase[0]));
-                    this.addSelectableChild(this.list);
+                    this.refreshList();
 
                     LOGGER.debug("Reset config options for \"{}\"", config.namespace);
                 }));
@@ -126,5 +116,12 @@ public class ConfigScreen extends ConfigOptionsScreen {
 
                     client.setScreen(this.parent);
                 }));
+    }
+
+    public void refreshList() {
+        this.remove(this.list);
+        this.list = new ResettableListWidget(this.client, this.width, this.height, 32, this.height - 32, 44);
+        this.list.addAll(optionList.toArray(new AbstractOption[0]));
+        this.addSelectableChild(this.list);
     }
 }
