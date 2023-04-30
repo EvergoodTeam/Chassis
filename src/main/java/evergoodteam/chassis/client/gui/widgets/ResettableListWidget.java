@@ -1,9 +1,10 @@
-package evergoodteam.chassis.configs.widgets;
+package evergoodteam.chassis.client.gui.widgets;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import evergoodteam.chassis.configs.options.OptionBase;
-import evergoodteam.chassis.configs.screen.ChassisScreenTexts;
+import evergoodteam.chassis.client.gui.text.ChassisScreenTexts;
+import evergoodteam.chassis.configs.options.AbstractOption;
+import evergoodteam.chassis.configs.options.CategoryOption;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
@@ -11,7 +12,6 @@ import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.Selectable;
 import net.minecraft.client.gui.widget.ElementListWidget;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.Text;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -21,21 +21,23 @@ import java.util.Optional;
 @Environment(value = EnvType.CLIENT)
 public class ResettableListWidget extends ElementListWidget<ResettableListWidget.ButtonEntry> {
 
-    public ResettableListWidget(MinecraftClient client, int width, int height, int top, int bottom, int itemHeight) {
-        super(client, width, height, top, bottom, itemHeight);
+    /**
+     * Creates a list of options, each with their dedicated reset button, similarly to the list found in the
+     * keybindings screen.
+     *
+     * @param tallestItem the height of the tallest item in the list
+     */
+    public ResettableListWidget(MinecraftClient client, int width, int height, int top, int bottom, int tallestItem) {
+        super(client, width, height, top, bottom, tallestItem);
         this.centerListVertically = false;
     }
 
-    public void addAll(OptionBase<?>[] options) {
-        for (OptionBase<?> option : options) addResettableSingleOptionEntry(option);
+    public void addAll(AbstractOption<?>[] options) {
+        for (AbstractOption<?> option : options) addSingleOptionEntry(option);
     }
 
-    public int addResettableSingleOptionEntry(OptionBase<?> option) {
-        return this.addEntry(ResettableListWidget.ButtonEntry.create(this.width, option));
-    }
-
-    public int addCategoryText(String title) {
-        return this.addEntry(ResettableListWidget.ButtonEntry.create(this.width, title));
+    public int addSingleOptionEntry(AbstractOption<?> option) {
+        return this.addEntry(ResettableListWidget.ButtonEntry.create(option, this.width));
     }
 
     @Override
@@ -77,21 +79,23 @@ public class ResettableListWidget extends ElementListWidget<ResettableListWidget
     }
 
     @Nullable
-    public WidgetBase getButtonFor(OptionBase<?> option) {
+    public WidgetBase getButtonFor(AbstractOption<?> option) {
         for (ResettableListWidget.ButtonEntry buttonEntry : this.children()) {
-            WidgetBase clickableWidget = buttonEntry.optionToButton.get(option);
-            if (clickableWidget == null) continue;
-            return clickableWidget;
+            WidgetBase widget = buttonEntry.optionToButton.get(option);
+            if (widget == null) continue;
+            return widget;
         }
         return null;
     }
 
     public Optional<WidgetBase> getHoveredTooltip(double mouseX, double mouseY) {
-        for (ResettableListWidget.ButtonEntry buttonEntry : this.children()) {
-            for (WidgetBase clickableWidget : buttonEntry.buttons) {
-                if (!clickableWidget.isMouseOver(mouseX, mouseY,
-                        clickableWidget.x - 150, clickableWidget.y - 2, 150, 24)) continue;
-                return Optional.of(clickableWidget);
+        if (mouseY > top && mouseY < bottom) {
+            for (ResettableListWidget.ButtonEntry buttonEntry : this.children()) {
+                for (WidgetBase clickableWidget : buttonEntry.buttons) {
+                    if (!clickableWidget.isMouseOver(mouseX, mouseY, clickableWidget.x - 150, clickableWidget.y - 2, 150, 24))
+                        continue;
+                    return Optional.of(clickableWidget);
+                }
             }
         }
         return Optional.empty();
@@ -101,62 +105,45 @@ public class ResettableListWidget extends ElementListWidget<ResettableListWidget
     public static class ButtonEntry extends ElementListWidget.Entry<ResettableListWidget.ButtonEntry> {
 
         public int height;
-        public OptionBase<?> option;
+        public AbstractOption<?> option;
         public WidgetBase button;
         public WidgetBase reset;
-        public Map<OptionBase<?>, WidgetBase> optionToButton;
+        public Map<AbstractOption<?>, WidgetBase> optionToButton;
         public List<WidgetBase> buttons;
 
-        private ButtonEntry(OptionBase<?> option, int width) {
+        private ButtonEntry(AbstractOption<?> option, int width) {
             this.option = option;
-            this.height = 20;
+            this.height = option.getConfigWidget(width).height;
             this.button = valueButton(option, width);
             this.reset = resetButton(option, width);
             this.optionToButton = ImmutableMap.of(option, this.button);
-            this.buttons = ImmutableList.of(this.button, this.reset);
+            this.buttons = option instanceof CategoryOption ? ImmutableList.of(this.button) : ImmutableList.of(this.button, this.reset);
         }
 
-        /**
-         * Category divider
-         */
-        private ButtonEntry(String text, int width) {
-            this.height = 32;
-            this.button = new TextWidget(width / 2 - 150, 0, 300, this.height, Text.literal(text), 0x2B_FFFFFF, 0x5E_FFFFFF);
-            this.buttons = ImmutableList.of(this.button);
-        }
-
-        public WidgetBase valueButton(OptionBase<?> option, int width) {
+        public WidgetBase valueButton(AbstractOption<?> option, int width) {
             return option.getConfigWidget(width);
         }
 
-        private WidgetBase resetButton(OptionBase<?> option, int width) {
-            return new WidgetBase(width / 2 + 102, 0, 40, 20, ChassisScreenTexts.RESET,
+        private WidgetBase resetButton(AbstractOption<?> option, int width) {
+            return new ResetWidget(option,
                     buttonWidget -> {
                         option.reset();
                         this.button = valueButton(option, width);
                         this.reset = resetButton(option, width);
                         this.buttons = ImmutableList.of(this.button, this.reset);
-                    });
+                    },
+                    width);
         }
 
-        public static ResettableListWidget.ButtonEntry create(int width, OptionBase<?> option) {
+        public static ResettableListWidget.ButtonEntry create(AbstractOption<?> option, int width) {
             return new ResettableListWidget.ButtonEntry(option, width);
-        }
-
-        public static ResettableListWidget.ButtonEntry create(int width, String text) {
-            return new ResettableListWidget.ButtonEntry(text, width);
         }
 
         @Override
         public void render(MatrixStack matrices, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
-
             this.buttons.forEach((button) -> {
                 button.y = y;
                 button.render(matrices, mouseX, mouseY, tickDelta);
-            });
-
-            if (this.optionToButton != null) this.optionToButton.forEach((option, button) -> {
-                MinecraftClient.getInstance().textRenderer.drawWithShadow(matrices, option.getDisplayName(), button.x - 142, y + (entryHeight - 8) / 2, 16777215);
             });
         }
 
@@ -168,6 +155,22 @@ public class ResettableListWidget extends ElementListWidget<ResettableListWidget
         @Override
         public List<? extends Selectable> selectableChildren() {
             return this.buttons;
+        }
+    }
+
+    public static class ResetWidget extends WidgetBase {
+
+        private AbstractOption<?> option;
+
+        public ResetWidget(AbstractOption<?> option, PressAction onPress, int width) {
+            super(width / 2 + 102, 0, 40, 20, ChassisScreenTexts.RESET, onPress);
+            this.option = option;
+        }
+
+        @Override
+        public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
+            this.active = !this.option.getValue().equals(this.option.getDefaultValue());
+            super.render(matrices, mouseX, mouseY, delta);
         }
     }
 }
