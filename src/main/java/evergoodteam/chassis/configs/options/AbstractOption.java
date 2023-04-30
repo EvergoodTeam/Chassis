@@ -56,9 +56,9 @@ public abstract class AbstractOption<T> {
         return value;
     }
 
-    abstract Collection<T> getValues();
+    public abstract Collection<T> getValues();
 
-    abstract T getWrittenValue(ConfigBase config);
+    public abstract T getWrittenValue(ConfigBase config);
 
     public T getDefaultValue() {
         return defaultValue;
