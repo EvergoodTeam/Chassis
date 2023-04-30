@@ -1,8 +1,8 @@
 package evergoodteam.chassis.configs.options;
 
 import evergoodteam.chassis.configs.ConfigBase;
-import evergoodteam.chassis.configs.widgets.SliderWidget;
-import evergoodteam.chassis.configs.widgets.WidgetBase;
+import evergoodteam.chassis.client.gui.widgets.SliderWidget;
+import evergoodteam.chassis.client.gui.widgets.WidgetBase;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.util.math.MatrixStack;
@@ -10,20 +10,12 @@ import net.minecraft.text.Text;
 import net.minecraft.util.math.MathHelper;
 
 import java.util.Collection;
+import java.util.List;
 
-public class DoubleSliderOption implements OptionBase<Double>, OptionBase.Interval<Double> {
+public class DoubleSliderOption extends AbstractOption<Double> implements AbstractOption.Interval<Double> {
 
-    private final String name;
-    private String comment;
-    private Double value;
     private final Double min;
     private final Double max;
-    private final Double defaultValue;
-    private Boolean defaultHidden;
-
-    private Text display;
-    private Text tooltip;
-    //private DoubleSlider widget;
 
     public DoubleSliderOption(String name, double min, double max, double defaultValue) {
         this(name, min, max, defaultValue, Text.literal(name), Text.empty());
@@ -34,15 +26,9 @@ public class DoubleSliderOption implements OptionBase<Double>, OptionBase.Interv
     }
 
     public DoubleSliderOption(String name, double min, double max, double defaultValue, Text displayName, Text tooltip) {
-        this.name = name;
-        this.comment = "";
-        this.value = defaultValue;
+        super(name, defaultValue, displayName, tooltip);
         this.min = min;
         this.max = max;
-        this.defaultValue = defaultValue;
-        this.defaultHidden = false;
-        this.display = displayName;
-        this.tooltip = tooltip;
     }
 
     @Override
@@ -56,49 +42,14 @@ public class DoubleSliderOption implements OptionBase<Double>, OptionBase.Interv
     }
 
     @Override
-    public String getName() {
-        return name;
-    }
-
-    @Override
-    public String getComment() {
-        return comment;
-    }
-
-    @Override
-    public Text getDisplayName() {
-        return display;
-    }
-
-    @Override
-    public Double getValue() {
-        return value;
-    }
-
-    @Override
     public Collection<Double> getValues() {
-        return null;
+        return List.of(min, max);
     }
 
     @Override
     public Double getWrittenValue(ConfigBase config) {
-        return Double.valueOf(config.getWrittenValue(name));
-    }
-
-    @Override
-    public Double getDefaultValue() {
-        return defaultValue;
-    }
-
-
-    @Override
-    public Boolean defaultHidden() {
-        return defaultHidden;
-    }
-
-    @Override
-    public Text getTooltip() {
-        return tooltip;
+        String written = config.getWrittenValue(this.getName());
+        return written != null ? Double.valueOf(written) : getDefaultValue();
     }
 
     @Environment(value = EnvType.CLIENT)
@@ -108,19 +59,26 @@ public class DoubleSliderOption implements OptionBase<Double>, OptionBase.Interv
     }
 
     @Override
-    public void setValue(Double newValue) {
-        this.value = newValue;
+    public DoubleSliderOption setEnvType(EnvType type) {
+        super.setEnvType(type);
+        return this;
     }
 
     @Override
     public DoubleSliderOption setComment(String comment) {
-        this.comment = comment;
+        super.setComment(comment);
+        return this;
+    }
+
+    @Override
+    public DoubleSliderOption setDisplayName(Text displayName) {
+        super.setDisplayName(displayName);
         return this;
     }
 
     @Override
     public DoubleSliderOption setTooltip(Text tooltip) {
-        this.tooltip = tooltip;
+        super.setTooltip(tooltip);
         return this;
     }
 
@@ -131,7 +89,7 @@ public class DoubleSliderOption implements OptionBase<Double>, OptionBase.Interv
 
     @Override
     public DoubleSliderOption hideDefault(Boolean bool) {
-        this.defaultHidden = bool;
+        super.hideDefault(bool);
         return this;
     }
 
@@ -148,6 +106,12 @@ public class DoubleSliderOption implements OptionBase<Double>, OptionBase.Interv
             super(x, y, width, height, option);
             this.option = option;
             this.setTooltip(option.getTooltip());
+        }
+
+        @Override
+        public void renderCenteredText(MatrixStack matrices){
+            super.renderCenteredText(matrices);
+            this.textRenderer.drawWithShadow(matrices, this.option.getDisplayName(), this.x - 142, y + (this.height - 8) / 2, 16777215);
         }
 
         @Override

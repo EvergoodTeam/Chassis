@@ -1,10 +1,10 @@
 package evergoodteam.chassis.configs.options;
 
 import com.google.common.collect.ImmutableList;
+import evergoodteam.chassis.client.gui.widgets.CyclingWidget;
+import evergoodteam.chassis.client.gui.widgets.WidgetBase;
 import evergoodteam.chassis.configs.ConfigBase;
-import evergoodteam.chassis.configs.screen.ChassisScreenTexts;
-import evergoodteam.chassis.configs.widgets.CyclingWidget;
-import evergoodteam.chassis.configs.widgets.WidgetBase;
+import evergoodteam.chassis.client.gui.text.ChassisScreenTexts;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.util.math.MatrixStack;
@@ -13,17 +13,7 @@ import net.minecraft.text.Text;
 import java.util.Collection;
 import java.util.List;
 
-public class BooleanOption implements OptionBase<Boolean> {
-
-    private final String name;
-    private String comment;
-    private Boolean value;
-    private final Boolean defaultValue;
-    private Boolean defaultHidden;
-
-    private Text display;
-    private Text tooltip;
-    //private CyclingWidget<Boolean> widget;
+public class BooleanOption extends AbstractOption<Boolean> {
 
     public BooleanOption(String name, Boolean defaultValue) {
         this(name, defaultValue, Text.literal(name), Text.empty());
@@ -34,38 +24,7 @@ public class BooleanOption implements OptionBase<Boolean> {
     }
 
     public BooleanOption(String name, Boolean defaultValue, Text displayName, Text tooltip) {
-        this.name = name;
-        this.comment = "";
-        this.value = defaultValue;
-        this.defaultValue = defaultValue;
-        this.defaultHidden = false;
-        this.display = displayName;
-        this.tooltip = tooltip;
-    }
-
-    @Override
-    public String getName() {
-        return name;
-    }
-
-    @Override
-    public String getComment() {
-        return comment;
-    }
-
-    @Override
-    public Text getDisplayName() {
-        return display;
-    }
-
-    @Override
-    public Text getTooltip() {
-        return tooltip;
-    }
-
-    @Override
-    public Boolean getValue() {
-        return value;
+        super(name, defaultValue, displayName, tooltip);
     }
 
     @Override
@@ -75,39 +34,37 @@ public class BooleanOption implements OptionBase<Boolean> {
 
     @Override
     public Boolean getWrittenValue(ConfigBase config) {
-        return Boolean.valueOf(config.getWrittenValue(name));
+        String written = config.getWrittenValue(this.getName());
+        return written != null ? Boolean.valueOf(written) : getDefaultValue();
     }
 
-    @Override
-    public Boolean getDefaultValue() {
-        return defaultValue;
-    }
-
-    @Override
-    public Boolean defaultHidden() {
-        return defaultHidden;
-    }
-
-    @Environment(value = EnvType.CLIENT)
+    @Environment(value = net.fabricmc.api.EnvType.CLIENT)
     @Override
     public WidgetBase getConfigWidget(int width) {
         return new BooleanConfigWidget(this, width);
     }
 
     @Override
-    public void setValue(Boolean newValue) {
-        this.value = newValue;
+    public BooleanOption setEnvType(EnvType type) {
+        super.setEnvType(type);
+        return this;
     }
 
     @Override
     public BooleanOption setComment(String comment) {
-        this.comment = comment;
+        super.setComment(comment);
+        return this;
+    }
+
+    @Override
+    public BooleanOption setDisplayName(Text displayName) {
+        super.setDisplayName(displayName);
         return this;
     }
 
     @Override
     public BooleanOption setTooltip(Text tooltip) {
-        this.tooltip = tooltip;
+        super.setTooltip(tooltip);
         return this;
     }
 
@@ -118,16 +75,25 @@ public class BooleanOption implements OptionBase<Boolean> {
 
     @Override
     public BooleanOption hideDefault(Boolean bool) {
-        this.defaultHidden = bool;
+        super.hideDefault(bool);
         return this;
     }
 
-    @Environment(value = EnvType.CLIENT)
+    @Environment(value = net.fabricmc.api.EnvType.CLIENT)
     public static class BooleanConfigWidget extends CyclingWidget<Boolean> {
+
+        public final BooleanOption option;
 
         public BooleanConfigWidget(BooleanOption option, int width) {
             super(width, List.of(Boolean.TRUE, Boolean.FALSE), new CyclingWidget.UpdateOptionValue<>(option), value -> value ? ChassisScreenTexts.ON : ChassisScreenTexts.OFF);
             this.initially(option.getValue()).setTooltip(option.getTooltip());
+            this.option = option;
+        }
+
+        @Override
+        public void renderCenteredText(MatrixStack matrices) {
+            super.renderCenteredText(matrices);
+            this.textRenderer.drawWithShadow(matrices, this.option.getDisplayName(), this.x - 142, y + (this.height - 8) / 2, 16777215);
         }
 
         @Override

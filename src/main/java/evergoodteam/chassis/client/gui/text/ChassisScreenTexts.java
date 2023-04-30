@@ -1,6 +1,5 @@
-package evergoodteam.chassis.configs.screen;
+package evergoodteam.chassis.client.gui.text;
 
-import evergoodteam.chassis.util.ColorConverter;
 import net.minecraft.text.Text;
 
 public class ChassisScreenTexts {
@@ -13,6 +12,6 @@ public class ChassisScreenTexts {
     public static final Text RESET_A = Text.translatable("config.chassis.resetall");
     public static final Text DISCARD = Text.translatable("config.chassis.discard");
     public static final Text DISCARD_D = Text.translatable("config.chassis.discard.desc");
-    public static final Text ON = ColorConverter.coloredText("ON", GREEN);
-    public static final Text OFF = ColorConverter.coloredText("OFF", RED);
+    public static final Text ON = TextHelper.colored("ON", GREEN);
+    public static final Text OFF = TextHelper.colored("OFF", RED);
 }

@@ -1,8 +1,8 @@
 package evergoodteam.chassis.configs.options;
 
 import evergoodteam.chassis.configs.ConfigBase;
-import evergoodteam.chassis.configs.widgets.CyclingWidget;
-import evergoodteam.chassis.configs.widgets.WidgetBase;
+import evergoodteam.chassis.client.gui.widgets.CyclingWidget;
+import evergoodteam.chassis.client.gui.widgets.WidgetBase;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.util.math.MatrixStack;
@@ -11,18 +11,9 @@ import net.minecraft.text.Text;
 import java.util.List;
 import java.util.Set;
 
-public class StringSetOption implements OptionBase<String> {
+public class StringSetOption extends AbstractOption<String> {
 
-    private final String name;
-    private String comment;
-    private String value;
     private final Set<String> bounds;
-    private final String defaultValue;
-    private Boolean defaultHidden;
-
-    private Text display;
-    private Text tooltip;
-    private CyclingWidget<String> widget;
 
     public StringSetOption(String name, String defaultValue, Set<String> values) {
         this(name, defaultValue, values, Text.literal(name), Text.empty());
@@ -34,34 +25,8 @@ public class StringSetOption implements OptionBase<String> {
 
 
     public StringSetOption(String name, String defaultValue, Set<String> values, Text displayName, Text tooltip) {
-        this.name = name;
-        this.comment = "";
-        this.value = defaultValue;
+        super(name, defaultValue, displayName, tooltip);
         this.bounds = values;
-        this.defaultValue = defaultValue;
-        this.defaultHidden = false;
-        this.display = displayName;
-        this.tooltip = tooltip;
-    }
-
-    @Override
-    public String getName() {
-        return name;
-    }
-
-    @Override
-    public String getComment() {
-        return comment;
-    }
-
-    @Override
-    public Text getDisplayName() {
-        return display;
-    }
-
-    @Override
-    public Text getTooltip() {
-        return tooltip;
     }
 
     @Override
@@ -70,23 +35,9 @@ public class StringSetOption implements OptionBase<String> {
     }
 
     @Override
-    public String getValue() {
-        return value;
-    }
-
-    @Override
     public String getWrittenValue(ConfigBase config) {
-        return config.getWrittenValue(name);
-    }
-
-    @Override
-    public String getDefaultValue() {
-        return defaultValue;
-    }
-
-    @Override
-    public Boolean defaultHidden() {
-        return defaultHidden;
+        String written = config.getWrittenValue(this.getName());
+        return written != null ? written : getDefaultValue();
     }
 
     @Environment(value = EnvType.CLIENT)
@@ -96,19 +47,26 @@ public class StringSetOption implements OptionBase<String> {
     }
 
     @Override
-    public void setValue(String newValue) {
-        this.value = newValue;
+    public StringSetOption setEnvType(EnvType type) {
+        super.setEnvType(type);
+        return this;
     }
 
     @Override
     public StringSetOption setComment(String comment) {
-        this.comment = comment;
+        super.setComment(comment);
+        return this;
+    }
+
+    @Override
+    public StringSetOption setDisplayName(Text displayName) {
+        super.setDisplayName(displayName);
         return this;
     }
 
     @Override
     public StringSetOption setTooltip(Text tooltip) {
-        this.tooltip = tooltip;
+        super.setTooltip(tooltip);
         return this;
     }
 
@@ -119,16 +77,25 @@ public class StringSetOption implements OptionBase<String> {
 
     @Override
     public StringSetOption hideDefault(Boolean bool) {
-        this.defaultHidden = bool;
+        super.hideDefault(bool);
         return this;
     }
 
     @Environment(value = EnvType.CLIENT)
     public static class StringConfigWidget extends CyclingWidget<String>{
 
+        public final StringSetOption option;
+
         public StringConfigWidget(StringSetOption option, int width){
             super(width, List.copyOf(option.bounds), new CyclingWidget.UpdateOptionValue<>(option));
             this.initially(option.getValue()).setTooltip(option.getTooltip());
+            this.option = option;
+        }
+
+        @Override
+        public void renderCenteredText(MatrixStack matrices){
+            super.renderCenteredText(matrices);
+            this.textRenderer.drawWithShadow(matrices, this.option.getDisplayName(), this.x - 142, y + (float) (this.height - 8) / 2, 16777215);
         }
 
         @Override
