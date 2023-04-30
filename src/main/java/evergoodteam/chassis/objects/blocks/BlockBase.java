@@ -1,56 +1,48 @@
 package evergoodteam.chassis.objects.blocks;
 
-import evergoodteam.chassis.client.models.BlockModelType;
-import evergoodteam.chassis.client.models.ModelBundler;
-import evergoodteam.chassis.objects.EntryBase;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.block.Block;
 import net.minecraft.block.Material;
 import net.minecraft.sound.BlockSoundGroup;
-import net.minecraft.util.Identifier;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public class BlockBase extends Block implements BlockSettings, EntryBase {
+// TODO: clean up constructors with version group change
+public class BlockBase extends Block implements BlockSettings {
 
     /**
-     * Generates a Block that you can later register
-     *
-     * @param namespaceGroup list to which add the generated Block - you can use this List to later register the Block(s)
-     * @param material
-     * @param hardness
-     * @param resistance
-     * @param sound          {@link BlockSoundGroup}
-     */
-    public BlockBase(List<Block> namespaceGroup, Material material, Float hardness, Float resistance, BlockSoundGroup sound) {
-        this(FabricBlockSettings.of(material).requiresTool().strength(hardness, resistance).sounds(sound));
-        this.addToList(namespaceGroup);
-    }
-
-    public BlockBase(List<Block> namespaceGroup, Material material, Float strength, BlockSoundGroup sound) {
-        this(FabricBlockSettings.of(material).requiresTool().strength(strength).sounds(sound));
-        this.addToList(namespaceGroup);
-    }
-
-    /**
-     * Generates a Block that you can later register
-     *
-     * @param namespaceGroup list to which add the generated Block - you can use this List to later register the Block(s)
-     * @param blockSettings
-     * @param transparent
-     * @deprecated as of release 1.2.3, replaced by {@link BlockSettings#setTransparent() setTransparent()}
+     * @deprecated as of release 1.2.3, use {@link #addTo(List)} ()} instead
      */
     @Deprecated
-    public BlockBase(List<Block> namespaceGroup, FabricBlockSettings blockSettings, Boolean transparent) {
-        this(namespaceGroup, blockSettings);
-        this.addToList(namespaceGroup);
+    public BlockBase(List<Block> list, Material material, Float hardness, Float resistance, BlockSoundGroup sound) {
+        this(list, FabricBlockSettings.of(material).requiresTool().strength(hardness, resistance).sounds(sound));
+    }
 
+    /**
+     * @deprecated as of release 1.2.3, use {@link #addTo(List)} ()} instead
+     */
+    @Deprecated
+    public BlockBase(List<Block> list, Material material, Float strength, BlockSoundGroup sound) {
+        this(list, FabricBlockSettings.of(material).requiresTool().strength(strength).sounds(sound));
+    }
+
+    /**
+     * @deprecated as of release 1.2.3, use {@link #setTransparent()} & {@link #addTo(List)} instead
+     */
+    @Deprecated
+    public BlockBase(List<Block> list, FabricBlockSettings blockSettings, Boolean transparent) {
+        this(list, blockSettings);
         if (transparent) this.setTransparent();
     }
 
-    public BlockBase(List<Block> namespaceGroup, FabricBlockSettings blockSettings) {
+    /**
+     * @deprecated as of release 1.2.3, use {@link #addTo(List)} ()} instead
+     */
+    @Deprecated
+    public BlockBase(List<Block> list, FabricBlockSettings blockSettings) {
         this(blockSettings);
-        this.addToList(namespaceGroup);
+        this.addTo(list);
     }
 
     public BlockBase(Material material, Float hardness, Float resistance, BlockSoundGroup sound) {
@@ -62,7 +54,7 @@ public class BlockBase extends Block implements BlockSettings, EntryBase {
     }
 
     /**
-     * @deprecated as of release 1.2.3, replaced by {@link BlockSettings#setTransparent() setTransparent()}
+     * @deprecated as of release 1.2.3, use {@link #setTransparent()} instead
      */
     @Deprecated
     public BlockBase(FabricBlockSettings blockSettings, Boolean transparent) {
@@ -74,7 +66,8 @@ public class BlockBase extends Block implements BlockSettings, EntryBase {
         super(blockSettings);
     }
 
-    public void bundleModel(ModelBundler bundler, String namespace, String path, BlockModelType type) {
-        bundler.addBlock(new Identifier(namespace, path), type);
+    public BlockBase addTo(@NotNull List<Block> list) {
+        list.add(this);
+        return this;
     }
 }

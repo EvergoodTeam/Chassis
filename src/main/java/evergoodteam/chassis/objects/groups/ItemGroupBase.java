@@ -1,6 +1,5 @@
 package evergoodteam.chassis.objects.groups;
 
-import evergoodteam.chassis.objects.EntryBase;
 import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder;
 import net.minecraft.item.ItemConvertible;
 import net.minecraft.item.ItemGroup;
@@ -10,7 +9,7 @@ import net.minecraft.util.Identifier;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ItemGroupBase implements EntryBase {
+public class ItemGroupBase {
 
     private static final Map<String, ItemGroupBase> GROUP_MAP = new HashMap<>();
 

@@ -22,7 +22,7 @@ public interface BlockSettings {
     }
 
     default Block setTransparent() {
-        if(this != null) addTransparentBlock((Block) this);
+        if (this != null) addTransparentBlock((Block) this);
         return (Block) this;
     }
 }
