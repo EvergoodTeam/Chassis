@@ -1,6 +1,6 @@
-package evergoodteam.chassis.configs.widgets;
+package evergoodteam.chassis.client.gui.widgets;
 
-import evergoodteam.chassis.configs.options.OptionBase;
+import evergoodteam.chassis.configs.options.AbstractOption;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.screen.Screen;
@@ -18,22 +18,17 @@ public class CyclingWidget<T> extends WidgetBase {
     public final UpdateCallback<T> updateCallback;
     public Function<T, Text> valueToText;
 
-    public CyclingWidget(int width, List<T> values, UpdateCallback<T> updateCallback, Function<T, Text> valueToText, Text tooltip) {
-        this(width, values, updateCallback);
-        this.valueToText = valueToText;
-    }
-
     public CyclingWidget(int width, List<T> values, UpdateCallback<T> updateCallback, Function<T, Text> valueToText) {
         this(width, values, updateCallback);
         this.valueToText = valueToText;
     }
 
     public CyclingWidget(int width, List<T> values, UpdateCallback<T> updateCallback) {
-        this(width / 2, 0, 100, 20, Text.empty(), values, updateCallback);
+        this(width / 2, 0, 100, 20, values, updateCallback);
     }
 
-    public CyclingWidget(int x, int y, int width, int height, Text message, List<T> values, UpdateCallback<T> updateCallback) {
-        super(x, y, width, height, message);
+    public CyclingWidget(int x, int y, int width, int height, List<T> values, UpdateCallback<T> updateCallback) {
+        super(x, y, width, height, Text.empty());
         this.index = 0;
         this.values = values;
         this.updateCallback = updateCallback;
@@ -79,7 +74,7 @@ public class CyclingWidget<T> extends WidgetBase {
         return this;
     }
 
-    public record UpdateOptionValue<T>(OptionBase<T> option) implements CyclingWidget.UpdateCallback<T> {
+    public record UpdateOptionValue<T>(AbstractOption<T> option) implements CyclingWidget.UpdateCallback<T> {
         @Override
         public void onValueChange(CyclingWidget<T> button, T value) {
             option.setValue(value);
