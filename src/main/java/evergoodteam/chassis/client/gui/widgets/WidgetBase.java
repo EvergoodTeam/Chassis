@@ -1,4 +1,4 @@
-package evergoodteam.chassis.configs.widgets;
+package evergoodteam.chassis.client.gui.widgets;
 
 import com.google.common.collect.ImmutableList;
 import net.fabricmc.api.EnvType;
@@ -37,7 +37,7 @@ public class WidgetBase extends AbstractWidget implements OrderableTooltip {
 
     @Override
     public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
-        this.hovered = mouseX >= this.x && mouseY >= this.y && mouseX < this.x + this.width && mouseY < this.y + this.height;
+        this.hovered = this.isMouseOver(mouseX, mouseY);
         if (this.hovered) onHover();
         this.renderBackground(matrices, mouseX, mouseY);
         this.renderButton(matrices, this.x, this.y, this.width, this.height);
@@ -47,6 +47,7 @@ public class WidgetBase extends AbstractWidget implements OrderableTooltip {
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        if(!this.active) return false;
         if (isLeftClick(button) && insideBounds(mouseX, mouseY)) {
             onClick(mouseX, mouseY);
             playDownSound(MinecraftClient.getInstance().getSoundManager());
@@ -126,12 +127,40 @@ public class WidgetBase extends AbstractWidget implements OrderableTooltip {
     }
 
     public void renderCenteredText(MatrixStack matrices) {
-        drawCenteredText(matrices, textRenderer, getMessage(), this.x + (this.width / 2), this.y + (this.height - 8) / 2, 16777215);
+        this.renderCenteredText(matrices, this.getMessage(), this.y + (this.height - 8) / 2);
+    }
+
+    public void renderCenteredText(MatrixStack matrices, Text message, int y){
+        this.renderCenteredText(matrices, message, this.x + (this.width / 2), y);
+    }
+
+    public void renderCenteredText(MatrixStack matrices, Text text, int x, int y){
+        String message = truncateString(text.getString());
+        drawCenteredText(matrices, textRenderer, Text.literal(message).fillStyle(this.getMessage().getStyle()), x, y, 16777215);
+    }
+
+    public String truncateString(String string){
+        String result = string;
+        boolean firstIter = true;
+
+        while (textRenderer.getWidth(result) > this.width - 8) {
+            result = result.substring(0, Math.max(result.length() - (firstIter ? 2 : 5), 0)).trim();
+            result += "...";
+            firstIter = false;
+        }
+
+        return result;
     }
 
     @Environment(value = EnvType.CLIENT)
     public static interface PressAction {
         void onPress(WidgetBase var1);
+    }
+
+    @Environment(value = EnvType.CLIENT)
+    public static interface RenderAction {
+
+        void onRender(WidgetBase var1);
     }
 
     @Override
