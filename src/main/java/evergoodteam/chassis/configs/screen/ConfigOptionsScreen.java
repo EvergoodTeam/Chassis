@@ -1,14 +1,17 @@
 package evergoodteam.chassis.configs.screen;
 
 import com.google.common.collect.ImmutableList;
-import evergoodteam.chassis.configs.widgets.WidgetBase;
-import evergoodteam.chassis.configs.widgets.ResettableListWidget;
+import evergoodteam.chassis.client.ChassisClient;
+import evergoodteam.chassis.client.gui.widgets.WidgetBase;
+import evergoodteam.chassis.client.gui.widgets.ResettableListWidget;
+import evergoodteam.chassis.client.gui.text.GradientTextRenderer;
+import evergoodteam.chassis.configs.ConfigBase;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.option.GameOptions;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.OrderedText;
-import net.minecraft.text.Text;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Optional;
@@ -17,12 +20,13 @@ import java.util.Optional;
 public class ConfigOptionsScreen extends Screen {
 
     protected final Screen parent;
-    protected final GameOptions gameOptions;
+    protected final ConfigBase config;
+    protected final GradientTextRenderer gradientTextRenderer = ChassisClient.gradientTextRenderer;
 
-    public ConfigOptionsScreen(Screen parent, GameOptions gameOptions, Text title) {
-        super(title);
+    public ConfigOptionsScreen(Screen parent, ConfigBase config) {
+        super(config.getTitle());
         this.parent = parent;
-        this.gameOptions = gameOptions;
+        this.config = config;
     }
 
     @Override
@@ -36,5 +40,9 @@ public class ConfigOptionsScreen extends Screen {
             return optional.get().getOrderedTooltip();
         }
         return ImmutableList.of();
+    }
+
+    public void drawCenteredGradientText(MatrixStack matrices, @Nullable List<Integer> points){
+        gradientTextRenderer.drawWithShadow(matrices, this.title, points, (float) (this.width / 2 - gradientTextRenderer.getWidth(this.title.asOrderedText()) / 2), 15, 16777215);
     }
 }
