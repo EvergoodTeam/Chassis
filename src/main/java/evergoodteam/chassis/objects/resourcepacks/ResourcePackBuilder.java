@@ -38,11 +38,6 @@ public class ResourcePackBuilder extends AbstractFileResourcePack implements Res
     private final String separator;
     private Set<String> namespaces;
 
-    @Deprecated
-    public ResourcePackBuilder(String namespace, ResourceType resourceType, Path basePath) {
-        this(namespace, namespace + ".metadata.description", resourceType, basePath);
-    }
-
     public ResourcePackBuilder(String namespace, String metadataKey, ResourceType resourceType, Path basePath) {
         super(null);
         this.id = namespace;

@@ -25,7 +25,7 @@ import static org.slf4j.LoggerFactory.getLogger;
 @Mixin(PackScreen.class)
 public class PackScreenMixin {
 
-    private static final Logger LOG = getLogger(CMI + "/Screen");
+    private static final Logger LOGGER = getLogger(CMI + "/R/Screen");
 
     /**
      * Fixex random selection of icon when icon is missing
@@ -33,8 +33,8 @@ public class PackScreenMixin {
     @Inject(at = @At("HEAD"), method = "loadPackIcon(Lnet/minecraft/client/texture/TextureManager;Lnet/minecraft/resource/ResourcePackProfile;)Lnet/minecraft/util/Identifier;", cancellable = true)
     public void injectLoadPackIcon(TextureManager textureManager, ResourcePackProfile resourcePackProfile, CallbackInfoReturnable<Identifier> cir) {
 
-        if (ResourcePackBase.getDefaultIcons().contains(resourcePackProfile.getDisplayName().getString())) {
-            //LOG.info("Attempting to set unknown pack icon before error is thrown / random texture");
+        if (ResourcePackBase.getDefaultIconNamespaces().contains(resourcePackProfile.getDisplayName().getString())) {
+            //LOGGER.info("Attempting to set unknown pack icon before error is thrown / random texture");
             cir.setReturnValue(new Identifier("textures/misc/unknown_pack.png"));
         }
     }
@@ -69,10 +69,9 @@ public class PackScreenMixin {
         try {
             Field field = findField("pack", "field_19129");
             field.setAccessible(true);
-
             return (ResourcePackOrganizer.Pack) field.get(entry);
         } catch (Exception e) {
-            LOG.error("Error on getting pack", e);
+            LOGGER.error("Error on getting pack", e);
         }
 
         return null;

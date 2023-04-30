@@ -11,6 +11,6 @@ public class Reference {
 
     public static final ConfigBase CHASSIS_CONFIGS = new ConfigBase(MODID);
     public static final ResourcePackBase CHASSIS_RESOURCES = new ResourcePackBase(CHASSIS_CONFIGS, MODID)
-            .addIcon("https://evergoodteam.github.io/utils/icons/chassisIcon.png")
-            .addColor("53a074");
+            .setIcon("https://evergoodteam.github.io/utils/icons/chassisIcon.png")
+            .setColor("53a074");
 }

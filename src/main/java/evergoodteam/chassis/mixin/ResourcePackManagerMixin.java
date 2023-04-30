@@ -29,7 +29,7 @@ import static org.slf4j.LoggerFactory.getLogger;
 @Mixin(ResourcePackManager.class)
 public class ResourcePackManagerMixin {
 
-    private static final Logger LOG = getLogger(CMI + "/M/Resource");
+    private static final Logger LOGGER = getLogger(CMI + "/M/Resource");
 
     @Shadow
     @Final
@@ -63,11 +63,11 @@ public class ResourcePackManagerMixin {
             for (String namespace : resourceMap.keySet()) {
                 for (ResourcePackBase resourcePack : resourceMap.get(namespace)) {
                     if (client) {
-                        providersCopy.add(new ClientResourcePackProvider(namespace, resourcePack.getNamespace(), resourcePack.getHexColor()));
-                        //LOG.info("Injected our ClientProvider into providers: {}", this.providers);
+                        providersCopy.add(new ClientResourcePackProvider(namespace, resourcePack.getNamespace(), resourcePack.getMetadataKey(), resourcePack.getHexColor()));
+                        //LOGGER.info("Injected our ClientProvider into providers: {}", this.providers);
                     } else {
-                        providersCopy.add(new ServerResourcePackProvider(namespace, resourcePack.getNamespace()));
-                        //LOG.info("Injected our ServerProvider into providers: {}", this.providers);
+                        providersCopy.add(new ServerResourcePackProvider(namespace, resourcePack.getNamespace(), resourcePack.getMetadataKey()));
+                        //LOGGER.info("Injected our ServerProvider into providers: {}", this.providers);
                     }
                 }
             }
