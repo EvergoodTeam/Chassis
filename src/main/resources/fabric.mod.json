@@ -16,6 +16,8 @@
   "icon": "icon.png",
   "environment": "*",
   "entrypoints": {
+    "fabric-datagen": [
+    ],
     "modmenu": [
       "evergoodteam.chassis.ChassisModMenu"
     ],

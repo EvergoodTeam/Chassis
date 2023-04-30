@@ -1,7 +1,7 @@
 plugins {
     id 'fabric-loom' version "${loom_version}"
     id 'maven-publish'
-    //id "io.freefair.lombok" version "${lombok_version}"
+    id "io.freefair.lombok" version "${lombok_version}"
 }
 
 version = project.mod_version
@@ -9,6 +9,30 @@ group = project.maven_group
 
 loom {
     accessWidenerPath = file("src/main/resources/chassis.accesswidener")
+
+    runs {
+        // This adds a new gradle task that runs the datagen API: "gradlew runDatagenClient"
+        datagenClient {
+            inherit client
+            name "Data Generation"
+            vmArg "-Dfabric-api.datagen"
+            vmArg "-Dfabric-api.datagen.output-dir=${file("run/config/chassis/generated")}"
+            vmArg "-Dfabric-api.datagen.modid=chassis"
+
+            runDir "build/datagen"
+        }
+    }
+}
+
+// Add the datagenned files into the jar.
+sourceSets {
+    main {
+        resources {
+            srcDirs += [
+                    'run/config/chassis/generated'
+            ]
+        }
+    }
 }
 
 repositories {
@@ -24,40 +48,23 @@ dependencies {
     // Fabric API. This is technically optional, but you probably want it anyway.
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
-    // UrlUtils.java
-    implementation "commons-validator:commons-validator:${project.validator_version}"
-
     // ModMenu
     modImplementation "com.terraformersmc:modmenu:${project.mod_menu_version}"
 }
 
 processResources {
     inputs.property "version", project.version
-    filteringCharset "UTF-8"
 
     filesMatching("fabric.mod.json") {
         expand "version": project.version
     }
 }
 
-def targetJavaVersion = 17
 tasks.withType(JavaCompile).configureEach {
-    // ensure that the encoding is set to UTF-8, no matter what the system default is
-    // this fixes some edge cases with special characters not displaying correctly
-    // see http://yodaconditions.net/blog/fix-for-java-file-encoding-problems-with-gradle.html
-    // If Javadoc is generated, this must be specified in that task too.
-    it.options.encoding = "UTF-8"
-    if (targetJavaVersion >= 10 || JavaVersion.current().isJava10Compatible()) {
-        it.options.release = targetJavaVersion
-    }
+    it.options.release = 17
 }
 
 java {
-    def javaVersion = JavaVersion.toVersion(targetJavaVersion)
-    if (JavaVersion.current() < javaVersion) {
-        toolchain.languageVersion = JavaLanguageVersion.of(targetJavaVersion)
-    }
-    archivesBaseName = project.archives_base_name
     // Loom will automatically attach sourcesJar to a RemapSourcesJar task and to the "build" task
     // if it is present.
     // If you remove this line, sources will not be generated.
@@ -66,7 +73,7 @@ java {
 
 jar {
     from("LICENSE") {
-        rename { "${it}_${project.archivesBaseName}" }
+        rename { "${it}_${project.archivesBaseName}"}
     }
 }
 
