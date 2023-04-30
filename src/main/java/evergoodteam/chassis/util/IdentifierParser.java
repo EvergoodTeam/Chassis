@@ -32,15 +32,19 @@ public class IdentifierParser {
      * Extracts an entry's name from its identifier <p>
      * e.g. {@code yourmodid:block/example_block -> example_block}
      */
-    public static String getNameFromIdentifier(@NotNull Identifier identifier) {
+    public static String getLastPath(@NotNull Identifier identifier) {
         return StringUtils.lastFromSplit(identifier.getPath(), "/");
+    }
+
+    public static String getParents(@NotNull Identifier identifier){
+        return StringUtils.removeLastFromSplit(identifier.getPath(), "/");
     }
 
     /**
      * Extracts an entry's type from its identifier <p>
      * e.g. {@code yourmodid:block/example_block -> block}
      */
-    public static @Nullable String getTypeFromIdentifier(@NotNull Identifier identifier) {
+    public static @Nullable String getFirstParent(@NotNull Identifier identifier) {
         return StringUtils.between(identifier.toString(), ":", "/");
     }
 }

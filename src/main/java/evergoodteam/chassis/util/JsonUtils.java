@@ -15,6 +15,7 @@ import java.nio.file.Path;
 import static evergoodteam.chassis.util.Reference.CMI;
 import static org.slf4j.LoggerFactory.getLogger;
 
+// TODO: JsonElement after deprecation
 public class JsonUtils {
 
     private static final Logger LOGGER = getLogger(CMI + "/U/Json");

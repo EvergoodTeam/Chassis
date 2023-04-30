@@ -24,10 +24,10 @@ import java.util.Map;
 import static evergoodteam.chassis.util.Reference.CMI;
 import static org.slf4j.LoggerFactory.getLogger;
 
+// TODO: rework
 public class RegistryHandler {
 
     private static final Logger LOGGER = getLogger(CMI + "/H/Registry");
-
     public static final Map<String, List<String>> REGISTERED_BLOCKS = new HashMap<>();
     public static final Map<String, List<String>> REGISTERED_ITEMS = new HashMap<>();
     public static final Map<String, ItemModelType> ITEM_TYPES = new HashMap<>(); // Uses Identifier in String
@@ -99,7 +99,6 @@ public class RegistryHandler {
                 }, false);
     }
 
-    // TODO: [NU] count them anyway
     private static void registerBlockItem(String namespace, String path, Block block, ItemGroup itemGroup) {
         registerItem(namespace, path, new BlockItem(block, new FabricItemSettings().group(itemGroup)), false);
     }

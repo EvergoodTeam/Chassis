@@ -36,8 +36,8 @@ public class DirHandler {
     public static void create(Path path) {
         //LOGGER.info("Attempting to create dir at {}", path);
         if (!Files.exists(path)) {
-            boolean success = new File(path.toString()).mkdirs(); // TODO: [NU] debug logging?
-            //if (success) LOGGER.info("Created dir at {}", path);
+            boolean status = new File(path.toString()).mkdirs();
+            if (status) LOGGER.debug("Created dir at {}", path);
         }
         //else LOGGER.warn("Directory at {} already exists", path);
     }

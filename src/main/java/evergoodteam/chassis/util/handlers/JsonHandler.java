@@ -1,9 +1,6 @@
 package evergoodteam.chassis.util.handlers;
 
-import com.google.gson.FieldNamingPolicy;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonObject;
+import com.google.gson.*;
 import evergoodteam.chassis.util.JsonUtils;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
@@ -28,14 +25,14 @@ public class JsonHandler {
     /**
      * Writes the provided {@link JsonObject} to the .json file identified by the path
      */
-    public static void writeToJson(JsonObject jsonObject, @NotNull Path path) {
+    public static void writeToJson(JsonElement json, @NotNull Path path) {
         if (JsonUtils.isJsonFile(path)) {
             //LOGGER.info("Attempting to write to path {}", path);
-            if (jsonObject.size() != 0) {
-                String jsonString = GSON.toJson(jsonObject);
+            if (json.getAsJsonObject().size() != 0) {
+                String jsonString = GSON.toJson(json);
                 FileHandler.writeToFile(jsonString, path);
             } else {
-                LOGGER.warn("Provided JsonObject is not valid");
+                LOGGER.warn("Provided Json is empty, cannot write it to {}", path);
             }
         }
     }
