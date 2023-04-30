@@ -6,6 +6,10 @@ import net.minecraft.util.Identifier;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * @deprecated use {@link evergoodteam.chassis.objects.resourcepacks.ResourcePackBase ResourcePackBase} instead
+ */
+@Deprecated
 public class RecipeBundler {
 
     private String namespace;

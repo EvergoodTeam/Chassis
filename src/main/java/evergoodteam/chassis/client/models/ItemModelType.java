@@ -1,5 +1,6 @@
 package evergoodteam.chassis.client.models;
 
+@Deprecated
 public enum ItemModelType implements ModelType{
     /** Standard item */
     GENERATED,

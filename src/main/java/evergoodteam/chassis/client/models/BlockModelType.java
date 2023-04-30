@@ -1,5 +1,6 @@
 package evergoodteam.chassis.client.models;
 
+@Deprecated
 public enum BlockModelType implements ModelType{
     /** Same texture on all 6 sides */
     ALL,

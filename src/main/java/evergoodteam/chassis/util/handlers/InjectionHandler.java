@@ -14,14 +14,12 @@ import static evergoodteam.chassis.util.Reference.MODID;
 import static org.slf4j.LoggerFactory.getLogger;
 
 /**
- * Injection for models and recipes can now be done through {@link ModelBundler} and {@link RecipeBase}
+ * @deprecated as of release 1.2.3, injection for models and recipes should be avoided and replaced by a {@link evergoodteam.chassis.objects.resourcepacks.ResourcePackBase ResourcePack}
  */
 @Deprecated
 public class InjectionHandler {
 
     private static final Logger LOGGER = getLogger(MODID + "/H/Inject");
-
-    //region Deprecated
 
     @Deprecated
     static List<String> defaultColumns = new ArrayList<>();
@@ -33,7 +31,7 @@ public class InjectionHandler {
      * @deprecated as of release 1.2.3, replaced by {@link ModelBundler}
      */
     @Deprecated
-    public static void addColumnType(@NotNull String[] paths) { // TODO: check other places where String... is misused
+    public static void addColumnType(@NotNull String[] paths) {
         defaultColumns = List.of(paths);
     }
 
@@ -47,7 +45,6 @@ public class InjectionHandler {
     public static void addModelInjection(@NotNull String namespace) {
         new ModelBundler(namespace.toLowerCase()).addColumn(defaultColumns.toArray(new String[0]));
     }
-    //endregion
 
     /**
      * Sends {@link evergoodteam.chassis.mixin.RecipeManagerMixin} recipes to inject

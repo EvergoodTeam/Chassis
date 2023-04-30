@@ -1,13 +1,13 @@
 package evergoodteam.chassis.objects.recipes;
 
 import com.google.gson.JsonObject;
-import evergoodteam.chassis.objects.EntryBase;
 import net.minecraft.util.Identifier;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class RecipeBase implements EntryBase {
+@Deprecated
+public class RecipeBase {
 
     private static final Map<String, RecipeBase> RECIPE_MAP = new HashMap<>();
 

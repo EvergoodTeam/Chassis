@@ -17,6 +17,10 @@ import java.util.Map;
 import static evergoodteam.chassis.util.Reference.CMI;
 import static org.slf4j.LoggerFactory.getLogger;
 
+/**
+ * @deprecated use {@link evergoodteam.chassis.objects.resourcepacks.ResourcePackBase ResourcePackBase} instead
+ */
+@Deprecated
 @Mixin(RecipeManager.class)
 public class RecipeManagerMixin {
 

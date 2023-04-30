@@ -26,6 +26,10 @@ import static evergoodteam.chassis.util.handlers.RegistryHandler.ITEM_TYPES;
 import static evergoodteam.chassis.util.handlers.RegistryHandler.REGISTERED_BLOCKS;
 import static org.slf4j.LoggerFactory.getLogger;
 
+/**
+ * @deprecated use {@link evergoodteam.chassis.objects.resourcepacks.ResourcePackBase ResourcePackBase} instead
+ */
+@Deprecated
 @Mixin(ModelLoader.class)
 public class ModelLoaderMixin {
 
@@ -36,33 +40,32 @@ public class ModelLoaderMixin {
 
         List<ModelBundler> bundlerList = ModelBundler.getBundlerList();
 
-        String entryNamespace = id.getNamespace();
-        String entryName = IdentifierParser.getNameFromIdentifier(id);
-        String entryPath = id.getPath();
-        String entryIdentifier = IdentifierParser.getString(entryNamespace, entryName);
-
         if (!bundlerList.isEmpty()) {
-            for (ModelBundler bundler : bundlerList) {
 
+            String entryNamespace = id.getNamespace();
+            String entryName = IdentifierParser.getLastPath(id);
+            String entryPath = id.getPath();
+            String entryIdentifier = IdentifierParser.getString(entryNamespace, entryName);
+
+            for (ModelBundler bundler : bundlerList) {
                 if (bundler.hasNamespace(entryNamespace)) {
 
                     JsonObject modelJson = null;
 
                     if (bundler.hasEntries()) {
-                        boolean isBlock = "block".equals(IdentifierParser.getTypeFromIdentifier(id));
+                        boolean isBlock = "block".equals(IdentifierParser.getFirstParent(id));
 
-                        ModelType type;
-                        if (isBlock) type = bundler.getBlockType(entryIdentifier);
-                        else type = bundler.getItemType(entryIdentifier);
+                        ModelType type = isBlock ? bundler.getBlockType(entryIdentifier) : bundler.getItemType(entryIdentifier);
 
                         if (type != null) { // Fails if entry isn't inside bundler
-                            if (isBlock)
+                            if (isBlock) {
                                 modelJson = ModelJson.createBlockModelJson((BlockModelType) type, entryNamespace, StringUtils.removeLastOccurrence(
                                         entryPath,
                                         new String[]{"_horizontal", "_mirrored"},
                                         "")
                                 );
-                            else
+
+                            } else
                                 modelJson = ModelJson.createItemModelJson((ItemModelType) type, entryNamespace, entryName);
                         }
                     } else {
@@ -84,22 +87,20 @@ public class ModelLoaderMixin {
     @Deprecated
     private static @Nullable JsonObject getModel(Set<String> columns, Identifier identifier) {
         String entryNamespace = identifier.getNamespace();
-        String entryName = IdentifierParser.getNameFromIdentifier(identifier);
+        String entryName = IdentifierParser.getLastPath(identifier);
         String entryIdentifier = IdentifierParser.getString(entryNamespace, entryName);
 
-        switch (IdentifierParser.getTypeFromIdentifier(identifier)) {
+        switch (IdentifierParser.getFirstParent(identifier)) {
             case "block": {
 
-                if("horizontal".equals(StringUtils.lastFromSplit(entryName, "_"))){
-                    for(String column : columns){
-                        if(entryName.contains(column))
+                if ("horizontal".equals(StringUtils.lastFromSplit(entryName, "_"))) {
+                    for (String column : columns) {
+                        if (entryName.contains(column))
                             return blockModel("column_horizontal", StringUtils.removeLastOccurrence(identifier.toString(), "_horizontal", ""));
                     }
-                }
-
-                else{
-                    for(String column : columns){
-                        if(entryName.contains(column)) return blockModel("column", identifier.toString());
+                } else {
+                    for (String column : columns) {
+                        if (entryName.contains(column)) return blockModel("column", identifier.toString());
                     }
                     return blockModel("all", identifier.toString());
                 }
