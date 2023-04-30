@@ -1,38 +1,25 @@
 package evergoodteam.chassis.objects.assets;
 
 import com.google.gson.JsonObject;
+import evergoodteam.chassis.util.IdentifierParser;
 import evergoodteam.chassis.util.JsonUtils;
 import net.minecraft.util.Identifier;
-import org.slf4j.Logger;
-
-import static evergoodteam.chassis.util.Reference.CMI;
-import static org.slf4j.LoggerFactory.getLogger;
 
 public class LootJson {
-
-    private static Logger LOGGER = getLogger(CMI + "/J/Loot");
 
     /**
      * Generates a {@link JsonObject} with the required information for a block loot table
      * that makes such block drop a random amount of a specific item, influenced by the fortune enchantment
-     *
-     * @param oreNamespace  ore's namespace
-     * @param orePath       name to identify the ore from other entries in the same namespace
-     * @param dropNamespace drop's namespace
-     * @param dropPath      name to identify the drop from other entries in the same namespace
      */
     public static JsonObject createGemOreDropLootTable(String oreNamespace, String orePath, String dropNamespace, String dropPath) {
-        return createGemOreDropLootTable(new Identifier(oreNamespace, orePath), new Identifier(dropNamespace, dropPath));
+        return createGemOreDropLootTable(IdentifierParser.getString(oreNamespace, orePath), IdentifierParser.getString(dropNamespace, dropPath));
     }
 
     /**
      * Generates a {@link JsonObject} with the required information for a block loot table
      * that makes such block drop a random amount of a specific item, influenced by the fortune enchantment
-     *
-     * @param ore  ore's identifier
-     * @param drop drop's identifier
      */
-    public static JsonObject createGemOreDropLootTable(Identifier ore, Identifier drop) {
+    public static JsonObject createGemOreDropLootTable(String oreIdentifier, String dropIdentifier) {
         String json = """
                 {
                   "type": "minecraft:block",
@@ -82,7 +69,7 @@ public class LootJson {
                       "rolls": 1.0
                     }
                   ]
-                }""".formatted(ore.toString(), drop.toString());
+                }""".formatted(oreIdentifier, dropIdentifier);
 
         return JsonUtils.toJsonObject(json);
     }
@@ -90,21 +77,24 @@ public class LootJson {
     /**
      * Generates a {@link JsonObject} with the required information for a block loot table
      * that makes such block drop itself when mined
-     *
-     * @param namespace your modId
-     * @param path      name to identify your entry from other entries in the same namespace
      */
-    public static JsonObject createBlockBreakLootJson(String namespace, String path) {
-        return createBlockBreakLootJson(new Identifier(namespace, path));
+    public static JsonObject createBlockBreakLootJson(Identifier identifier) {
+        return createBlockBreakLootJson(identifier.toString());
     }
 
     /**
      * Generates a {@link JsonObject} with the required information for a block loot table
      * that makes such block drop itself when mined
-     *
-     * @param identifier entry's identifier
      */
-    public static JsonObject createBlockBreakLootJson(Identifier identifier) {
+    public static JsonObject createBlockBreakLootJson(String namespace, String path) {
+        return createBlockBreakLootJson(IdentifierParser.getString(namespace, path));
+    }
+
+    /**
+     * Generates a {@link JsonObject} with the required information for a block loot table
+     * that makes such block drop itself when mined
+     */
+    public static JsonObject createBlockBreakLootJson(String identifier) {
         String json = """
                 {
                   "type": "minecraft:block",
@@ -125,7 +115,7 @@ public class LootJson {
                       ]
                     }
                   ]
-                }""".formatted(identifier.toString());
+                }""".formatted(identifier);
 
         return JsonUtils.toJsonObject(json);
     }
