@@ -9,7 +9,8 @@
   ],
   "client": [
     "ModelLoaderMixin",
-    "PackScreenMixin"
+    "PackScreenMixin",
+    "TextRendererMixin"
   ],
   "injectors": {
     "defaultRequire": 1

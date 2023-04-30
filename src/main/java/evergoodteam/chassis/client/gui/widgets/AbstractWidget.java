@@ -1,7 +1,9 @@
-package evergoodteam.chassis.configs.widgets;
+package evergoodteam.chassis.client.gui.widgets;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import evergoodteam.chassis.configs.widgets.util.DrawingUtils;
+import evergoodteam.chassis.client.ChassisClient;
+import evergoodteam.chassis.client.gui.DrawingUtils;
+import evergoodteam.chassis.client.gui.text.GradientTextRenderer;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.Drawable;
@@ -21,9 +23,11 @@ public abstract class AbstractWidget extends DrawingUtils implements Drawable, E
 
     public final MinecraftClient client = MinecraftClient.getInstance();
     public final TextRenderer textRenderer = client.textRenderer;
+    public final GradientTextRenderer gradientTextRenderer = ChassisClient.gradientTextRenderer;
 
     public boolean hovered;
     public boolean active = true;
+    //public boolean enabled = true;
 
     public void renderButton(MatrixStack matrices, int x, int y, int width, int height) {
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
