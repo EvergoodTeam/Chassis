@@ -2,92 +2,111 @@ package evergoodteam.chassis.configs.options;
 
 import evergoodteam.chassis.configs.ConfigBase;
 import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static evergoodteam.chassis.util.Reference.CMI;
+
 public class OptionStorage {
 
-    private OptionList<BooleanOption> booleanProperties;
-    private OptionList<IntegerSliderOption> integerProperties;
-    private OptionList<DoubleSliderOption> doubleProperties;
-    private OptionList<StringSetOption> stringSetProperties;
+    private static final Logger LOGGER = LoggerFactory.getLogger(CMI + "/C/Storage");
+    private final List<CategoryOption> categories = new ArrayList<>();
+    private final CategoryOption generic;
+    private final List<String> keys = new ArrayList<>();
+    private final OptionList<AbstractOption<?>> properties = new OptionList<>(this);
+    private final OptionList<BooleanOption> booleanOptions = new OptionList<>(this);
+    private final OptionList<IntegerSliderOption> integerOptions = new OptionList<>(this);
+    private final OptionList<DoubleSliderOption> doubleOptions = new OptionList<>(this);
+    private final OptionList<StringSetOption> stringSetOptions = new OptionList<>(this);
 
     public OptionStorage(ConfigBase config) {
-        this.booleanProperties = new OptionList<>();
-        this.integerProperties = new OptionList<>();
-        this.doubleProperties = new OptionList<>();
-        this.stringSetProperties = new OptionList<>();
+        this.generic = new CategoryOption(config, "generic", "");
+        this.categories.add(generic);
     }
 
-    public void storeBoolean(BooleanOption booleanOption) {
-        booleanProperties.store(booleanOption);
+    public CategoryOption getGenericCategory() {
+        return this.generic;
     }
 
-    public void storeInteger(IntegerSliderOption integerSliderOption) {
-        integerProperties.store(integerSliderOption);
+    public List<CategoryOption> getCategories() {
+        return categories;
     }
 
-    public void storeDouble(DoubleSliderOption doubleSliderOption) {
-        doubleProperties.store(doubleSliderOption);
+    public void storeBooleanOption(BooleanOption option) {
+        booleanOptions.store(option);
     }
 
-    public void storeStringSet(StringSetOption stringSetOption) {
-        stringSetProperties.store(stringSetOption);
+    public void storeIntegerOption(IntegerSliderOption option) {
+        integerOptions.store(option);
     }
 
-    public BooleanOption getBoolean(String name) {
-        return booleanProperties.get(name);
+    public void storeDoubleOption(DoubleSliderOption option) {
+        doubleOptions.store(option);
     }
 
-    public IntegerSliderOption getInteger(String name) {
-        return integerProperties.get(name);
+    public void storeStringSetOption(StringSetOption option) {
+        stringSetOptions.store(option);
     }
 
-    public DoubleSliderOption getDouble(String name) {
-        return doubleProperties.get(name);
+    public @Nullable AbstractOption<?> getOption(String name){
+        return getOptions().stream().filter(option -> option.getName().equals(name)).findFirst().orElse(null);
     }
 
-    public StringSetOption getStringSet(String name) {
-        return stringSetProperties.get(name);
+    public BooleanOption getBooleanOption(String name) {
+        return booleanOptions.get(name);
     }
 
-    public List<OptionBase<?>> getOptions() {
-        List<OptionBase<?>> result = new ArrayList<>();
-        result.addAll(getBooleans());
-        result.addAll(getIntegers());
-        result.addAll(getDoubles());
-        result.addAll(getStringSets());
-
-        return result;
+    public IntegerSliderOption getIntegerOption(String name) {
+        return integerOptions.get(name);
     }
 
-    public List<BooleanOption> getBooleans() {
-        return booleanProperties.optionList;
+    public DoubleSliderOption getDoubleOption(String name) {
+        return doubleOptions.get(name);
     }
 
-    public List<IntegerSliderOption> getIntegers() {
-        return integerProperties.optionList;
+    public StringSetOption getStringSetOption(String name) {
+        return stringSetOptions.get(name);
     }
 
-    public List<DoubleSliderOption> getDoubles() {
-        return doubleProperties.optionList;
+    public List<AbstractOption<?>> getOptions() {
+        return this.properties.optionList;
     }
 
-    public List<StringSetOption> getStringSets() {
-        return stringSetProperties.optionList;
+    public List<BooleanOption> getBooleanOptions() {
+        return booleanOptions.optionList;
     }
 
-    private static class OptionList<T extends OptionBase<?>> {
+    public List<IntegerSliderOption> getIntegerOption() {
+        return integerOptions.optionList;
+    }
 
-        public List<T> optionList;
+    public List<DoubleSliderOption> getDoubleOptions() {
+        return doubleOptions.optionList;
+    }
 
-        public OptionList() {
-            this.optionList = new ArrayList<>();
+    public List<StringSetOption> getStringSetOptions() {
+        return stringSetOptions.optionList;
+    }
+
+    private static class OptionList<T extends AbstractOption<?>> {
+
+        private OptionStorage storage;
+        private List<T> optionList = new ArrayList<>();
+
+        public OptionList(OptionStorage storage) {
+            this.storage = storage;
         }
 
         public void store(T option) {
-            optionList.add(option);
+            if(!storage.keys.contains(option.getName())){
+                storage.keys.add(option.getName());
+                storage.properties.optionList.add(option);
+                optionList.add(option);
+            }
+            else LOGGER.error("The option \"{}\" will be ignored because an option with such name already exists", option.getName());
         }
 
         public @Nullable T get(String name) {
