@@ -1,31 +1,35 @@
 package evergoodteam.chassis.configs;
 
-import evergoodteam.chassis.configs.options.OptionBase;
-import evergoodteam.chassis.configs.options.OptionStorage;
+import evergoodteam.chassis.configs.options.AbstractOption;
+import evergoodteam.chassis.configs.options.CategoryOption;
 import evergoodteam.chassis.util.StringUtils;
-import evergoodteam.chassis.util.handlers.FileHandler;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 
-import java.io.*;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Properties;
+import java.util.Map;
 
 import static evergoodteam.chassis.util.Reference.CMI;
 import static org.slf4j.LoggerFactory.getLogger;
 
+// TODO: Update name
 public class ConfigBuilder {
 
     private static final Logger LOGGER = getLogger(CMI + "/C/Builder");
-
     private final String NL = System.lineSeparator();
 
     private ConfigBase config;
     private Path path;
     private File file;
+    public List<String> lines = new ArrayList<>();
 
     public ConfigBuilder(@NotNull ConfigBase config) {
         this.config = config;
@@ -37,198 +41,215 @@ public class ConfigBuilder {
         return this.config;
     }
 
-    public void setupDefaultProperties() {
-        FileOutputStream pos;
-        try {
-            pos = new FileOutputStream(this.file);
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
-        }
+    /*
+    public boolean getLine(String propertyName){
+        return lines.contains(property(propertyName, ));
+    }*/
 
-        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(pos));
+    public void empty() {
+        this.lines = new ArrayList<>();
+    }
 
-        try {
-            bw.write(header());
-            bw.write(defaultOptions());
-            bw.close();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+    /**
+     * Writes the default header and options bundled with every .properties file
+     */
+    public void writeDefaults() {
+        empty();
+        addLine(title()).addLine(date()).addLine("");
+        addLine(defaultOptions());
+    }
+
+    public void writeResources() {
+        addLine(resourceOptions());
+    }
+
+    /**
+     * Writes the properties added by the user to the .properties config file
+     */
+    public void writeAddons() {
+        /*
+        List<String> contents = ConfigHandler.getContents(this.config);
+        contents.subList(0, contents.indexOf(resourceOptions().get(resourceOptions().size() - 1)));
+        */
+
+        List<String> addons = addons();
+
+        if (!addons.isEmpty()) {
+            //overwrite(contents);
+            addLine("");
+            addLine(addons);
         }
     }
 
-    public void setupResourceProperties() {
+    private List<String> addons() {
+        List<String> result = new ArrayList<>();
+
+        for (CategoryOption categoryOption : config.getOptionStorage().getCategories()) {
+            if (!categoryOption.equals(config.getOptionStorage().getGenericCategory())) {
+                result.add("");
+                result.addAll(category(categoryOption));
+                result.add("");
+            }
+            for (AbstractOption option : categoryOption.getOptions()) {
+                if (!comment(option).equals("")) result.add(comment(option));
+                result.add(property(option));
+            }
+        }
+
+        return result;
+    }
+
+    public void updateHeader() {
+        if (Files.exists(this.path)) {
+            lines.set(1, date());
+        }
+    }
+
+    //region Writing handler
+    public void overwrite(String propertyName, String newValue) {
+        //List<String> lines = ConfigHandler.getContents(config);
+        Map<String, String> properties = ConfigHandler.getPropertyMap(config);
+        String oldValue = properties.get(propertyName);
+
+        if (oldValue != null && !oldValue.equals(newValue)) {
+            lines.set(lines.indexOf(property(propertyName, oldValue)), property(propertyName, newValue));
+            overwrite();
+        }
+    }
+
+    public void overwrite() {
+        updateHeader();
+        overwrite(lines);
+    }
+
+    private void overwrite(List<String> newFileLines) {
         try {
-            FileWriter fw = new FileWriter(this.file, true);
-
-            //BufferedWriter writer give better performance
-            BufferedWriter bw = new BufferedWriter(fw);
-
-            bw.write(resourceOptions());
-            bw.close();
-
+            Files.write(this.path, newFileLines);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
     /**
-     * Write the properties added to the .properties config file
+     * Writes the provided strings with line breaks
      */
-    public void registerProperties() {
-        if (Files.exists(this.path)) {
-            try {
-
-                String additional = additionalOptions();
-
-                if (!additional.isEmpty()) { // Avoid rewriting when nothing is missing
-
-                    FileWriter fw = new FileWriter(this.file, true);
-                    BufferedWriter bw = new BufferedWriter(fw);
-
-                    String original = Files.readString(this.path).strip();
-
-                    new FileWriter(this.file, false).close();
-
-                    bw.write(original);
-                    bw.write(NL);
-                    bw.write(additional);
-
-                    bw.close();
-
-                    updateHeader();
-                }
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        }
+    private ConfigBuilder addLine(List<String> lines) {
+        //return write(NL, lines.toArray(new String[0]));
+        this.lines.addAll(lines);
+        return this;
     }
 
-    public void overwrite(String name, String newValue) {
-        Properties config = new Properties();
+    /**
+     * Writes the provided string with a line break
+     */
+    private ConfigBuilder addLine(String string) {
+        //return write(NL, string);
+        lines.add(string);
+        return this;
+    }
 
-        try (InputStream input = new FileInputStream(this.file)) {
-            config.load(input);
+    /**
+     * Writes the provided strings giving each the specified suffix
+     */
+    private ConfigBuilder writeAppend(String suffix, String... strings) {
+        try (FileWriter fw = new FileWriter(this.file, true)) {
+            BufferedWriter bw = new BufferedWriter(fw);
+
+            for (String str : strings) {
+                bw.write(str + suffix);
+            }
+            bw.close();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
-        String oldValue = config.getProperty(name);
+        return this;
+    }
+    //endregion
 
-        if (oldValue != null && !oldValue.equals(newValue)) {
-            try {
-                String file = Files.readString(this.path);
-                file = file.replace(name + " = " + oldValue, name + " = " + newValue);
-                FileHandler.writeToFile(file, this.path);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        }
+    //region Components
+
+    public String title() {
+        return "# %s Configs".formatted(StringUtils.capitalize(config.namespace));
     }
 
-    public void updateHeader() {
-        if (Files.exists(this.path)) {
-
-            List<String> contents = ConfigHandler.getContents(this.config);
-
-            FileHandler.emptyFile(this.file);
-
-            try {
-                FileWriter fw = new FileWriter(this.file, true);
-                BufferedWriter bw = new BufferedWriter(fw);
-
-                //LOGGER.info("Attempting to update Header");
-
-                bw.write(header());
-
-                for (int i = 2; i < contents.size(); i++) {
-                    if (i == 2) {
-                        bw.write(contents.get(i).strip());
-                    } else {
-                        bw.write(contents.get(i));
-                        bw.write(NL);
-                    }
-                }
-                bw.close();
-
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        }
+    public String date() {
+        return "# " + new Date();
     }
 
-    public String header() {
-        return "# %s Configs".formatted(StringUtils.capitalize(config.namespace)) + NL
-                + "# " + new Date() + NL + NL;
-    }
-
-    public String header(String text) {
+    public List<String> category(CategoryOption categoryOption) {
+        List<String> category = new ArrayList<>();
         String line = "#".repeat(81);
-        return line + NL + "# " + text + NL + line + NL + NL;
+        String separator = "#" + "-".repeat(79) + "#";
+        category.add(line);
+        category.add("# " + categoryOption.getName());
+
+        if (!"".equals(categoryOption.getComment())) {
+            category.add(separator);
+            category.addAll(StringUtils.wrapWords(categoryOption.getComment(), "# ", 79));
+        }
+
+        category.add(line);
+
+        return category;
     }
 
-    public String defaultOptions() {
-        return "# Lock " + StringUtils.capitalize(config.namespace) + " configs from being regenerated" + NL
-                + config.namespace + "ConfigLocked = " + config.configLocked.getValue() + NL;
+    public List<String> defaultOptions() {
+        List<String> defaults = new ArrayList<>();
+
+        defaults.add(comment(config.configLocked));
+        defaults.add(property(config.configLocked));
+
+        return defaults;
     }
 
-    public String resourceOptions() {
-        StringBuilder sb = new StringBuilder();
+    public List<String> resourceOptions() {
+        List<String> resources = new ArrayList<>();
 
-        sb.append("# Lock " + StringUtils.capitalize(config.namespace) + " resources from being regenerated" + NL);
-        config.resourcesLocked.forEach((name, value) -> {
-            sb.append(value.getName() + " = " + value.getValue() + NL);
+        config.resourcesLocked.forEach((name, booleanOption) -> {
+            resources.add(comment(booleanOption));
+            resources.add(property(booleanOption));
         });
 
-        sb.append(NL);
-
-        return sb.toString();
+        return resources;
     }
 
-    public String additionalOptions() {
-        StringBuilder sb = new StringBuilder();
-        Properties p = new Properties();
-
-        try (InputStream input = new FileInputStream(config.propertiesFile)) {
-            p.load(input);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
-        buildAdditionalString(p, sb, config.getOptionStorage());
-        return sb.toString();
-    }
-
-    private void buildAdditionalString(Properties p, StringBuilder sb, OptionStorage optionStorage) {
-        for (OptionBase option : optionStorage.getOptions()) {
-            if (p.getProperty(option.getName()) == null) { // Property is missing, add with default value
-                //LOGGER.info("Found missing property \"{}\", adding to file", name);
-
-                sb.append(this.comment(option));
-                sb.append(this.property(option));
-
-            } else { // Property exists, fetch the value and overwrite
-                option.setValue(option.getWrittenValue(config));
-            }
-        }
-    }
-
-    private <T> String comment(OptionBase<?> option) {
+    /**
+     * Already includes a newline
+     */
+    private String comment(AbstractOption<?> option) {
         if (!"".equals(option.getComment())) {
-            String commentDesc = "%s# %s".formatted(NL, option.getComment());
-            if (!option.defaultHidden()) return "%s %s%s".formatted(commentDesc, defaultComment(option), NL);
-            else return commentDesc + NL;
+            String commentDesc = "# %s".formatted(option.getComment());
+            if (!option.defaultHidden()) return "%s %s".formatted(commentDesc, defaultValue(option));
+            else return commentDesc;
         }
-        return NL;
+        return "";
     }
 
-    private String defaultComment(OptionBase<?> option) {
-        if (option instanceof OptionBase.Interval<?> interval) {
-            return "[range: %s ~ %s, default: %s]".formatted(interval.getMin(), interval.getMax(), option.getDefaultValue());
+    private String defaultValue(AbstractOption<?> option) {
+        if (option instanceof AbstractOption.Interval<?> interval) {
+            return defaultRange(interval.getMin(), interval.getMax(), option.getDefaultValue());
         }
-        return "[default: %s]".formatted(option.getDefaultValue());
+        return defaultValue(option.getDefaultValue());
     }
 
-    private String property(OptionBase<?> option) {
-        return "%s = %s".formatted(option.getName(), option.getValue());
+    private <T> String defaultRange(T min, T max, T defaultValue) {
+        return "[range: %s ~ %s, default: %s]".formatted(min, max, defaultValue);
     }
+
+    private <T> String defaultValue(T value) {
+        return "[default: %s]".formatted(value);
+    }
+
+    public String property(AbstractOption<?> option) {
+        return property(option.getName(), option.getValue());
+    }
+
+    /**
+     * Already includes a newline
+     */
+    public <T> String property(String name, T value) {
+        return "%s = %s".formatted(name, value);
+    }
+    //endregion
 }
