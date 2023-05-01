@@ -27,6 +27,11 @@ public class ChassisLootTableProvider extends SimpleFabricLootTableProvider {
         this.resourcePack = resourcePack;
     }
 
+    public ChassisLootTableProvider build(Identifier identifier, LootTable.Builder builder){
+        this.builderMap.put(identifier, builder);
+        return this;
+    }
+
     public ChassisLootTableProvider build(Identifier identifier, Consumer<LootTable.Builder> consumer) {
         LootTable.Builder builder = LootTable.builder();
         consumer.accept(builder);
