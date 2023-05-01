@@ -55,7 +55,7 @@ public class ChassisTestFeatures {
             .addTo(ITEMS);
     static final Block BIRCH = new PillarBase(FabricBlockSettings.copyOf(Blocks.BIRCH_LOG));
 
-    public static void run() {
+    public static void run() {/*
 
         CHASSIS_CONFIGS.setDisplayTitle(GradientText.literal("Chassis")
                 .setColorPoints(50, "264653", "2a9d8f", "e9c46a", "f4a261", "e76f51", "264653")
@@ -137,7 +137,7 @@ public class ChassisTestFeatures {
                 //.createBlockModel("birch", "birch", "column")
         */
 
-        CHASSIS_RESOURCES
+        /*CHASSIS_RESOURCES
                 .addProvider(ChassisLanguageProvider.create(CHASSIS_RESOURCES)
                         .addLang("en_us", new HashMap<>() {{
                             put("block.chassis.testblock", "Test Block");
@@ -157,7 +157,7 @@ public class ChassisTestFeatures {
                         .build(new Identifier("chassis", "chests/chest_sword"), builder -> builder
                                 .pool(LootPool.builder().rolls(ConstantLootNumberProvider.create(1.0F))
                                         /*.with(ItemEntry.builder(Items.DIAMOND)
-                                                .apply(SetCountLootFunction.builder(ConstantLootNumberProvider.create(1.0F))))*/
+                                                .apply(SetCountLootFunction.builder(ConstantLootNumberProvider.create(1.0F))))
                                         .with(ItemEntry.builder(Items.DIAMOND_SWORD))
                                         .apply(EnchantWithLevelsLootFunction.builder(UniformLootNumberProvider.create(20.0F, 39.0F))))
                         )
@@ -206,6 +206,6 @@ public class ChassisTestFeatures {
                             consumer.register(TEST_ITEM, Models.GENERATED);
                         })
                 )
-                .runProviders();
+                .runProviders();*/
     }
 }
