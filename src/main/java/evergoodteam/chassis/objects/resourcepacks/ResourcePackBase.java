@@ -101,7 +101,7 @@ public class ResourcePackBase {
         this.hidden = new BooleanOption("hideResourcePack", false, Text.translatable("config." + namespace + ".hideResourcePack"), Text.translatable("config." + namespace + ".hideResourcePack.tooltip", displayName))
                 .setEnvType(EnvType.CLIENT)
                 .setComment("Hide the %s ResourcePack from the GUI".formatted(displayName));
-        this.modContainer = FabricLoader.getInstance().getModContainer(Reference.MODID).get();
+        this.modContainer = FabricLoader.getInstance().getModContainer(namespace).get();
         this.generator = new FabricDataGenerator(this.root.resources, modContainer, true);
         this.genericJsonProvider = ChassisGenericProvider.create(this);
         this.genericTextureProvider = ChassisTextureProvider.create(this);

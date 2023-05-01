@@ -9,6 +9,9 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
+/**
+ * Needed for proper Blockstate/Model generation
+ */
 public class PillarBase extends PillarBlock implements BlockSettings {
 
     public PillarBase(Material material, Float hardness, Float resistance, BlockSoundGroup sound) {
