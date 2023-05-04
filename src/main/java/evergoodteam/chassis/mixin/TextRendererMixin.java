@@ -20,8 +20,8 @@ public class TextRendererMixin {
 
     @Shadow @Final private TextHandler handler;
 
-    @Inject(method = "<init>(Ljava/util/function/Function;)V", at = @At("TAIL"))
-    public void inject(Function<Identifier, FontStorage> fontStorageAccessor, CallbackInfo ci){
+    @Inject(method = "<init>(Ljava/util/function/Function;Z)V", at = @At("TAIL"))
+    public void inject(Function<Identifier, FontStorage> fontStorageAccessor, boolean validateAdvance, CallbackInfo ci){
         ChassisClient.gradientTextRenderer = new GradientTextRenderer(fontStorageAccessor, handler);
     }
 }

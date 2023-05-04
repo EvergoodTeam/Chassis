@@ -125,7 +125,7 @@ public class SliderWidget extends WidgetBase {
      * @param max   e.g. 8.5
      */
     public static double convertFromBounds(double value, double min, double max) {
-        return MathHelper.lerpFromProgress(value, min, max, 0.0f, 1.0f);
+        return MathHelper.map(value, min, max, 0.0f, 1.0f);
     }
 
     /**
@@ -136,7 +136,7 @@ public class SliderWidget extends WidgetBase {
      * @param max   e.g. 8.5
      */
     public static double convertToBounds(double value, double min, double max) {
-        return MathHelper.lerpFromProgress(value, 0.0f, 1.0f, min, max);
+        return MathHelper.map(value, 0.0f, 1.0f, min, max);
     }
 
     public static String twoDecimalPlaces(double value) {

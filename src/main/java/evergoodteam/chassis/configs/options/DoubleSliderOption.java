@@ -116,7 +116,7 @@ public class DoubleSliderOption extends AbstractOption<Double> implements Abstra
 
         @Override
         public void onValueUpdate() {
-            Double result = Double.valueOf(twoDecimalPlaces(MathHelper.lerpFromProgress(this.value, 0.0, 1.0, option.min, option.max)));
+            Double result = Double.valueOf(twoDecimalPlaces(MathHelper.map(this.value, 0.0, 1.0, option.min, option.max)));
             this.option.setValue(result);
         }
 

@@ -150,7 +150,7 @@ public class GradientTextRenderer {
             float g;
 
             FontStorage fontStorage = GradientTextRenderer.this.getFontStorage(style.getFont());
-            Glyph glyph = fontStorage.getGlyph(j);
+            Glyph glyph = fontStorage.getGlyph(j, false);
             GlyphRenderer glyphRenderer = style.isObfuscated() && j != 32 ? fontStorage.getObfuscatedGlyphRenderer(glyph) : fontStorage.getGlyphRenderer(j);
 
             boolean bl = style.isBold();
