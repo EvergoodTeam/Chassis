@@ -1,7 +1,7 @@
 package evergoodteam.chassis.client;
 
-import evergoodteam.chassis.configs.ConfigBase;
 import evergoodteam.chassis.client.gui.text.GradientTextRenderer;
+import evergoodteam.chassis.configs.ConfigBase;
 import evergoodteam.chassis.objects.blocks.BlockSettings;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
@@ -23,7 +23,7 @@ public class ChassisClient implements ClientModInitializer {
 
     @Override
     public void onInitializeClient() {
-        //LOGGER.info("Total transparent blocks: {}", getTransparentBlocks().size());
+        LOGGER.info("Chassis client initialization");
 
         for (Block block : BlockSettings.getTransparentBlocks()) {
             BlockRenderLayerMap.INSTANCE.putBlock(block, RenderLayer.getCutout());

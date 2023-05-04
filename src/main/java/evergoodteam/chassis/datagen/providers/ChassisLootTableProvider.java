@@ -27,7 +27,7 @@ public class ChassisLootTableProvider extends SimpleFabricLootTableProvider {
         this.resourcePack = resourcePack;
     }
 
-    public ChassisLootTableProvider build(Identifier identifier, LootTable.Builder builder){
+    public ChassisLootTableProvider build(Identifier identifier, LootTable.Builder builder) {
         this.builderMap.put(identifier, builder);
         return this;
     }
@@ -41,7 +41,7 @@ public class ChassisLootTableProvider extends SimpleFabricLootTableProvider {
 
     @Override
     public void accept(BiConsumer<Identifier, LootTable.Builder> biConsumer) {
-        for(Identifier identifier : builderMap.keySet()){
+        for (Identifier identifier : builderMap.keySet()) {
             biConsumer.accept(identifier, builderMap.get(identifier));
         }
     }

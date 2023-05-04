@@ -163,6 +163,10 @@ public class ChassisTestFeatures {
                                         .apply(EnchantWithLevelsLootFunction.builder(UniformLootNumberProvider.create(20.0F, 39.0F))))
                         )
                 )
+                .addProvider(ChassisBlockLootTableProvider.create(CHASSIS_RESOURCES)
+                        .buildBlock(TEST_BLOCK.getLootTableId(), builder -> builder
+                                .addDrop(TEST_BLOCK))
+                        .buildBlock(BIRCH.getLootTableId(), builder -> builder.addDrop(BIRCH)))
                 .addProvider(ChassisAdvancementProvider.create(CHASSIS_RESOURCES)
                         .build(new Identifier("chassis", "acaciaboat"), builder -> builder
                                 .display(Items.ACACIA_BOAT, Text.literal("Acacia Boat"),

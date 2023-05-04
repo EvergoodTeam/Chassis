@@ -8,9 +8,9 @@
     "ResourcePackManagerMixin"
   ],
   "client": [
+    "ClientMixin",
     "ModelLoaderMixin",
-    "PackScreenMixin",
-    "TextRendererMixin"
+    "PackScreenMixin"
   ],
   "injectors": {
     "defaultRequire": 1
