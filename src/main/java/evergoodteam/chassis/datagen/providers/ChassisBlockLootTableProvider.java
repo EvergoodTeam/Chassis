@@ -18,7 +18,7 @@ public class ChassisBlockLootTableProvider extends FabricBlockLootTableProvider 
         return new ChassisBlockLootTableProvider(resourcePack);
     }
 
-    protected ChassisBlockLootTableProvider(ResourcePackBase resourcePack) {
+    public ChassisBlockLootTableProvider(ResourcePackBase resourcePack) {
         super(resourcePack.generator);
         this.resourcePack = resourcePack;
     }
