@@ -12,7 +12,6 @@ import evergoodteam.chassis.datagen.providers.ChassisGenericProvider;
 import evergoodteam.chassis.datagen.providers.ChassisTextureProvider;
 import evergoodteam.chassis.objects.assets.*;
 import evergoodteam.chassis.util.JsonUtils;
-import evergoodteam.chassis.util.Reference;
 import evergoodteam.chassis.util.StringUtils;
 import evergoodteam.chassis.util.handlers.FileHandler;
 import evergoodteam.chassis.util.handlers.JsonHandler;
@@ -56,6 +55,7 @@ public class ResourcePackBase {
     // TODO: Delete after deprecation
     private ChassisGenericProvider genericJsonProvider;
     private ChassisTextureProvider genericTextureProvider;
+    public ProviderRegistry providerRegistry;
 
     /**
      * Object from which a ResourcePack is generated
@@ -485,13 +485,29 @@ public class ResourcePackBase {
     }
 
     /**
+     * Interface used for declaring, initializing and adding providers. Any sort of provider task should be done
+     * inside {@link #registerProviders()}, a method that is only called {@link evergoodteam.chassis.mixin.ResourcePackManagerMixin when resources are reloaded}
+     * <p><i>Why?</i>
+     * <p> Check out <a href="https://github.com/DaFuqs/Spectrum/issues/190">this issue</a>: trying to load the
+     * {@link net.minecraft.predicate.item.ItemPredicate ItemPredicate} class (needed for loot tables)
+     * will trigger all the associated mixins, which can include stuff that isn't initialized
+     */
+    public interface ProviderRegistry {
+
+        void registerProviders();
+    }
+
+    /**
      * Runs the added providers
      */
+    // TODO: check configs before running
     public void runProviders() {
         try {
-            this.generator.run();
+            //LOGGER.warn("ATTEMPT AT PROVIDERS RESPONSE: {}", !providersDone);
+            generator.run();
+            LOGGER.debug("Providers for {} done", this.getNamespace());
         } catch (IOException e) {
-            LOGGER.error("An error occurred while running providers for {}: {}", this, e);
+            LOGGER.error("An error occurred while running providers for {}: {}", this.getNamespace(), e);
         }
     }
     //endregion

@@ -39,6 +39,8 @@ public class ResourcePackManagerMixin {
     @Inject(method = "providePackProfiles", at = @At(value = "HEAD"))
     public void injectProvidePackProfiles(CallbackInfoReturnable<Map<String, ResourcePackProfile>> cir) {
 
+        LOGGER.debug("Resources are being reloaded, attempting to inject provider");
+
         boolean providerAlreadyExists = false;
         boolean client;
         client = FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT;
@@ -62,6 +64,7 @@ public class ResourcePackManagerMixin {
         if (!providerAlreadyExists) {
             for (String namespace : resourceMap.keySet()) {
                 for (ResourcePackBase resourcePack : resourceMap.get(namespace)) {
+                    resourcePack.providerRegistry.registerProviders(); // Datagen
                     if (client) {
                         providersCopy.add(new ClientResourcePackProvider(namespace, resourcePack.getNamespace(), resourcePack.getMetadataKey(), resourcePack.getHexColor()));
                         //LOGGER.info("Injected our ClientProvider into providers: {}", this.providers);
