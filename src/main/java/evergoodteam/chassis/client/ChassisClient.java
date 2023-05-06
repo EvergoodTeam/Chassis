@@ -17,8 +17,7 @@ import static org.slf4j.LoggerFactory.getLogger;
 @Environment(EnvType.CLIENT)
 public class ChassisClient implements ClientModInitializer {
 
-    private static final Logger LOGGER = getLogger(CMI + "/Client");
-
+    static final Logger LOGGER = getLogger(CMI + "/Client");
     public static GradientTextRenderer gradientTextRenderer;
 
     @Override

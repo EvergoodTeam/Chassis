@@ -8,13 +8,13 @@ import static evergoodteam.chassis.util.Reference.CMI;
 
 public class Chassis implements ModInitializer {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(CMI);
+    static final Logger LOGGER = LoggerFactory.getLogger(CMI);
 
     @Override
     public void onInitialize() {
 
         LOGGER.info("Initializing Chassis");
-
-        ChassisTestFeatures.run();
+        ChassisTestFeatures.init();
+        ChassisTestFeatures.initProviderRegistry();
     }
 }

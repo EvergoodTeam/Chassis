@@ -56,7 +56,87 @@ public class ChassisTestFeatures {
             .addTo(ITEMS);
     static final Block BIRCH = new PillarBase(FabricBlockSettings.copyOf(Blocks.BIRCH_LOG));
 
-    public static void run() {
+    public static void initProviderRegistry(){
+
+        CHASSIS_RESOURCES.providerRegistry = () -> {
+            CHASSIS_RESOURCES
+                    .addProvider(ChassisLanguageProvider.create(CHASSIS_RESOURCES)
+                            .addLang("en_us", new HashMap<>() {{
+                                put("block.chassis.testblock", "Test Block");
+                                put("item.chassis.testitem", "Test Item");
+                                put("itemGroup.chassis.testgroup", "Test Group");
+                            }}))
+                    .addProvider(ChassisTextureProvider.create(CHASSIS_RESOURCES)
+                            .addTexture("https://i.imgur.com/BAStRdD.png", true, "testblock")
+                            .addTexture("https://i.imgur.com/BAStRdD.png", false, "testitem")
+                    )
+                    .addProvider(ChassisLootTableProvider.create(LootContextTypes.CHEST, CHASSIS_RESOURCES)
+                            .build(new Identifier("chassis", "chests/chest_chestplate"), builder -> builder
+                                    .pool(LootPool.builder().rolls(ConstantLootNumberProvider.create(1.0F))
+                                            .with(ItemEntry.builder(Items.DIAMOND_CHESTPLATE))
+                                            .apply(EnchantWithLevelsLootFunction.builder(UniformLootNumberProvider.create(20.0F, 39.0F))))
+                            )
+                            .build(new Identifier("chassis", "chests/chest_sword"), builder -> builder
+                                    .pool(LootPool.builder().rolls(ConstantLootNumberProvider.create(1.0F))
+                                            .with(ItemEntry.builder(Items.DIAMOND)
+                                                    .apply(SetCountLootFunction.builder(ConstantLootNumberProvider.create(1.0F))))
+                                            .with(ItemEntry.builder(Items.DIAMOND_SWORD))
+                                            .apply(EnchantWithLevelsLootFunction.builder(UniformLootNumberProvider.create(20.0F, 39.0F))))
+                            )
+                    )
+                    .addProvider(ChassisBlockLootTableProvider.create(CHASSIS_RESOURCES)
+                            .buildBlock(TEST_BLOCK.getLootTableId(), builder -> builder
+                                    .addDrop(TEST_BLOCK))
+                            .buildBlock(BIRCH.getLootTableId(), builder -> builder.addDrop(BIRCH)))
+                    .addProvider(ChassisAdvancementProvider.create(CHASSIS_RESOURCES)
+                            .build(new Identifier("chassis", "acaciaboat"), builder -> builder
+                                    .display(Items.ACACIA_BOAT, Text.literal("Acacia Boat"),
+                                            Text.literal("description"),
+                                            new Identifier("textures/gui/advancements/backgrounds/husbandry.png"),
+                                            AdvancementFrame.TASK,
+                                            false,
+                                            true,
+                                            false)
+                                    .criterion("inventory_changed", InventoryChangedCriterion.Conditions.items(Items.ACACIA_BOAT))
+                            )
+                            .build(new Identifier("chassis", "birchlog"), builder -> builder
+                                    .display(Blocks.BIRCH_LOG, Text.literal("Birch Log"),
+                                            Text.literal("description"),
+                                            new Identifier("textures/gui/advancements/backgrounds/husbandry.png"),
+                                            AdvancementFrame.TASK,
+                                            false,
+                                            true,
+                                            false)
+                                    .criterion("inventory_changed", InventoryChangedCriterion.Conditions.items(Items.BIRCH_LOG))
+                            )
+                    )
+                    .addProvider(ChassisTagProvider.create(Registry.ITEM, CHASSIS_RESOURCES)
+                            .build(TagKey.of(Registry.ITEM_KEY, new Identifier("chassis:smelly_items")), builder -> builder
+                                    .add(Items.SLIME_BALL)
+                                    .add(Items.ROTTEN_FLESH)
+                                    .addOptionalTag(ItemTags.DIRT))
+                    )
+                    .addProvider(ChassisRecipeProvider.create(CHASSIS_RESOURCES)
+                            .build(exporter -> {
+                                RecipeProvider.offerSmelting(exporter, List.of(Items.ANDESITE), Items.ACACIA_BOAT, 0.45F, 300, "example");
+                            })
+                            .build(exporter -> {
+                                RecipeProvider.offerShapelessRecipe(exporter, Items.ACACIA_BOAT, Items.ANDESITE, null, 15);
+                            }))
+                    .addProvider(ChassisModelProvider.create(CHASSIS_RESOURCES)
+                            .buildBlock(consumer -> {
+                                consumer.registerSimpleCubeAll(TEST_BLOCK);
+                                consumer.registerLog(BIRCH).log(BIRCH);
+                            })
+                            .buildItem(consumer -> {
+                                consumer.register(TEST_ITEM, Models.GENERATED);
+                            })
+                    )
+                    .runProviders();
+        };
+    }
+
+    public static void init() {
 
         CHASSIS_CONFIGS.setDisplayTitle(GradientText.literal("Chassis")
                 .setColorPoints(50, "264653", "2a9d8f", "e9c46a", "f4a261", "e76f51", "264653")
@@ -137,80 +217,5 @@ public class ChassisTestFeatures {
                 .createColumnBlockstate("birch")
                 //.createBlockModel("birch", "birch", "column")
         */
-
-        CHASSIS_RESOURCES
-                .addProvider(ChassisLanguageProvider.create(CHASSIS_RESOURCES)
-                        .addLang("en_us", new HashMap<>() {{
-                            put("block.chassis.testblock", "Test Block");
-                            put("item.chassis.testitem", "Test Item");
-                            put("itemGroup.chassis.testgroup", "Test Group");
-                        }}))
-                .addProvider(ChassisTextureProvider.create(CHASSIS_RESOURCES)
-                        .addTexture("https://i.imgur.com/BAStRdD.png", true, "testblock")
-                        .addTexture("https://i.imgur.com/BAStRdD.png", false, "testitem")
-                )
-                .addProvider(ChassisLootTableProvider.create(LootContextTypes.CHEST, CHASSIS_RESOURCES)
-                        .build(new Identifier("chassis", "chests/chest_chestplate"), builder -> builder
-                                .pool(LootPool.builder().rolls(ConstantLootNumberProvider.create(1.0F))
-                                        .with(ItemEntry.builder(Items.DIAMOND_CHESTPLATE))
-                                        .apply(EnchantWithLevelsLootFunction.builder(UniformLootNumberProvider.create(20.0F, 39.0F))))
-                        )
-                        .build(new Identifier("chassis", "chests/chest_sword"), builder -> builder
-                                .pool(LootPool.builder().rolls(ConstantLootNumberProvider.create(1.0F))
-                                        .with(ItemEntry.builder(Items.DIAMOND)
-                                                .apply(SetCountLootFunction.builder(ConstantLootNumberProvider.create(1.0F))))
-                                        .with(ItemEntry.builder(Items.DIAMOND_SWORD))
-                                        .apply(EnchantWithLevelsLootFunction.builder(UniformLootNumberProvider.create(20.0F, 39.0F))))
-                        )
-                )
-                .addProvider(ChassisBlockLootTableProvider.create(CHASSIS_RESOURCES)
-                        .buildBlock(TEST_BLOCK.getLootTableId(), builder -> builder
-                                .addDrop(TEST_BLOCK))
-                        .buildBlock(BIRCH.getLootTableId(), builder -> builder.addDrop(BIRCH)))
-                .addProvider(ChassisAdvancementProvider.create(CHASSIS_RESOURCES)
-                        .build(new Identifier("chassis", "acaciaboat"), builder -> builder
-                                .display(Items.ACACIA_BOAT, Text.literal("Acacia Boat"),
-                                        Text.literal("description"),
-                                        new Identifier("textures/gui/advancements/backgrounds/husbandry.png"),
-                                        AdvancementFrame.TASK,
-                                        false,
-                                        true,
-                                        false)
-                                .criterion("inventory_changed", InventoryChangedCriterion.Conditions.items(Items.ACACIA_BOAT))
-                        )
-                        .build(new Identifier("chassis", "birchlog"), builder -> builder
-                                .display(Blocks.BIRCH_LOG, Text.literal("Birch Log"),
-                                        Text.literal("description"),
-                                        new Identifier("textures/gui/advancements/backgrounds/husbandry.png"),
-                                        AdvancementFrame.TASK,
-                                        false,
-                                        true,
-                                        false)
-                                .criterion("inventory_changed", InventoryChangedCriterion.Conditions.items(Items.BIRCH_LOG))
-                        )
-                )
-                .addProvider(ChassisTagProvider.create(Registry.ITEM, CHASSIS_RESOURCES)
-                        .build(TagKey.of(Registry.ITEM_KEY, new Identifier("chassis:smelly_items")), builder -> builder
-                                .add(Items.SLIME_BALL)
-                                .add(Items.ROTTEN_FLESH)
-                                .addOptionalTag(ItemTags.DIRT))
-                )
-                .addProvider(ChassisRecipeProvider.create(CHASSIS_RESOURCES)
-                        .build(exporter -> {
-                            RecipeProvider.offerSmelting(exporter, List.of(Items.ANDESITE), Items.ACACIA_BOAT, 0.45F, 300, "example");
-                        })
-                        .build(exporter -> {
-                            RecipeProvider.offerShapelessRecipe(exporter, Items.ACACIA_BOAT, Items.ANDESITE, null, 15);
-                        }))
-                .addProvider(ChassisModelProvider.create(CHASSIS_RESOURCES)
-                        .buildBlock(consumer -> {
-                            consumer.registerSimpleCubeAll(TEST_BLOCK);
-                            consumer.registerLog(BIRCH).log(BIRCH);
-                        })
-                        .buildItem(consumer -> {
-                            consumer.register(TEST_ITEM, Models.GENERATED);
-                        })
-                )
-                .runProviders();
     }
 }
