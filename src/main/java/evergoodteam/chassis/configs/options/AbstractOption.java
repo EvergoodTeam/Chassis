@@ -10,7 +10,7 @@ import java.util.Collection;
 
 public abstract class AbstractOption<T> {
 
-    private EnvType type = EnvType.SERVER;
+    private EnvType envType = EnvType.SERVER;
     private final String name;
     private String comment;
     private Boolean defaultHidden;
@@ -49,7 +49,7 @@ public abstract class AbstractOption<T> {
     }
 
     public EnvType getType() {
-        return this.type;
+        return this.envType;
     }
 
     public T getValue() {
@@ -76,7 +76,7 @@ public abstract class AbstractOption<T> {
     public abstract WidgetBase getConfigWidget(int width);
 
     public AbstractOption<T> setEnvType(EnvType type) {
-        this.type = type;
+        this.envType = type;
         return this;
     }
 
