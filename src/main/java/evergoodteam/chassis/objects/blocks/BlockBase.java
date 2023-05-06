@@ -66,6 +66,11 @@ public class BlockBase extends Block implements BlockSettings {
         super(blockSettings);
     }
 
+    public BlockBase addTo(@NotNull List<Block>... lists) {
+        for(List<Block> list : lists) list.add(this);
+        return this;
+    }
+
     public BlockBase addTo(@NotNull List<Block> list) {
         list.add(this);
         return this;
