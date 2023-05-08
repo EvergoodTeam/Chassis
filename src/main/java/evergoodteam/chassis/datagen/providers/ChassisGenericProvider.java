@@ -26,7 +26,6 @@ public class ChassisGenericProvider implements DataProvider {
     private final FabricDataGenerator dataGenerator;
     private final ResourcePackBase resourcePack;
     private final Map<Path, JsonElement> json = new HashMap<>();
-    //private final Map<Path, String> textures = new HashMap<>();
 
     public static ChassisGenericProvider create(ResourcePackBase resourcePack) {
         return new ChassisGenericProvider(resourcePack);

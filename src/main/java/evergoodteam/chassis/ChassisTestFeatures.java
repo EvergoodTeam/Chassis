@@ -38,7 +38,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
@@ -55,17 +54,19 @@ public class ChassisTestFeatures {
     static final Item TEST_ITEM = new ItemBase(new FabricItemSettings().maxCount(65))
             .addTo(ITEMS);
     static final Block BIRCH = new PillarBase(FabricBlockSettings.copyOf(Blocks.BIRCH_LOG));
+    static final ItemGroup TEST_GROUP = ItemGroupBase.createItemGroup("chassis", "testgroup", TEST_BLOCK);
 
-    public static void initProviderRegistry(){
+
+    public static void initProviderRegistry() {
 
         CHASSIS_RESOURCES.providerRegistry = () -> {
             CHASSIS_RESOURCES
                     .addProvider(ChassisLanguageProvider.create(CHASSIS_RESOURCES)
-                            .addLang("en_us", new HashMap<>() {{
-                                put("block.chassis.testblock", "Test Block");
-                                put("item.chassis.testitem", "Test Item");
-                                put("itemGroup.chassis.testgroup", "Test Group");
-                            }}))
+                            .build(translationBuilder -> {
+                                translationBuilder.add(TEST_BLOCK, "Test Block");
+                                translationBuilder.add(TEST_ITEM, "Test Item");
+                                translationBuilder.add(TEST_GROUP, "Test Group");
+                            }))
                     .addProvider(ChassisTextureProvider.create(CHASSIS_RESOURCES)
                             .addTexture("https://i.imgur.com/BAStRdD.png", true, "testblock")
                             .addTexture("https://i.imgur.com/BAStRdD.png", false, "testitem")
@@ -180,10 +181,9 @@ public class ChassisTestFeatures {
                 .registerProperties();
 
         // Blocks/Items
-        ItemGroup testGroup = ItemGroupBase.createItemGroup("chassis", "testgroup", TEST_BLOCK);
-        RegistryHandler.registerBlockAndItem("chassis", "testblock", TEST_BLOCK, testGroup);
+        RegistryHandler.registerBlockAndItem("chassis", "testblock", TEST_BLOCK, TEST_GROUP);
         RegistryHandler.registerHandheldItem("chassis", "testitem", TEST_ITEM);
-        RegistryHandler.registerBlockAndItem("chassis", "birch", BIRCH, testGroup);
+        RegistryHandler.registerBlockAndItem("chassis", "birch", BIRCH, TEST_GROUP);
 
         // Asset injection
         /*
