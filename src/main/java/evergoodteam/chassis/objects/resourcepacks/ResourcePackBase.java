@@ -56,6 +56,7 @@ public class ResourcePackBase {
     private ChassisGenericProvider genericJsonProvider;
     private ChassisTextureProvider genericTextureProvider;
     public ProviderRegistry providerRegistry;
+    private boolean providersDone = false;
 
     /**
      * Object from which a ResourcePack is generated
@@ -141,6 +142,10 @@ public class ResourcePackBase {
         return this.hexColor;
     }
 
+    public boolean areProvidersDone() {
+        return providersDone;
+    }
+
     /**
      * Returns the ResourcePack with the provided id, which corresponds to the root dir and {@link ConfigBase} name
      * to which the ResourcePack is linked
@@ -212,15 +217,15 @@ public class ResourcePackBase {
         if (ConfigHandler.getOption(config, locked.getName()) == null) {
             //LOGGER.warn("Default resource option is missing");
             root.createRoot();
-            locked.setValue(true);
+            //locked.setValue(true);
             config.getBuilder().writeResources();
             config.getBuilder().overwrite();
 
             LOGGER.info("Generated resources for \"{}\"", this.namespace);
         } else if (!locked.getWrittenValue(config)) {
             root.createRoot();
-            locked.setValue(true);
-            config.setWrittenValue(namespace + "ResourceLocked", true);
+            //locked.setValue(true);
+            //config.setWrittenValue(namespace + "ResourceLocked", true);
 
             LOGGER.info("Regenerated resources for \"{}\"", namespace);
         } else {
@@ -235,6 +240,7 @@ public class ResourcePackBase {
      * Creates a mirrored column-specific blockstate for the provided block (e.g. deepslate)
      *
      * @param path entry's path
+     * @deprecated as of release 1.2.3, use {@link evergoodteam.chassis.datagen.providers.ChassisModelProvider ChassisModelProvider} instead
      */
     @Deprecated
     public ResourcePackBase createMirroredColumnBlockstate(String path) {
@@ -245,6 +251,7 @@ public class ResourcePackBase {
      * Creates a column-specific blockstate for the provided block (e.g. quartz pillar)
      *
      * @param path entry's path
+     * @deprecated as of release 1.2.3, use {@link evergoodteam.chassis.datagen.providers.ChassisModelProvider ChassisModelProvider} instead
      */
     @Deprecated
     public ResourcePackBase createColumnBlockstate(String path) {
@@ -255,6 +262,7 @@ public class ResourcePackBase {
      * Creates a basic blockstate for the provided block
      *
      * @param path entry's path
+     * @deprecated as of release 1.2.3, use {@link evergoodteam.chassis.datagen.providers.ChassisModelProvider ChassisModelProvider} instead
      */
     @Deprecated
     public ResourcePackBase createBlockstate(String path) {
@@ -270,6 +278,7 @@ public class ResourcePackBase {
      * @param language      e.g. "en_us", "zn_cn"
      * @param mappedEntries map with the translation key for each entry
      * @see <a href="https://minecraft.fandom.com/wiki/Language#Languages">Available languages</a>
+     * @deprecated as of release 1.2.3, use {@link evergoodteam.chassis.datagen.providers.ChassisLanguageProvider ChassisLanguageProvider} instead
      */
     @Deprecated
     public ResourcePackBase createLang(String language, Map<String, String> mappedEntries) {
@@ -284,6 +293,7 @@ public class ResourcePackBase {
      *
      * @param path    entry's path
      * @param texture name of the texture .png file
+     * @deprecated as of release 1.2.3, use {@link evergoodteam.chassis.datagen.providers.ChassisModelProvider ChassisModelProvider} instead
      */
     @Deprecated
     public ResourcePackBase createMirroredColumnBlockModel(String path, String texture) {
@@ -303,7 +313,7 @@ public class ResourcePackBase {
      * @param path     entry's path
      * @param texture  name of the texture .png file
      * @param cubeType "all" or "column"
-     * @deprecated as of release 1.2.3, replaced by {@link #createBlockModel(String, String, String)}
+     * @deprecated as of release 1.2.3, use {@link evergoodteam.chassis.datagen.providers.ChassisModelProvider ChassisModelProvider} instead
      */
     @Deprecated
     public ResourcePackBase createBlockModels(String path, String texture, String cubeType) {
@@ -316,6 +326,7 @@ public class ResourcePackBase {
      * @param path     entry's path
      * @param texture  name of the texture .png file
      * @param cubeType "all" or "column"
+     * @deprecated as of release 1.2.3, use {@link evergoodteam.chassis.datagen.providers.ChassisModelProvider ChassisModelProvider} instead
      */
     @Deprecated
     public ResourcePackBase createBlockModel(String path, String texture, String cubeType) {
@@ -335,6 +346,7 @@ public class ResourcePackBase {
      *
      * @param path    entry's path
      * @param texture name of the texture .png file
+     * @deprecated as of release 1.2.3, use {@link evergoodteam.chassis.datagen.providers.ChassisModelProvider ChassisModelProvider} instead
      */
     @Deprecated
     public ResourcePackBase createItemModel(String path, String texture) {
@@ -351,6 +363,7 @@ public class ResourcePackBase {
      * @param block       true to specify it's a block texture, false to specify it's an item texture
      * @param textureURL  direct link to your .png image <p> e.g. "https://i.imgur.com/BAStRdD.png"
      * @param textureName name of the texture .png file
+     * @deprecated as of release 1.2.3, use {@link evergoodteam.chassis.datagen.providers.ChassisTextureProvider ChassisTextureProvider} instead
      */
     @Deprecated
     public ResourcePackBase createTexture(Boolean block, String textureURL, String textureName) {
@@ -365,6 +378,7 @@ public class ResourcePackBase {
      * Creates a loot table for the block that makes it drop itself when mined
      *
      * @param path entry's path
+     * @deprecated as of release 1.2.3, use {@link evergoodteam.chassis.datagen.providers.ChassisBlockLootTableProvider ChassisBlockLootTableProvider} instead
      */
     @Deprecated
     public ResourcePackBase createBlockDropLootTable(String path) {
@@ -375,6 +389,7 @@ public class ResourcePackBase {
      * Creates a loot table for the block that makes it drop itself when mined
      *
      * @param path entry's path
+     * @deprecated as of release 1.2.3, use {@link evergoodteam.chassis.datagen.providers.ChassisBlockLootTableProvider ChassisBlockLootTableProvider} instead
      */
     @Deprecated
     public ResourcePackBase createBlockDropLootTable(String namespace, String path) {
@@ -383,13 +398,16 @@ public class ResourcePackBase {
     }
 
     /**
-     * @deprecated as of release 1.2.3, use {@link #createGemOreDropLootTable(String, String, String, String)} instead
+     * @deprecated as of release 1.2.3, use {@link evergoodteam.chassis.datagen.providers.ChassisBlockLootTableProvider ChassisBlockLootTableProvider} instead
      */
     @Deprecated
     public ResourcePackBase createGemOreDropLootTable(String orePath, String dropNamespace, String dropPath) {
         return createGemOreDropLootTable(this.namespace, orePath, dropNamespace, dropPath);
     }
 
+    /**
+     * @deprecated as of release 1.2.3, use {@link evergoodteam.chassis.datagen.providers.ChassisBlockLootTableProvider ChassisBlockLootTableProvider} instead
+     */
     @Deprecated
     public ResourcePackBase createGemOreDropLootTable(String oreNamespace, String orePath, String dropNamespace, String dropPath) {
         Path lootTables = root.dataNamespace.resolve("loot_tables/blocks");
@@ -478,6 +496,8 @@ public class ResourcePackBase {
 
     /**
      * Adds a {@link DataProvider}
+     *
+     * @see ProviderRegistry#registerProviders()
      */
     public ResourcePackBase addProvider(DataProvider provider) {
         this.generator.addProvider(provider);
@@ -503,9 +523,14 @@ public class ResourcePackBase {
     // TODO: check configs before running
     public void runProviders() {
         try {
-            //LOGGER.warn("ATTEMPT AT PROVIDERS RESPONSE: {}", !providersDone);
-            generator.run();
-            LOGGER.debug("Providers for {} done", this.getNamespace());
+            //LOGGER.warn("Providers attempt response: {}", !providersDone);
+            if (!locked.getValue()) {
+                generator.run();
+                locked.setValue(true);
+                config.setWrittenValue(namespace + "ResourceLocked", true);
+                providersDone = true;
+                LOGGER.debug("Providers for {} done", this.getNamespace());
+            }
         } catch (IOException e) {
             LOGGER.error("An error occurred while running providers for {}: {}", this.getNamespace(), e);
         }
@@ -521,12 +546,16 @@ public class ResourcePackBase {
      * @param fileName name of the json file
      * @param parent   path to the parent dir of the json file
      * @param json     valid json transcript
+     * @deprecated as of release 1.2.3, add a {@link DataProvider} instead
      */
     @Deprecated
     public ResourcePackBase createJsonAsset(@NotNull String fileName, @NotNull Path parent, @NotNull String json) {
         return createJsonAsset(fileName, parent, JsonUtils.toJsonObject(json));
     }
 
+    /**
+     * @deprecated as of release 1.2.3, add a {@link DataProvider} instead
+     */
     @Deprecated
     public ResourcePackBase createJsonAsset(@NotNull String fileName, @NotNull Path parent, @NotNull JsonElement json) {
         return createJsonAsset(fileName, parent, json.getAsJsonObject());
@@ -539,6 +568,7 @@ public class ResourcePackBase {
      * @param fileName name of the json file
      * @param parent   path to the parent dir of the json file
      * @param json     valid {@link JsonObject}
+     * @deprecated as of release 1.2.3, add a {@link DataProvider} instead
      */
     @Deprecated
     public ResourcePackBase createJsonAsset(@NotNull String fileName, @NotNull Path parent, @NotNull JsonObject json) {
@@ -603,7 +633,7 @@ public class ResourcePackBase {
     }
 
     private void createPackIcon(@NotNull ConfigBase config, @NotNull String namespace, String iconURL) {
-        Path iconPath = Paths.get(config.dirPath.toString(), "resourcepacks/" + namespace.toLowerCase() + "/resources/pack.png");
+        Path iconPath = root.resources.resolve("pack.png");
         this.addProvider(ChassisTextureProvider.create(this)
                 .addTexture(iconURL, iconPath));
     }

@@ -214,6 +214,7 @@ public class ConfigBase {
      * @param name     name of your property
      * @param newValue what the property is equal to
      */
+    // TODO: check names/have options as params
     public <T> void setWrittenValue(String name, T newValue) {
         overwrite(name, String.valueOf(newValue));
     }
