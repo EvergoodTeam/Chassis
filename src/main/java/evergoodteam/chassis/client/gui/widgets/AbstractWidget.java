@@ -27,18 +27,20 @@ public abstract class AbstractWidget extends DrawingUtils implements Drawable, E
 
     public boolean hovered;
     public boolean active = true;
-    //public boolean enabled = true;
+    public boolean enabled = true;
 
     public void renderButton(MatrixStack matrices, int x, int y, int width, int height) {
-        RenderSystem.setShader(GameRenderer::getPositionTexShader);
-        RenderSystem.setShaderTexture(0, ClickableWidget.WIDGETS_TEXTURE);
-        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-        RenderSystem.enableBlend();
-        RenderSystem.defaultBlendFunc();
-        RenderSystem.enableDepthTest();
-        int i = getYImage(this.hovered);
-        DrawableHelper.drawTexture(matrices, x, y, 0, 0, 46 + i * 20, width / 2, height, 256, 256);
-        DrawableHelper.drawTexture(matrices, x + width / 2, y, 0, 200 - width / 2f, 46 + i * 20, width / 2, height, 256, 256);
+        if (enabled) {
+            RenderSystem.setShader(GameRenderer::getPositionTexShader);
+            RenderSystem.setShaderTexture(0, ClickableWidget.WIDGETS_TEXTURE);
+            RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+            RenderSystem.enableBlend();
+            RenderSystem.defaultBlendFunc();
+            RenderSystem.enableDepthTest();
+            int i = getYImage(this.hovered);
+            DrawableHelper.drawTexture(matrices, x, y, 0, 0, 46 + i * 20, width / 2, height, 256, 256);
+            DrawableHelper.drawTexture(matrices, x + width / 2, y, 0, 200 - width / 2f, 46 + i * 20, width / 2, height, 256, 256);
+        }
     }
 
     public int getYImage(boolean hovered) {
