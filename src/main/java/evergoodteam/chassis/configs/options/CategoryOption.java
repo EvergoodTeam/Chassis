@@ -130,8 +130,10 @@ public class CategoryOption extends AbstractOption<String> {
 
         @Override
         public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
-            this.drawRectWithOutline(matrices, this.x, this.y, this.width, this.height, this.color, this.outline);
-            this.renderText(matrices);
+            if (this.enabled) {
+                this.drawRectWithOutline(matrices, this.x, this.y, this.width, this.height, this.color, this.outline);
+                this.renderText(matrices);
+            }
         }
 
         @Override
