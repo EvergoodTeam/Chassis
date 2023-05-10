@@ -31,6 +31,7 @@ public class ConfigBuilder {
     private File file;
     public List<String> lines = new ArrayList<>();
 
+    // TODO: use OptionStorage
     public ConfigBuilder(@NotNull ConfigBase config) {
         this.config = config;
         this.path = config.propertiesPath;

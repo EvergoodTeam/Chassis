@@ -4,8 +4,10 @@ import evergoodteam.chassis.client.gui.text.ChassisScreenTexts;
 import evergoodteam.chassis.client.gui.text.GradientText;
 import evergoodteam.chassis.client.gui.widgets.ResettableListWidget;
 import evergoodteam.chassis.configs.ConfigBase;
+import evergoodteam.chassis.configs.ConfigHandler;
 import evergoodteam.chassis.configs.options.AbstractOption;
 import evergoodteam.chassis.configs.options.CategoryOption;
+import lombok.extern.log4j.Log4j2;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.screen.ConfirmScreen;
@@ -22,6 +24,7 @@ import java.util.List;
 import static evergoodteam.chassis.util.Reference.CMI;
 import static org.slf4j.LoggerFactory.getLogger;
 
+@Log4j2
 @Environment(EnvType.CLIENT)
 public class ConfigScreen extends ConfigOptionsScreen {
 
@@ -73,7 +76,8 @@ public class ConfigScreen extends ConfigOptionsScreen {
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
         if (keyCode == GLFW.GLFW_KEY_ESCAPE) {
-            this.client.setScreen(new ConfirmScreen(this::discardCallback, ChassisScreenTexts.DISCARD, ChassisScreenTexts.DISCARD_D));
+            if (ConfigHandler.isntWritten(config)) this.client.setScreen(new ConfirmScreen(this::discardCallback, ChassisScreenTexts.DISCARD, ChassisScreenTexts.DISCARD_D));
+            else client.setScreen(parent);
             return true;
         }
         return super.keyPressed(keyCode, scanCode, modifiers);

@@ -42,7 +42,7 @@ public class ChassisGenericProvider implements DataProvider {
     }
 
     @Override
-    public void run(DataWriter writer) throws IOException {
+    public void run(DataWriter writer) {
         for (Path path : json.keySet()) {
             try {
                 DataProvider.writeToPath(writer, json.get(path), path);

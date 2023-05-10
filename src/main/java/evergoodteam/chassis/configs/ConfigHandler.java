@@ -3,6 +3,7 @@ package evergoodteam.chassis.configs;
 import com.google.common.base.Charsets;
 import com.google.common.collect.Lists;
 import evergoodteam.chassis.configs.options.AbstractOption;
+import lombok.extern.log4j.Log4j2;
 import net.fabricmc.api.EnvType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -18,6 +19,7 @@ import static evergoodteam.chassis.util.Reference.CMI;
 import static org.slf4j.LoggerFactory.getLogger;
 
 // TODO: convert to object
+@Log4j2
 public class ConfigHandler {
 
     private static final Logger LOGGER = getLogger(CMI + "/C/H");
@@ -105,7 +107,7 @@ public class ConfigHandler {
     public static boolean readOptions(@NotNull ConfigBase config) {
         if (Files.exists(config.propertiesPath)) {
             Map<String, String> mapped = getPropertyMap(config);
-            config.getBuilder().lines = getContents(config);
+            config.getBuilder().lines = getContents(config); // TODO: just a variable overwrite, have methods
 
             if (!mapped.containsKey(config.configLocked.getName())) {
                 LOGGER.warn("Can't read as the Config File is empty, attempting to regenerate");
@@ -125,6 +127,29 @@ public class ConfigHandler {
                 option.updateValueFromWritten(config);
             }
             return !rewriteAdditional;
+        }
+        return false;
+    }
+
+    /**
+     * Returns true if any option from {@link evergoodteam.chassis.configs.options.OptionStorage OptionStorage} has a different value from the written one
+     */
+    // TODO: get better name
+    public static boolean isntWritten(@NotNull ConfigBase config){
+        if (Files.exists(config.propertiesPath)) {
+            Map<String, String> mapped = getPropertyMap(config);
+
+            if (!mapped.containsKey(config.configLocked.getName())) {
+                LOGGER.error("Can't check if properties have changed since the file doesn't exist");
+                return false;
+            }
+
+            for (AbstractOption<?> option : config.getOptionStorage().getOptions()) {
+                if(!mapped.containsKey(option.getName())) return false;
+                //log.info(option.getValue() + " - written: " + mapped.get(option.getName()) + " : equal -> " + String.valueOf(option.getValue()).equals(mapped.get(option.getName())));
+                if (!String.valueOf(option.getValue()).equals(mapped.get(option.getName()))) return true;
+            }
+            return false;
         }
         return false;
     }
