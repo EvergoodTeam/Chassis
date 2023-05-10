@@ -1,8 +1,10 @@
 package evergoodteam.chassis.objects.blocks;
 
 import net.minecraft.block.Block;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public interface BlockSettings {
@@ -23,6 +25,16 @@ public interface BlockSettings {
 
     default Block setTransparent() {
         if (this != null) addTransparentBlock((Block) this);
+        return (Block) this;
+    }
+
+    default Block addTo(List<Block>... lists) {
+        for (List<Block> list : lists) list.add((Block) this);
+        return (Block) this;
+    }
+
+    default Block addTo(@NotNull List<Block> list) {
+        list.add((Block) this);
         return (Block) this;
     }
 }
