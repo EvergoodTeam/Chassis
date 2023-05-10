@@ -1,8 +1,9 @@
 package evergoodteam.chassis.configs.options;
 
-import evergoodteam.chassis.configs.ConfigBase;
 import evergoodteam.chassis.client.gui.widgets.SliderWidget;
 import evergoodteam.chassis.client.gui.widgets.WidgetBase;
+import evergoodteam.chassis.configs.ConfigBase;
+import lombok.extern.log4j.Log4j2;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.util.math.MatrixStack;
@@ -93,10 +94,12 @@ public class DoubleSliderOption extends AbstractOption<Double> implements Abstra
         return this;
     }
 
+    @Log4j2
     @Environment(value = EnvType.CLIENT)
     public static class DoubleConfigSlider extends SliderWidget {
 
         public final DoubleSliderOption option;
+        public CategoryOption.CategoryWidget textWidget;
 
         public DoubleConfigSlider(DoubleSliderOption option, int width) {
             this(width / 2, 0, 100, 20, option);
@@ -109,7 +112,7 @@ public class DoubleSliderOption extends AbstractOption<Double> implements Abstra
         }
 
         @Override
-        public void renderCenteredText(MatrixStack matrices){
+        public void renderCenteredText(MatrixStack matrices) {
             super.renderCenteredText(matrices);
             this.textRenderer.drawWithShadow(matrices, this.option.getDisplayName(), this.x - 142, y + (this.height - 8) / 2, 16777215);
         }

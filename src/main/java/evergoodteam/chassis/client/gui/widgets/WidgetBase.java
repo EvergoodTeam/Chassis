@@ -152,6 +152,7 @@ public class WidgetBase extends AbstractWidget implements OrderableTooltip {
         return result;
     }
 
+    // TODO: interface example
     @Environment(value = EnvType.CLIENT)
     public static interface PressAction {
         void onPress(WidgetBase var1);
