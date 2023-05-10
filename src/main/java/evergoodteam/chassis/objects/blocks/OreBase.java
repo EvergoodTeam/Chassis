@@ -11,4 +11,14 @@ public class OreBase extends OreBlock implements BlockSettings {
     public OreBase(Settings settings) {
         super(settings);
     }
+
+    public OreBase addTo(List<Block>... lists) {
+        for (List<Block> list : lists) list.add(this);
+        return this;
+    }
+
+    public OreBase addTo(@NotNull List<Block> list) {
+        list.add(this);
+        return this;
+    }
 }

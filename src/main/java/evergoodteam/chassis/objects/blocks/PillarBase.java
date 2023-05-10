@@ -25,4 +25,14 @@ public class PillarBase extends PillarBlock implements BlockSettings {
     public PillarBase(Settings settings) {
         super(settings);
     }
+
+    public PillarBase addTo(List<Block>... lists) {
+        for (List<Block> list : lists) list.add(this);
+        return this;
+    }
+
+    public PillarBase addTo(@NotNull List<Block> list) {
+        list.add(this);
+        return this;
+    }
 }

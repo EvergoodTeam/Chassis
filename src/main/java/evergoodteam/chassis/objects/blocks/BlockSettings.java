@@ -23,18 +23,9 @@ public interface BlockSettings {
         return TRANSPARENT_BLOCKS;
     }
 
+    // TODO: return type, abstract?
     default Block setTransparent() {
         if (this != null) addTransparentBlock((Block) this);
-        return (Block) this;
-    }
-
-    default Block addTo(List<Block>... lists) {
-        for (List<Block> list : lists) list.add((Block) this);
-        return (Block) this;
-    }
-
-    default Block addTo(@NotNull List<Block> list) {
-        list.add((Block) this);
         return (Block) this;
     }
 }
