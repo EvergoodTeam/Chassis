@@ -19,7 +19,8 @@ public class ItemBase extends Item {
         super(itemSettings);
     }
 
-    public ItemBase addTo(@NotNull List<Item>... lists) {
+    @SafeVarargs
+    public final ItemBase addTo(@NotNull List<Item>... lists) {
         for(List<Item> list : lists) list.add(this);
         return this;
     }

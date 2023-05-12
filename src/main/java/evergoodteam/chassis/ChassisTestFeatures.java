@@ -184,38 +184,5 @@ public class ChassisTestFeatures {
         RegistryHandler.registerBlockAndItem("chassis", "testblock", TEST_BLOCK, TEST_GROUP);
         RegistryHandler.registerHandheldItem("chassis", "testitem", TEST_ITEM);
         RegistryHandler.registerBlockAndItem("chassis", "birch", BIRCH, TEST_GROUP);
-
-        // Asset injection
-        /*
-        ModelBundler modelBundler = new ModelBundler(MODID)
-                .addItem(new Identifier(MODID, "testitem"), ItemModelType.HANDHELD)
-                .addBlock(new Identifier(MODID, "testblock"), BlockModelType.ALL)
-                .addItem(new Identifier(MODID, "testblock"), ItemModelType.BLOCK)
-                .addColumn(new Identifier(MODID, "birch"))
-                .addItem(new Identifier(MODID, "birch"), ItemModelType.BLOCK);
-
-        RecipeBundler recipeBundler = new RecipeBundler(MODID)
-                .addRecipe(MODID, "testrecipe", RecipeJson.create3x3RecipeJson("item", new Identifier(MODID, "testitem"), new Identifier(MODID, "testblock"), 1))
-                .addRecipe(MODID, "testrecipeshapeless", RecipeJson.createShapelessRecipeJson("item", new Identifier(MODID, "testitem"), new Identifier(MODID, "testblock"), 9));
-        */
-
-        // ResourcePack
-        /*
-        CHASSIS_RESOURCES.createGlobalTag("testblock")
-                .createBlockstate("testblock")
-                //.createBlockModels("testblock", "testblock", "all")
-                //.createBlockDropLootTable("testblock")
-                .createGemOreDropLootTable("testblock", MODID, "testitem")
-                .createRequiredToolTag("pickaxe", new String[]{"testblock"})
-                .createMiningLevelTag("stone", new String[]{"testblock"})
-                .createTexture(true, "https://i.imgur.com/BAStRdD.png", "testblock") // Truly a legendary URL
-
-                //.createItemModel("testitem", "testitem")
-                .createTexture(false, "https://i.imgur.com/BAStRdD.png", "testitem")
-
-                .createBlockDropLootTable("birch")
-                .createColumnBlockstate("birch")
-                //.createBlockModel("birch", "birch", "column")
-        */
     }
 }

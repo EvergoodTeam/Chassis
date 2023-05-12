@@ -9,6 +9,7 @@
   ],
   "client": [
     "ClientMixin",
+    "FontManagerMixin",
     "ModelLoaderMixin",
     "PackScreenMixin"
   ],

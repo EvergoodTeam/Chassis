@@ -1,5 +1,6 @@
 package evergoodteam.chassis.objects.blocks;
 
+import evergoodteam.chassis.client.ChassisClient;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.block.Block;
 import net.minecraft.block.Material;
@@ -9,7 +10,8 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 // TODO: clean up constructors with version group change
-public class BlockBase extends Block implements BlockSettings {
+// TODO: support all block classes somehow (builder?)
+public class BlockBase extends Block {
 
     /**
      * @deprecated as of release 1.2.3, use {@link #addTo(List)} ()} instead
@@ -66,7 +68,13 @@ public class BlockBase extends Block implements BlockSettings {
         super(blockSettings);
     }
 
-    public BlockBase addTo(List<Block>... lists) {
+    public BlockBase setTransparent(){
+        ChassisClient.addTransparentBlock(this);
+        return this;
+    }
+
+    @SafeVarargs
+    public final BlockBase addTo(List<Block>... lists) {
         for (List<Block> list : lists) list.add(this);
         return this;
     }

@@ -1,5 +1,6 @@
 package evergoodteam.chassis.objects.blocks;
 
+import evergoodteam.chassis.client.ChassisClient;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.block.Block;
 import net.minecraft.block.Material;
@@ -10,9 +11,9 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 /**
- * Needed for proper Blockstate/Model generation
+ * Needed for proper Blockstate/Model generation when using providers
  */
-public class PillarBase extends PillarBlock implements BlockSettings {
+public class PillarBase extends PillarBlock {
 
     public PillarBase(Material material, Float hardness, Float resistance, BlockSoundGroup sound) {
         this(FabricBlockSettings.of(material).requiresTool().strength(hardness, resistance).sounds(sound));
@@ -26,7 +27,13 @@ public class PillarBase extends PillarBlock implements BlockSettings {
         super(settings);
     }
 
-    public PillarBase addTo(List<Block>... lists) {
+    public PillarBase setTransparent(){
+        ChassisClient.addTransparentBlock(this);
+        return this;
+    }
+
+    @SafeVarargs
+    public final PillarBase addTo(List<Block>... lists) {
         for (List<Block> list : lists) list.add(this);
         return this;
     }
