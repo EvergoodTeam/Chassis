@@ -31,7 +31,7 @@
   "mixins": [
     "chassis.mixins.json"
   ],
-  "accessWidener" : "chassis.accesswidener",
+  "accessWidener": "chassis.accesswidener",
   "depends": {
     "fabricloader": ">=0.13.3",
     "fabric": "*",
@@ -43,6 +43,11 @@
         "Discord": "https://discord.gg/k2P68Y8",
         "BisectHosting": "https://www.bisecthosting.com/Libra"
       }
+    },
+    "loom:injected_interfaces": {
+      "net/minecraft/class_378": [
+        "evergoodteam/chassis/client/gui/text/GradientTextRendererGetter"
+      ]
     }
   }
 }
