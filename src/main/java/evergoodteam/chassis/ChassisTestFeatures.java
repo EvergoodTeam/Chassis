@@ -58,7 +58,6 @@ public class ChassisTestFeatures {
 
 
     public static void initProviderRegistry() {
-
         CHASSIS_RESOURCES.providerRegistry = () -> {
             CHASSIS_RESOURCES
                     .addProvider(ChassisLanguageProvider.create(CHASSIS_RESOURCES)

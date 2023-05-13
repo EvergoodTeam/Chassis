@@ -202,19 +202,22 @@ public class ConfigBase {
     }
 
     /**
-     * Returns the value of the property with the specified name from the .properties config file
+     * Sets a property's value to the specified one if it is different from the original
+     *
+     * @param option   your property
+     * @param newValue property's new value
      */
-    public <T> @Nullable String getWrittenValue(String name, T defaultValue) {
-        return ConfigHandler.getOption(this, name);
+    public <T> void setWrittenValue(AbstractOption<T> option, T newValue) {
+        overwrite(option.getName(), String.valueOf(newValue));
     }
 
     /**
      * Sets a property's value to the specified one if it is different from the original
      *
      * @param name     name of your property
-     * @param newValue what the property is equal to
+     * @param newValue property's new value
      */
-    // TODO: check names/have options as params
+    // TODO: check names
     public <T> void setWrittenValue(String name, T newValue) {
         overwrite(name, String.valueOf(newValue));
     }
@@ -223,7 +226,7 @@ public class ConfigBase {
      * Overwrites the property specified by the provided name with the provided value
      *
      * @param name     name of your property
-     * @param newValue what the property is equal to
+     * @param newValue property's new value
      */
     private void overwrite(String name, String newValue) {
         builder.overwrite(name, newValue);
@@ -234,6 +237,6 @@ public class ConfigBase {
      * Opens the .properties file with the system's default text editor for the ".properties" file extension
      */
     public void openConfigFile() {
-        Util.getOperatingSystem().open(this.propertiesFile);
+        Util.getOperatingSystem().open(propertiesFile);
     }
 }

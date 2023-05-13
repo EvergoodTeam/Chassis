@@ -10,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 // TODO: clean up constructors with version group change
-// TODO: support all block classes somehow (builder?)
+// TODO: support all block classes
 public class BlockBase extends Block {
 
     /**
