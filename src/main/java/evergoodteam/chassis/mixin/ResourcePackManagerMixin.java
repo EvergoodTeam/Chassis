@@ -64,8 +64,8 @@ public class ResourcePackManagerMixin {
         if (!providerAlreadyExists) {
             for (String namespace : resourceMap.keySet()) {
                 for (ResourcePackBase resourcePack : resourceMap.get(namespace)) {
-                    // Datagen, should run only once on the first resource reload
-                    if(!resourcePack.areProvidersDone()) resourcePack.providerRegistry.registerProviders();
+                    // Datagen, should run once on the first resource reload
+                    if(resourcePack.providerRegistry != null && !resourcePack.areProvidersDone()) resourcePack.providerRegistry.registerProviders();
                     if (client) {
                         providersCopy.add(new ClientResourcePackProvider(namespace, resourcePack.getNamespace(), resourcePack.getMetadataKey(), resourcePack.getHexColor()));
                         //LOGGER.info("Injected our ClientProvider into providers: {}", this.providers);

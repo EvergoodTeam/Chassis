@@ -23,6 +23,7 @@ import net.minecraft.data.DataProvider;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 
 import java.io.IOException;
@@ -51,11 +52,9 @@ public class ResourcePackBase {
     private String hexColor = "AAAAAA";
     public final ModContainer modContainer;
     public final FabricDataGenerator generator;
-    private final List<DataProvider> providers = new ArrayList<>();
-    // TODO: Delete after deprecation
-    private ChassisGenericProvider genericJsonProvider;
-    private ChassisTextureProvider genericTextureProvider;
-    public ProviderRegistry providerRegistry;
+    private final @Deprecated ChassisGenericProvider genericJsonProvider;
+    private final @Deprecated ChassisTextureProvider genericTextureProvider;
+    public @Nullable ProviderRegistry providerRegistry;
     private boolean providersDone = false;
 
     /**
@@ -204,7 +203,33 @@ public class ResourcePackBase {
 
     public ResourcePackBase setIcon(@NotNull String iconUrl) {
         DEFAULT_ICON.remove(this.displayName);
-        createPackIcon(this.config, this.namespace, iconUrl);
+        Path iconPath = root.resources.resolve("pack.png");
+        addProvider(ChassisTextureProvider.create(this)
+                .addTexture(iconUrl, iconPath));
+        return this;
+    }
+
+    /**
+     * Uses the default icon for the ResourcePack
+     */
+    public ResourcePackBase useDefaultIcon() {
+        DEFAULT_ICON.add(this.displayName);
+        return this;
+    }
+
+    /**
+     * Hides the ResourcePack from the GUI
+     */
+    public ResourcePackBase hide() {
+        hidden.setValue(true);
+        return this;
+    }
+
+    /**
+     * Unhides the ResourcePack from the GUI
+     */
+    public ResourcePackBase unhide() {
+        hidden.setValue(false);
         return this;
     }
     //endregion
@@ -215,17 +240,13 @@ public class ResourcePackBase {
         ConfigHandler.readOptions(config);
 
         if (ConfigHandler.getOption(config, locked.getName()) == null) {
-            //LOGGER.warn("Default resource option is missing");
             root.createRoot();
-            //locked.setValue(true);
             config.getBuilder().writeResources();
             config.getBuilder().overwrite();
 
             LOGGER.info("Generated resources for \"{}\"", this.namespace);
         } else if (!locked.getWrittenValue(config)) {
             root.createRoot();
-            //locked.setValue(true);
-            //config.setWrittenValue(namespace + "ResourceLocked", true);
 
             LOGGER.info("Regenerated resources for \"{}\"", namespace);
         } else {
@@ -234,6 +255,7 @@ public class ResourcePackBase {
     }
     //endregion
 
+    //region Deprecated
     //region Blockstates
 
     /**
@@ -491,6 +513,7 @@ public class ResourcePackBase {
         return createJsonAsset(tagBuilder.identifier.getPath(), tagBuilder.path, tagBuilder.getAsJsonElement());
     }
     //endregion
+    //endregion
 
     //region Providers
 
@@ -518,21 +541,20 @@ public class ResourcePackBase {
     }
 
     /**
-     * Runs the added providers
+     * Runs the added providers, must be called for the providers to actually be used. <p>
+     * Recommended procedure is calling it inside of {@link ProviderRegistry#registerProviders()} after adding all the providers.
      */
-    // TODO: check configs before running
     public void runProviders() {
         try {
-            //LOGGER.warn("Providers attempt response: {}", !providersDone);
             if (!locked.getValue()) {
                 generator.run();
                 locked.setValue(true);
-                config.setWrittenValue(namespace + "ResourceLocked", true);
+                config.setWrittenValue(locked, true);
                 providersDone = true;
-                LOGGER.debug("Providers for {} done", this.getNamespace());
-            }
+                LOGGER.debug("Providers for {} done", namespace);
+            } else LOGGER.debug("Couldn't run providers for {} because the resource is locked", namespace);
         } catch (IOException e) {
-            LOGGER.error("An error occurred while running providers for {}: {}", this.getNamespace(), e);
+            LOGGER.error("An error occurred while running providers for {}: {}", namespace, e);
         }
     }
     //endregion
@@ -603,39 +625,6 @@ public class ResourcePackBase {
     private ResourcePackBase createJsonFile(Path path) {
         FileHandler.createJsonFile(path);
         return this;
-    }
-    //endregion
-
-    //region GUI
-
-    /**
-     * Uses the default icon for the ResourcePack
-     */
-    public ResourcePackBase useDefaultIcon() {
-        DEFAULT_ICON.add(this.displayName);
-        return this;
-    }
-
-    /**
-     * Hides the ResourcePack from the GUI
-     */
-    public ResourcePackBase hide() {
-        hidden.setValue(true);
-        return this;
-    }
-
-    /**
-     * Unhides the ResourcePack from the GUI
-     */
-    public ResourcePackBase unhide() {
-        hidden.setValue(false);
-        return this;
-    }
-
-    private void createPackIcon(@NotNull ConfigBase config, @NotNull String namespace, String iconURL) {
-        Path iconPath = root.resources.resolve("pack.png");
-        this.addProvider(ChassisTextureProvider.create(this)
-                .addTexture(iconURL, iconPath));
     }
     //endregion
 }

@@ -47,6 +47,9 @@
     "loom:injected_interfaces": {
       "net/minecraft/class_378": [
         "evergoodteam/chassis/client/gui/text/GradientTextRendererGetter"
+      ],
+      "net/minecraft/class_2403": [
+        "evergoodteam/chassis/datagen/ProviderSizeGetter"
       ]
     }
   }
