@@ -103,7 +103,9 @@ public class IntegerSliderOption extends AbstractOption<Integer> implements Abst
         }
 
         public IntConfigSlider(int x, int y, int width, int height, IntegerSliderOption option) {
-            super(x, y, width, height, option);
+            super(x, y, width, height, Text.literal(String.valueOf(option.getValue())),
+                    convertFromBounds(option.getValue(), option.getMin(), option.getMax()),
+                    option.getMin(), option.getMax());
             this.option = option;
             this.setTooltip(option.getTooltip());
         }

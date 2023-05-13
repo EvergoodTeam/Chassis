@@ -47,7 +47,7 @@ public class WidgetBase extends AbstractWidget implements OrderableTooltip {
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        if(!this.active) return false;
+        if (!this.active) return false;
         if (isLeftClick(button) && insideBounds(mouseX, mouseY)) {
             onClick(mouseX, mouseY);
             playDownSound(MinecraftClient.getInstance().getSoundManager());
@@ -130,16 +130,16 @@ public class WidgetBase extends AbstractWidget implements OrderableTooltip {
         this.renderCenteredText(matrices, this.getMessage(), this.y + (this.height - 8) / 2);
     }
 
-    public void renderCenteredText(MatrixStack matrices, Text message, int y){
+    public void renderCenteredText(MatrixStack matrices, Text message, int y) {
         this.renderCenteredText(matrices, message, this.x + (this.width / 2), y);
     }
 
-    public void renderCenteredText(MatrixStack matrices, Text text, int x, int y){
+    public void renderCenteredText(MatrixStack matrices, Text text, int x, int y) {
         String message = truncateString(text.getString());
         drawCenteredText(matrices, textRenderer, Text.literal(message).fillStyle(this.getMessage().getStyle()), x, y, 16777215);
     }
 
-    public String truncateString(String string){
+    public String truncateString(String string) {
         String result = string;
         boolean firstIter = true;
 
@@ -152,14 +152,13 @@ public class WidgetBase extends AbstractWidget implements OrderableTooltip {
         return result;
     }
 
-    // TODO: interface example
     @Environment(value = EnvType.CLIENT)
-    public static interface PressAction {
+    public interface PressAction {
         void onPress(WidgetBase var1);
     }
 
     @Environment(value = EnvType.CLIENT)
-    public static interface RenderAction {
+    public interface RenderAction {
 
         void onRender(WidgetBase var1);
     }

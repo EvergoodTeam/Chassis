@@ -1,10 +1,6 @@
 package evergoodteam.chassis.client.gui.widgets;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import evergoodteam.chassis.configs.options.AbstractOption;
-import evergoodteam.chassis.configs.options.DoubleSliderOption;
-import evergoodteam.chassis.configs.options.IntegerSliderOption;
-import lombok.extern.log4j.Log4j2;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.sound.SoundManager;
@@ -15,28 +11,11 @@ import net.minecraft.util.math.MathHelper;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
-@Log4j2
 public class SliderWidget extends WidgetBase {
 
     public Double value;
     public Double min;
     public Double max;
-    public AbstractOption<?> option;
-
-    public SliderWidget(int x, int y, int width, int height, IntegerSliderOption option) {
-        this(x, y, width, height, Text.literal(String.valueOf(option.getValue())),
-                convertFromBounds(option.getValue(), option.getMin(), option.getMax()),
-                option.getMin(), option.getMax());
-        this.option = option;
-    }
-
-    // TODO: option here is useless, move to abstract
-    public SliderWidget(int x, int y, int width, int height, DoubleSliderOption option) {
-        this(x, y, width, height, Text.literal(String.valueOf(option.getValue())),
-                convertFromBounds(option.getValue(), option.getMin(), option.getMax()),
-                option.getMin(), option.getMax());
-        this.option = option;
-    }
 
     public SliderWidget(int x, int y, int width, int height, Text message, double value, double min, double max) {
         super(x, y, width, height, message);
