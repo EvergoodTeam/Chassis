@@ -36,5 +36,6 @@ public class ResourcePackRoot {
         DirHandler.clean(resourcePack.getRootPath());
         DirHandler.create(resources);
         DirHandler.create(resources, new String[]{"assets", "data"});
+        if(resourcePack.noProviders) resourcePack.getLock().setValue(true);
     }
 }

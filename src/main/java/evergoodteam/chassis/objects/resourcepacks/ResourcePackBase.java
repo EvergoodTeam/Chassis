@@ -56,6 +56,7 @@ public class ResourcePackBase {
     private final @Deprecated ChassisTextureProvider genericTextureProvider;
     public @Nullable ProviderRegistry providerRegistry;
     private boolean providersDone = false;
+    public boolean noProviders = false;
 
     /**
      * Object from which a ResourcePack is generated
