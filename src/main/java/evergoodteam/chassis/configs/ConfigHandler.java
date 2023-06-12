@@ -5,6 +5,7 @@ import com.google.common.collect.Lists;
 import evergoodteam.chassis.configs.options.AbstractOption;
 import lombok.extern.log4j.Log4j2;
 import net.fabricmc.api.EnvType;
+import net.fabricmc.loader.api.FabricLoader;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
@@ -23,6 +24,25 @@ import static org.slf4j.LoggerFactory.getLogger;
 public class ConfigHandler {
 
     private static final Logger LOGGER = getLogger(CMI + "/C/H");
+
+    /**
+     * Returns true if the version written in the properties file isn't the same as the mod's (after checking that strict
+     * versioning is enabled for the specified config)
+     */
+    public static Boolean versionUpdated(ConfigBase config){
+        return config.strictVersion && !getWrittenModVersion(config).equals(getModVersion(config));
+    }
+
+    public static String getModVersion(ConfigBase config){
+        if(FabricLoader.getInstance().getModContainer(config.namespace).isPresent())
+            return FabricLoader.getInstance().getModContainer(config.namespace).get().getMetadata().getVersion().getFriendlyString();
+        return "";
+    }
+
+    public static String getWrittenModVersion(ConfigBase config){
+        String result = getContents(config).get(0);
+        return result.split(" ")[2];
+    }
 
     /**
      * Returns a single string with all the common properties and their value
@@ -75,17 +95,6 @@ public class ConfigHandler {
     }
 
     /**
-     * Reads the .properties config file and returns it as a string
-     */
-    public static String toString(ConfigBase config) {
-        try {
-            return Files.readString(config.propertiesPath, Charsets.UTF_8);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    /**
      * Gets all the contents of a .properties config file
      *
      * @param config owner of the .properties config file
@@ -94,6 +103,17 @@ public class ConfigHandler {
     public static List<String> getContents(@NotNull ConfigBase config) {
         try {
             return Lists.newArrayList(Files.readString(config.propertiesPath, Charsets.UTF_8).split("\\r?\\n"));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * Reads the .properties config file and returns it as a string
+     */
+    public static String toString(ConfigBase config) {
+        try {
+            return Files.readString(config.propertiesPath, Charsets.UTF_8);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -135,7 +155,7 @@ public class ConfigHandler {
      * Returns true if any option from {@link evergoodteam.chassis.configs.options.OptionStorage OptionStorage} has a different value from the written one
      */
     // TODO: get better name
-    public static boolean isntWritten(@NotNull ConfigBase config){
+    public static Boolean isntWritten(@NotNull ConfigBase config){
         if (Files.exists(config.propertiesPath)) {
             Map<String, String> mapped = getPropertyMap(config);
 

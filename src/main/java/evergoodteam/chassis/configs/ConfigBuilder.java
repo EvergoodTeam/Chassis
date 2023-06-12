@@ -171,7 +171,7 @@ public class ConfigBuilder {
     //region Components
 
     public String title() {
-        return "# %s Configs".formatted(StringUtils.capitalize(config.namespace));
+        return "# %s %s Configs".formatted(StringUtils.capitalize(config.namespace), ConfigHandler.getModVersion(config));
     }
 
     public String date() {

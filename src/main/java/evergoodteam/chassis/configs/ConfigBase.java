@@ -36,12 +36,14 @@ public class ConfigBase {
     private OptionStorage optionStorage;
     private ConfigBuilder builder;
     public final ConfigNetworking networking;
+    public Boolean strictVersion = true;
 
     /**
      * Object from which Configs will be generated
      *
      * @param namespace name of your Configs
      */
+    // TODO: use modContainer?
     public ConfigBase(String namespace) {
         this.namespace = namespace;
         this.dirPath = CONFIG_DIR.resolve(namespace);
@@ -57,7 +59,7 @@ public class ConfigBase {
 
         CONFIGURATIONS.put(namespace, this);
         this.readProperties();  // Looks for existing values
-        if (!this.configLocked.getValue()) {
+        if (!this.configLocked.getValue() || ConfigHandler.versionUpdated(this)) { // Resets if versions are mismatched (and strict versioning is enabled)
             this.configLocked.setValue(true);
             this.createDefaults();
         } else LOGGER.info("Configs for \"{}\" already exist, skipping first generation", this.namespace);
