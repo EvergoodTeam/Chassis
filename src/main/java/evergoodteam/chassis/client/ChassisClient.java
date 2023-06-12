@@ -34,11 +34,11 @@ public class ChassisClient implements ClientModInitializer {
         ConfigBase.CONFIGURATIONS.forEach((string, config) -> config.networking.registerClientReceiver());
     }
 
-    public static void addTransparentBlock(Block block){
+    public static void addTransparentBlock(Block block) {
         TRANSPARENT_BLOCKS.add(block);
     }
 
-    public static Set<Block> getTransparentBlocks(){
+    public static Set<Block> getTransparentBlocks() {
         return TRANSPARENT_BLOCKS;
     }
 }

@@ -83,13 +83,25 @@ public class ResourcePackBase {
     }
 
     /**
-     * Object from which a ResourcePack is generated
+     * Object from which a ResourcePack is generated with strictValidation
      *
      * @param config      {@link ConfigBase} to which assign the ResourcePack; determines the root dir
      * @param namespace   name of your ResourcePack
      * @param displayName name to display in the GUI
      */
     public ResourcePackBase(ConfigBase config, String namespace, String displayName) {
+        this(config, namespace, displayName, true);
+    }
+
+    /**
+     * Object from which a ResourcePack is generated
+     *
+     * @param config           {@link ConfigBase} to which assign the ResourcePack; determines the root dir
+     * @param namespace        name of your ResourcePack
+     * @param displayName      name to display in the GUI
+     * @param strictValidation if a cache should be generated and checked each time providers are run
+     */
+    public ResourcePackBase(ConfigBase config, String namespace, String displayName, boolean strictValidation) {
         this.config = config;
         this.namespace = namespace;
         this.displayName = displayName;
@@ -102,7 +114,7 @@ public class ResourcePackBase {
                 .setEnvType(EnvType.CLIENT)
                 .setComment("Hide the %s ResourcePack from the GUI".formatted(displayName));
         this.modContainer = FabricLoader.getInstance().getModContainer(namespace).get();
-        this.generator = new FabricDataGenerator(this.root.resources, modContainer, true);
+        this.generator = new FabricDataGenerator(this.root.resources, modContainer, strictValidation);
         this.genericJsonProvider = ChassisGenericProvider.create(this);
         this.genericTextureProvider = ChassisTextureProvider.create(this);
         this.generator.addProvider(this.genericJsonProvider);

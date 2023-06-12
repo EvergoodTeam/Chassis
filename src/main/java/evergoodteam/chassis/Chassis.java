@@ -6,7 +6,6 @@ import org.slf4j.LoggerFactory;
 
 import static evergoodteam.chassis.util.Reference.CMI;
 
-
 public class Chassis implements ModInitializer {
 
     static final Logger LOGGER = LoggerFactory.getLogger(CMI);

@@ -44,7 +44,7 @@ import java.util.Set;
 import static evergoodteam.chassis.util.Reference.*;
 
 public class ChassisTestFeatures {
-/*
+
     private static final Logger LOGGER = LoggerFactory.getLogger(CMI + "/Testing");
     static final List<Block> BLOCKS = new ArrayList<>();
     static final List<Item> ITEMS = new ArrayList<>();
@@ -178,10 +178,10 @@ public class ChassisTestFeatures {
                                 .setComment("Secondary double, should have default values here ->"))
                 )
                 .registerProperties();
-
+        /*
         // Blocks/Items
         RegistryHandler.registerBlockAndItem("chassis", "testblock", TEST_BLOCK, TEST_GROUP);
         RegistryHandler.registerHandheldItem("chassis", "testitem", TEST_ITEM);
-        RegistryHandler.registerBlockAndItem("chassis", "birch", BIRCH, TEST_GROUP);
-    }*/
+        RegistryHandler.registerBlockAndItem("chassis", "birch", BIRCH, TEST_GROUP);*/
+    }
 }
