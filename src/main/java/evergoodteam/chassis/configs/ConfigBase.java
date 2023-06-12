@@ -94,6 +94,14 @@ public class ConfigBase {
     public static Map<String, ConfigBase> getConfigurations() {
         return CONFIGURATIONS;
     }
+
+    public BooleanOption getLock(){
+        return configLocked;
+    }
+
+    public boolean isLocked(){
+        return configLocked.getValue();
+    }
     //endregion
 
     //region Setters

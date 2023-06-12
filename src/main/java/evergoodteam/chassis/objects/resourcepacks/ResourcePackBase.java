@@ -153,6 +153,14 @@ public class ResourcePackBase {
         return this.hexColor;
     }
 
+    public BooleanOption getLock(){
+        return locked;
+    }
+
+    public boolean isLocked(){
+        return locked.getValue();
+    }
+
     public boolean areProvidersDone() {
         return providersDone;
     }
