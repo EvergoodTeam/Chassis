@@ -1,9 +1,12 @@
 package evergoodteam.chassis.objects.groups;
 
-import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder;
+import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
 import net.minecraft.item.ItemConvertible;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.RegistryKeys;
+import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
 import java.util.HashMap;
@@ -13,6 +16,7 @@ public class ItemGroupBase {
 
     private static final Map<String, ItemGroupBase> GROUP_MAP = new HashMap<>();
 
+    public RegistryKey<ItemGroup> registry;
     public ItemGroup group;
     public Identifier identifier;
     public ItemConvertible icon;
@@ -35,7 +39,11 @@ public class ItemGroupBase {
      * @param icon       accepts Item or Block objects; will be used as the icon for the Creative Tab
      */
     public ItemGroupBase(Identifier identifier, ItemConvertible icon) {
-        this.group = FabricItemGroupBuilder.build(identifier, () -> new ItemStack(icon));
+        this.registry = RegistryKey.of(RegistryKeys.ITEM_GROUP, identifier);
+        this.group = FabricItemGroup.builder()
+                .icon(() -> new ItemStack(icon))
+                .displayName(Text.translatable(identifier.toTranslationKey()))
+                .build();
         this.identifier = identifier;
         this.icon = icon;
 
@@ -70,8 +78,8 @@ public class ItemGroupBase {
      * @param path      used to identify from other additions from the same namespace
      * @param icon      accepts Item or Block objects; will be used as the icon for the Creative Tab
      */
-    public static ItemGroup createItemGroup(String namespace, String path, ItemConvertible icon) {
-        return new ItemGroupBase(namespace, path, icon).getGroup();
+    public static ItemGroupBase createItemGroup(String namespace, String path, ItemConvertible icon) {
+        return new ItemGroupBase(namespace, path, icon);
     }
 
     /**
@@ -80,7 +88,7 @@ public class ItemGroupBase {
      * @param identifier ID of your addition
      * @param icon       accepts Item or Block objects; will be used as the icon for the Creative Tab
      */
-    public static ItemGroup createItemGroup(Identifier identifier, ItemConvertible icon) {
-        return new ItemGroupBase(identifier, icon).getGroup();
+    public static ItemGroupBase createItemGroup(Identifier identifier, ItemConvertible icon) {
+        return new ItemGroupBase(identifier, icon);
     }
 }

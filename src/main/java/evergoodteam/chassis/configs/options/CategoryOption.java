@@ -5,8 +5,8 @@ import evergoodteam.chassis.client.gui.widgets.WidgetBase;
 import evergoodteam.chassis.configs.ConfigBase;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.sound.SoundManager;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 
 import java.util.ArrayList;
@@ -129,10 +129,10 @@ public class CategoryOption extends AbstractOption<String> {
         }
 
         @Override
-        public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
+        public void render(DrawContext context, int mouseX, int mouseY, float delta) {
             if (this.enabled) {
-                this.drawRectWithOutline(matrices, this.x, this.y, this.width, this.height, this.color, this.outline);
-                this.renderText(matrices);
+                this.drawRectWithOutline(context, this.x, this.y, this.width, this.height, this.color, this.outline);
+                this.renderText(context);
             }
         }
 

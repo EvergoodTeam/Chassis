@@ -1,11 +1,11 @@
 package evergoodteam.chassis.configs.options;
 
-import evergoodteam.chassis.configs.ConfigBase;
 import evergoodteam.chassis.client.gui.widgets.CyclingWidget;
 import evergoodteam.chassis.client.gui.widgets.WidgetBase;
+import evergoodteam.chassis.configs.ConfigBase;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.text.Text;
 
 import java.util.List;
@@ -82,26 +82,26 @@ public class StringSetOption extends AbstractOption<String> {
     }
 
     @Environment(value = EnvType.CLIENT)
-    public static class StringConfigWidget extends CyclingWidget<String>{
+    public static class StringConfigWidget extends CyclingWidget<String> {
 
         public final StringSetOption option;
 
-        public StringConfigWidget(StringSetOption option, int width){
+        public StringConfigWidget(StringSetOption option, int width) {
             super(width, List.copyOf(option.bounds), new CyclingWidget.UpdateOptionValue<>(option));
             this.initially(option.getValue()).setTooltip(option.getTooltip());
             this.option = option;
         }
 
         @Override
-        public void renderCenteredText(MatrixStack matrices){
-            super.renderCenteredText(matrices);
-            this.textRenderer.drawWithShadow(matrices, this.option.getDisplayName(), this.x - 142, y + (float) (this.height - 8) / 2, 16777215);
+        public void renderCenteredText(DrawContext context) {
+            super.renderCenteredText(context);
+            context.drawTextWithShadow(textRenderer, this.option.getDisplayName(), this.x - 142, y + (this.height - 8) / 2, 16777215);
         }
 
         @Override
-        public void renderBackground(MatrixStack matrices, int mouseX, int mouseY) {
+        public void renderBackground(DrawContext context, int mouseX, int mouseY) {
             if (this.isMouseOver(mouseX, mouseY, this.x - 150, this.y - 2, 300, 24)) {
-                this.drawRectWithOutline(matrices, this.x - 150, this.y - 2, 300, 24, 0x2B_FFFFFF);
+                this.drawRectWithOutline(context, this.x - 150, this.y - 2, 300, 24, 0x2B_FFFFFF);
             }
         }
     }

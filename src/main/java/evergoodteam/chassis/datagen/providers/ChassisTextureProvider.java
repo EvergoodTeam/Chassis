@@ -3,8 +3,8 @@ package evergoodteam.chassis.datagen.providers;
 import evergoodteam.chassis.objects.resourcepacks.ResourcePackBase;
 import evergoodteam.chassis.util.StringUtils;
 import evergoodteam.chassis.util.UrlUtils;
-import evergoodteam.chassis.util.handlers.DirHandler;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
+import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.DataWriter;
 import org.slf4j.Logger;
@@ -15,20 +15,31 @@ import java.net.URL;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 
 import static evergoodteam.chassis.util.Reference.CMI;
 import static org.slf4j.LoggerFactory.getLogger;
 
-public class ChassisTextureProvider implements DataProvider {
+public class ChassisTextureProvider implements DataProvider, FabricDataGenerator.Pack.Factory<DataProvider> {
 
     private static final Logger LOGGER = getLogger(CMI + "/D/Texture");
     protected final FabricDataGenerator dataGenerator;
     public final ResourcePackBase resourcePack;
     private final Map<Path, String> textures = new HashMap<>();
+    private String name = "Textures";
+
+    public ChassisTextureProvider(ResourcePackBase resourcePack, String name) {
+        this(resourcePack);
+        this.name = name;
+    }
 
     public ChassisTextureProvider(ResourcePackBase resourcePack) {
         this.dataGenerator = resourcePack.generator;
         this.resourcePack = resourcePack;
+    }
+
+    public static ChassisTextureProvider create(ResourcePackBase resourcePack, String name) {
+        return new ChassisTextureProvider(resourcePack, name);
     }
 
     public static ChassisTextureProvider create(ResourcePackBase resourcePack) {
@@ -51,18 +62,24 @@ public class ChassisTextureProvider implements DataProvider {
     }
 
     @Override
-    public void run(DataWriter writer) throws IOException {
+    public CompletableFuture<?> run(DataWriter writer) {
         for (Path path : textures.keySet()) {
             try (InputStream in = new URL(textures.get(path)).openStream()) {
-                ChassisGenericProvider.writeToPath(writer, path, in.readAllBytes());
+                return ChassisGenericProvider.writeToPath(writer, path, in.readAllBytes());
             } catch (IOException e) {
                 LOGGER.error("Error on creating a texture .png file", e);
             }
         }
+        return null;
     }
 
     @Override
     public String getName() {
-        return "Textures";
+        return name;
+    }
+
+    @Override
+    public DataProvider create(FabricDataOutput output) {
+        return this;
     }
 }

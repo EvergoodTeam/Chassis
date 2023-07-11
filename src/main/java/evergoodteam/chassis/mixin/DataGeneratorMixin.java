@@ -14,18 +14,14 @@ public class DataGeneratorMixin implements ProviderSizeGetter {
 
     @Final
     @Shadow
-    private List<DataProvider> runningProviders;
+    List<DataProvider> runningProviders;
+    /*
     @Final
     @Shadow
-    private List<DataProvider> providers;
+    private List<DataProvider> providers;*/
 
     @Override
     public int runningProvidersSize() {
         return runningProviders.size();
-    }
-
-    @Override
-    public int providersSize() {
-        return providers.size();
     }
 }

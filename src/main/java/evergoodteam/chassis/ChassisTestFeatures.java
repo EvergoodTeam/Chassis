@@ -15,11 +15,9 @@ import net.minecraft.advancement.AdvancementFrame;
 import net.minecraft.advancement.criterion.InventoryChangedCriterion;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
-import net.minecraft.block.Material;
 import net.minecraft.data.client.Models;
-import net.minecraft.data.server.RecipeProvider;
+import net.minecraft.data.server.recipe.RecipeProvider;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
 import net.minecraft.item.Items;
 import net.minecraft.loot.LootPool;
 import net.minecraft.loot.context.LootContextTypes;
@@ -28,12 +26,15 @@ import net.minecraft.loot.function.EnchantWithLevelsLootFunction;
 import net.minecraft.loot.function.SetCountLootFunction;
 import net.minecraft.loot.provider.number.ConstantLootNumberProvider;
 import net.minecraft.loot.provider.number.UniformLootNumberProvider;
+import net.minecraft.recipe.book.RecipeCategory;
+import net.minecraft.registry.Registries;
+import net.minecraft.registry.Registry;
+import net.minecraft.registry.RegistryKeys;
+import net.minecraft.registry.tag.ItemTags;
+import net.minecraft.registry.tag.TagKey;
 import net.minecraft.sound.BlockSoundGroup;
-import net.minecraft.tag.ItemTags;
-import net.minecraft.tag.TagKey;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,14 +49,14 @@ public class ChassisTestFeatures {
     private static final Logger LOGGER = LoggerFactory.getLogger(CMI + "/Testing");
     static final List<Block> BLOCKS = new ArrayList<>();
     static final List<Item> ITEMS = new ArrayList<>();
-    static final Block TEST_BLOCK = new BlockBase(FabricBlockSettings.of(Material.METAL).requiresTool().hardness(1.5f).resistance(6.0f).sounds(BlockSoundGroup.METAL).nonOpaque())
+    static final Block TEST_BLOCK = new BlockBase(FabricBlockSettings.create().requiresTool().hardness(1.5f).resistance(6.0f).sounds(BlockSoundGroup.METAL).nonOpaque())
             .addTo(BLOCKS)
             .setTransparent();
     static final Item TEST_ITEM = new ItemBase(new FabricItemSettings().maxCount(65))
             .addTo(ITEMS);
     static final Block BIRCH = new PillarBase(FabricBlockSettings.copyOf(Blocks.BIRCH_LOG));
-    static final ItemGroup TEST_GROUP = ItemGroupBase.createItemGroup("chassis", "testgroup", TEST_BLOCK);
-
+    static final ItemGroupBase TEST_GROUP = ItemGroupBase.createItemGroup("chassis", "testgroup", TEST_BLOCK);
+    // has to be registered
 
     public static void initProviderRegistry() {
         CHASSIS_RESOURCES.providerRegistry = () -> {
@@ -64,7 +65,7 @@ public class ChassisTestFeatures {
                             .build(translationBuilder -> {
                                 translationBuilder.add(TEST_BLOCK, "Test Block");
                                 translationBuilder.add(TEST_ITEM, "Test Item");
-                                translationBuilder.add(TEST_GROUP, "Test Group");
+                                //translationBuilder.add(TEST_GROUP, "Test Group");
                             }))
                     .addProvider(ChassisTextureProvider.create(CHASSIS_RESOURCES)
                             .addTexture("https://i.imgur.com/BAStRdD.png", true, "testblock")
@@ -110,15 +111,15 @@ public class ChassisTestFeatures {
                                     .criterion("inventory_changed", InventoryChangedCriterion.Conditions.items(Items.BIRCH_LOG))
                             )
                     )
-                    .addProvider(ChassisTagProvider.create(Registry.ITEM, CHASSIS_RESOURCES)
-                            .build(TagKey.of(Registry.ITEM_KEY, new Identifier("chassis:smelly_items")), builder -> builder
+                    .addProvider(ChassisTagProvider.create(RegistryKeys.ITEM, CHASSIS_RESOURCES)
+                            .build(TagKey.of(RegistryKeys.ITEM, new Identifier("chassis:smelly_items")), builder -> builder
                                     .add(Items.SLIME_BALL)
                                     .add(Items.ROTTEN_FLESH)
                                     .addOptionalTag(ItemTags.DIRT))
                     )
                     .addProvider(ChassisRecipeProvider.create(CHASSIS_RESOURCES)
                             .build(exporter -> {
-                                RecipeProvider.offerSmelting(exporter, List.of(Items.ANDESITE), Items.ACACIA_BOAT, 0.45F, 300, "example");
+                                RecipeProvider.offerSmelting(exporter, List.of(Items.ANDESITE), RecipeCategory.MISC, Items.ACACIA_BOAT, 0.45F, 300, "example");
                             })
                             .build(exporter -> {
                                 RecipeProvider.offerShapelessRecipe(exporter, Items.ACACIA_BOAT, Items.ANDESITE, null, 15);
@@ -178,10 +179,17 @@ public class ChassisTestFeatures {
                                 .setComment("Secondary double, should have default values here ->"))
                 )
                 .registerProperties();
-        /*
+
         // Blocks/Items
-        RegistryHandler.registerBlockAndItem("chassis", "testblock", TEST_BLOCK, TEST_GROUP);
-        RegistryHandler.registerHandheldItem("chassis", "testitem", TEST_ITEM);
-        RegistryHandler.registerBlockAndItem("chassis", "birch", BIRCH, TEST_GROUP);*/
+
+        RegistryHandler.registerBlockAndItem("chassis", "testblock", TEST_BLOCK);
+        RegistryHandler.registerItem("chassis", "testitem", TEST_ITEM);
+        RegistryHandler.registerBlockAndItem("chassis", "birch", BIRCH);
+
+        Registry.register(Registries.ITEM_GROUP, TEST_GROUP.registry, TEST_GROUP.group);
+
+        RegistryHandler.addToItemGroup(TEST_BLOCK.asItem(), TEST_GROUP.registry);
+        RegistryHandler.addToItemGroup(TEST_ITEM, TEST_GROUP.registry);
+        RegistryHandler.addToItemGroup(BIRCH.asItem(), TEST_GROUP.registry);
     }
 }

@@ -10,10 +10,10 @@ import evergoodteam.chassis.configs.options.CategoryOption;
 import lombok.extern.log4j.Log4j2;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.ConfirmScreen;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.OrderedText;
 import org.lwjgl.glfw.GLFW;
 import org.slf4j.Logger;
@@ -55,17 +55,17 @@ public class ConfigScreen extends ConfigOptionsScreen {
     }
 
     @Override
-    public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
-        this.renderBackground(matrices);
-        this.list.render(matrices, mouseX, mouseY, delta);
+    public void render(DrawContext context, int mouseX, int mouseY, float delta) {
+        this.renderBackground(context);
+        this.list.render(context, mouseX, mouseY, delta);
 
         if (this.title instanceof GradientText) ((GradientText) this.title).scroll();
-        this.drawCenteredGradientText(matrices, null);
+        this.drawCenteredGradientTitle(context);
 
-        super.render(matrices, mouseX, mouseY, delta);
+        super.render(context, mouseX, mouseY, delta);
 
         List<OrderedText> tooltipList = getHoveredButtonTooltip(this.list, mouseX, mouseY);
-        this.renderOrderedTooltip(matrices, tooltipList, mouseX, mouseY);
+        context.drawOrderedTooltip(textRenderer, tooltipList, mouseX, mouseY);
     }
 
     @Override
@@ -76,7 +76,8 @@ public class ConfigScreen extends ConfigOptionsScreen {
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
         if (keyCode == GLFW.GLFW_KEY_ESCAPE) {
-            if (ConfigHandler.isntWritten(config)) this.client.setScreen(new ConfirmScreen(this::discardCallback, ChassisScreenTexts.DISCARD, ChassisScreenTexts.DISCARD_D));
+            if (ConfigHandler.isntWritten(config))
+                this.client.setScreen(new ConfirmScreen(this::discardCallback, ChassisScreenTexts.DISCARD, ChassisScreenTexts.DISCARD_D));
             else client.setScreen(parent);
             return true;
         }
@@ -93,33 +94,29 @@ public class ConfigScreen extends ConfigOptionsScreen {
     }
 
     public void initFooter() {
-        this.addDrawableChild(new ButtonWidget(this.width / 2 + 60, this.height - 27, 100, 20,
-                ChassisScreenTexts.RESET_A,
-                buttonWidget -> {
-                    config.getOptionStorage().getOptions().forEach(AbstractOption::reset);
+        // Reset all
+        this.addDrawableChild(ButtonWidget.builder(ChassisScreenTexts.RESET_A, (buttonWidget) -> {
+            config.getOptionStorage().getOptions().forEach(AbstractOption::reset);
 
-                    this.refreshList();
+            this.refreshList();
 
-                    LOGGER.debug("Reset config options for \"{}\"", config.namespace);
-                }));
+            LOGGER.debug("Reset config options for \"{}\"", config.namespace);
+        }).position(this.width / 2 + 60, this.height - 27).size(100, 20).build());
 
-        this.addDrawableChild(new ButtonWidget(this.width / 2 - 160, this.height - 27, 100, 20,
-                ChassisScreenTexts.OPEN,
-                buttonWidget -> {
-                    config.openConfigFile();
-                }));
+        // Open .properties file
+        this.addDrawableChild(ButtonWidget.builder(ChassisScreenTexts.OPEN, (buttonWidget) -> {
+            config.openConfigFile();
+        }).position(this.width / 2 - 160, this.height - 27).size(100, 20).build());
 
-        this.addDrawableChild(new ButtonWidget(this.width / 2 - 50, this.height - 27, 100, 20,
-                ChassisScreenTexts.SAVE,
-                buttonWidget -> {
+        // Save and close
+        this.addDrawableChild(ButtonWidget.builder(ChassisScreenTexts.SAVE, (buttonWidget) -> {
+            config.getOptionStorage().getOptions().forEach(option -> config.setWrittenValue(option.getName(), option.getValue()));
+            config.readProperties();
 
-                    config.getOptionStorage().getOptions().forEach(option -> config.setWrittenValue(option.getName(), option.getValue()));
-                    config.readProperties();
+            LOGGER.debug("Saved config options for \"{}\"", config.namespace);
 
-                    LOGGER.debug("Saved config options for \"{}\"", config.namespace);
-
-                    client.setScreen(this.parent);
-                }));
+            client.setScreen(this.parent);
+        }).position(this.width / 2 - 50, this.height - 27).size(100, 20).build());
     }
 
     public void refreshList() {

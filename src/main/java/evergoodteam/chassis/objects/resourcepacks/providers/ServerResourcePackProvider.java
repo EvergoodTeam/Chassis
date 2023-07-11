@@ -6,15 +6,17 @@ import net.minecraft.resource.ResourcePackProfile;
 import net.minecraft.resource.ResourcePackProvider;
 import net.minecraft.resource.ResourcePackSource;
 import net.minecraft.resource.ResourceType;
+import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 
 import java.util.function.Consumer;
+import java.util.function.UnaryOperator;
 
 public class ServerResourcePackProvider implements ResourcePackProvider {
 
-    public ResourcePackBuilder groupResourcePack;
     public String namespace;
     public String path;
+    public ResourcePackBuilder groupResourcePack;
     private ResourcePackSource resourcePackSource;
 
     /**
@@ -23,35 +25,27 @@ public class ServerResourcePackProvider implements ResourcePackProvider {
      * @see evergoodteam.chassis.mixin.ResourcePackManagerMixin
      */
     public ServerResourcePackProvider(String namespace, String path, String metadataKey) {
-        this.groupResourcePack = new ResourcePackBuilder(path, metadataKey, ResourceType.SERVER_DATA, FabricLoader.getInstance().getConfigDir().resolve(namespace + "/resourcepacks").toAbsolutePath().normalize());
         this.namespace = namespace;
         this.path = path;
-        this.resourcePackSource = text -> Text.translatable("pack.source." + namespace, text);
+        MutableText text = Text.translatable("pack.source." + namespace);
+        UnaryOperator<Text> unaryOperator = name -> Text.translatable("pack.nameAndSource", name, text);
+        this.groupResourcePack = new ResourcePackBuilder(path, metadataKey, ResourceType.SERVER_DATA, FabricLoader.getInstance().getConfigDir().resolve(namespace + "/resourcepacks").toAbsolutePath().normalize());
+        this.resourcePackSource = ResourcePackSource.create(unaryOperator, true);
     }
 
     @Override
-    public void register(Consumer<ResourcePackProfile> profileAdder, ResourcePackProfile.Factory factory) {
+    public void register(Consumer<ResourcePackProfile> consumer) {
 
-        ResourcePackProfile profile = ResourcePackProfile.of(
-                path,
+        ResourcePackProfile profile = ResourcePackProfile.create(
+                namespace,
+                Text.literal(namespace),
                 true,
-                () -> groupResourcePack,
-                factory,
+                factory -> groupResourcePack,
+                ResourceType.SERVER_DATA,
                 ResourcePackProfile.InsertionPosition.BOTTOM,
-                resourcePackSource
-        );
+                resourcePackSource);
 
         //LOGGER.info("Attempting to register Server ResourcePackProfile - {}", profile);
-        profileAdder.accept(new ResourcePackProfile(
-                profile.getName(),
-                profile.isAlwaysEnabled(),
-                profile::createResourcePack,
-                profile.getDisplayName(),
-                profile.getDescription(),
-                profile.getCompatibility(),
-                profile.getInitialPosition(),
-                profile.isPinned(),
-                profile.getSource())
-        );
+        consumer.accept(profile);
     }
 }

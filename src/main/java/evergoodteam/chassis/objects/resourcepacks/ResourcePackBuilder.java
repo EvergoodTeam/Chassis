@@ -1,16 +1,19 @@
 package evergoodteam.chassis.objects.resourcepacks;
 
+import com.google.common.base.Charsets;
 import evergoodteam.chassis.util.StringUtils;
+import lombok.extern.log4j.Log4j2;
 import net.fabricmc.fabric.impl.resource.loader.ModNioResourcePack;
 import net.minecraft.SharedConstants;
 import net.minecraft.resource.AbstractFileResourcePack;
+import net.minecraft.resource.InputSupplier;
 import net.minecraft.resource.ResourcePack;
 import net.minecraft.resource.ResourceType;
 import net.minecraft.resource.metadata.PackResourceMetadata;
 import net.minecraft.resource.metadata.ResourceMetadataReader;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.InvalidIdentifierException;
+import org.apache.commons.io.IOUtils;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 
@@ -19,12 +22,12 @@ import java.io.InputStream;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.*;
-import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
 import static evergoodteam.chassis.util.Reference.CMI;
 import static org.slf4j.LoggerFactory.getLogger;
 
+@Log4j2
 public class ResourcePackBuilder extends AbstractFileResourcePack implements ResourcePack {
 
     private static final Logger LOGGER = getLogger(CMI + "/R/Builder");
@@ -39,10 +42,10 @@ public class ResourcePackBuilder extends AbstractFileResourcePack implements Res
     private Set<String> namespaces;
 
     public ResourcePackBuilder(String namespace, String metadataKey, ResourceType resourceType, Path basePath) {
-        super(null);
+        super(namespace, true);
         this.id = namespace;
         this.resourceType = resourceType;
-        this.packMetadata = new PackResourceMetadata(Text.translatable(metadataKey), ResourceType.CLIENT_RESOURCES.getPackVersion(SharedConstants.getGameVersion()));
+        this.packMetadata = new PackResourceMetadata(Text.translatable(metadataKey), SharedConstants.getGameVersion().getResourceVersion(ResourceType.CLIENT_RESOURCES));
         this.basePath = basePath.resolve(namespace).resolve("resources").toAbsolutePath().normalize();
         this.separator = basePath.getFileSystem().getSeparator();
 
@@ -55,66 +58,68 @@ public class ResourcePackBuilder extends AbstractFileResourcePack implements Res
         else return null;
     }
 
-    @Override
-    protected boolean containsFile(String filename) {
-
-        if (PACK_METADATA_NAME.equals(filename)) {
-            return true;
-        }
-
-        Path path = getPath(filename);
-        return path != null && Files.isRegularFile(path);
-    }
-
-    @Override
-    protected InputStream openFile(String fileName) throws IOException {
-        Path path = getPath(fileName);
-
-        if (path != null && Files.isRegularFile(path)) return Files.newInputStream(path);
-
-        return InputStream.nullInputStream();
-    }
-
     /**
      * From {@link ModNioResourcePack#findResources}
      */
     @Override
-    public Collection<Identifier> findResources(ResourceType type, String namespace, String suffix, Predicate<Identifier> allowedPathPredicate) {
+    public void findResources(ResourceType type, String namespace, String path, ResultConsumer visitor) {
 
-        List<Identifier> ids = new ArrayList<>();
+        String separator = basePath.getFileSystem().getSeparator();
+        Path nsPath = basePath.resolve(type.getDirectory()).resolve(namespace);
+        Path searchPath = nsPath.resolve(path.replace("/", separator)).normalize();
+        if (!Files.exists(searchPath)) return;
 
-        String path = suffix.replace("/", separator);
-        Path namespacePath = getPath(type.getDirectory() + "/" + namespace); // assets || data / namespace
+        try {
+            Files.walkFileTree(searchPath, new SimpleFileVisitor<>() {
+                @Override
+                public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) {
+                    String filename = nsPath.relativize(file).toString().replace(separator, "/");
+                    Identifier identifier = Identifier.of(namespace, filename);
 
-        if (namespacePath != null) {
+                    if (identifier == null) {
+                        LOGGER.error("Invalid path in mod resource-pack {}: {}:{}, ignoring", id, namespace, filename);
+                    } else {
+                        visitor.accept(identifier, InputSupplier.create(file));
+                    }
 
-            Path searchPath = namespacePath.resolve(path).toAbsolutePath().normalize();
-
-            if (Files.exists(searchPath)) {
-                try {
-                    Files.walkFileTree(searchPath, new SimpleFileVisitor<Path>() {
-                        @Override
-                        public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-                            String fileName = file.getFileName().toString();
-                            if (fileName.endsWith(".mcmeta")) return FileVisitResult.CONTINUE;
-
-                            try {
-                                Identifier id = new Identifier(namespace, namespacePath.relativize(file).toString().replace(separator, "/"));
-                                if (allowedPathPredicate.test(id)) ids.add(id);
-                            } catch (InvalidIdentifierException e) {
-                                LOGGER.error(e.getMessage());
-                            }
-
-                            return FileVisitResult.CONTINUE;
-                        }
-                    });
-                } catch (IOException e) {
-                    LOGGER.error("findResources failed at path {} in namespace {}", path, namespace, e);
+                    return FileVisitResult.CONTINUE;
                 }
-            }
+            });
+        } catch (IOException e) {
+            LOGGER.error("findResources failed at path {} in namespace {}", path, namespace, e);
+        }
+    }
+
+    /**
+     * From {@link net.fabricmc.fabric.impl.resource.loader.FabricModResourcePack#openRoot(java.lang.String...)}
+     */
+    @Nullable
+    @Override
+    public InputSupplier<InputStream> openRoot(String... segments) {
+        String fileName = String.join("/", segments);
+
+        if ("pack.mcmeta".equals(fileName)) {
+            String description = id + ".metadata.description";
+            String fallback = "Resources generated by Chassis";
+            String pack = String.format("{\"pack\":{\"pack_format\":" + SharedConstants.getGameVersion().getResourceVersion(resourceType) + ",\"description\":{\"translate\":\"%s\",\"fallback\":\"%s.\"}}}", description, fallback);
+            return () -> IOUtils.toInputStream(pack, Charsets.UTF_8);
+        } else if ("pack.png".equals(fileName)) {
+            return InputSupplier.create(basePath.resolve("pack.png"));
         }
 
-        return ids;
+        return null;
+    }
+
+    @Nullable
+    @Override
+    public InputSupplier<InputStream> open(ResourceType type, Identifier id) {
+        final Path path = getPath(getFilename(type, id));
+        return path == null ? null : InputSupplier.create(path);
+    }
+
+    private static String getFilename(ResourceType type, Identifier id) {
+        log.info("ID: " + id);
+        return String.format(Locale.ROOT, "%s/%s/%s", type.getDirectory(), id.getNamespace(), id.getPath());
     }
 
     @Override

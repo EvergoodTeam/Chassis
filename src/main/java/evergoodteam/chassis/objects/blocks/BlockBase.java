@@ -3,7 +3,6 @@ package evergoodteam.chassis.objects.blocks;
 import evergoodteam.chassis.client.ChassisClient;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.block.Block;
-import net.minecraft.block.Material;
 import net.minecraft.sound.BlockSoundGroup;
 import org.jetbrains.annotations.NotNull;
 
@@ -13,55 +12,12 @@ import java.util.List;
 // TODO: support all block classes
 public class BlockBase extends Block {
 
-    /**
-     * @deprecated as of release 1.2.3, use {@link #addTo(List)} ()} instead
-     */
-    @Deprecated
-    public BlockBase(List<Block> list, Material material, Float hardness, Float resistance, BlockSoundGroup sound) {
-        this(list, FabricBlockSettings.of(material).requiresTool().strength(hardness, resistance).sounds(sound));
+    public BlockBase(Float hardness, Float resistance, BlockSoundGroup sound) {
+        this(FabricBlockSettings.create().requiresTool().hardness(hardness).resistance(resistance).sounds(sound));
     }
 
-    /**
-     * @deprecated as of release 1.2.3, use {@link #addTo(List)} ()} instead
-     */
-    @Deprecated
-    public BlockBase(List<Block> list, Material material, Float strength, BlockSoundGroup sound) {
-        this(list, FabricBlockSettings.of(material).requiresTool().strength(strength).sounds(sound));
-    }
-
-    /**
-     * @deprecated as of release 1.2.3, use {@link #setTransparent()} & {@link #addTo(List)} instead
-     */
-    @Deprecated
-    public BlockBase(List<Block> list, FabricBlockSettings blockSettings, Boolean transparent) {
-        this(list, blockSettings);
-        if (transparent) this.setTransparent();
-    }
-
-    /**
-     * @deprecated as of release 1.2.3, use {@link #addTo(List)} ()} instead
-     */
-    @Deprecated
-    public BlockBase(List<Block> list, FabricBlockSettings blockSettings) {
-        this(blockSettings);
-        this.addTo(list);
-    }
-
-    public BlockBase(Material material, Float hardness, Float resistance, BlockSoundGroup sound) {
-        this(FabricBlockSettings.of(material).requiresTool().hardness(hardness).resistance(resistance).sounds(sound));
-    }
-
-    public BlockBase(Material material, Float strength, BlockSoundGroup sound) {
-        this(FabricBlockSettings.of(material).requiresTool().strength(strength).sounds(sound));
-    }
-
-    /**
-     * @deprecated as of release 1.2.3, use {@link #setTransparent()} instead
-     */
-    @Deprecated
-    public BlockBase(FabricBlockSettings blockSettings, Boolean transparent) {
-        this(blockSettings);
-        if (transparent) this.setTransparent();
+    public BlockBase(Float strength, BlockSoundGroup sound) {
+        this(FabricBlockSettings.create().requiresTool().strength(strength).sounds(sound));
     }
 
     public BlockBase(FabricBlockSettings blockSettings) {

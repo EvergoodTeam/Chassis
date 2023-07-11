@@ -4,15 +4,21 @@ import com.google.common.collect.ImmutableList;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.util.OrderableTooltip;
-import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.gui.ScreenRect;
+import net.minecraft.client.gui.navigation.GuiNavigation;
+import net.minecraft.client.gui.navigation.GuiNavigationPath;
+import net.minecraft.client.gui.widget.ClickableWidget;
+import net.minecraft.client.gui.widget.Widget;
 import net.minecraft.text.OrderedText;
 import net.minecraft.text.Text;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 @Environment(value = EnvType.CLIENT)
-public class WidgetBase extends AbstractWidget implements OrderableTooltip {
+public class WidgetBase extends AbstractWidget implements Widget {
 
     public int x;
     public int y;
@@ -36,13 +42,18 @@ public class WidgetBase extends AbstractWidget implements OrderableTooltip {
     }
 
     @Override
-    public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
+    public void render(DrawContext context, int mouseX, int mouseY, float delta) {
         this.hovered = this.isMouseOver(mouseX, mouseY);
         if (this.hovered) onHover();
-        this.renderBackground(matrices, mouseX, mouseY);
-        this.renderButton(matrices, this.x, this.y, this.width, this.height);
-        this.renderSlider(matrices, mouseX, mouseY);
-        this.renderCenteredText(matrices);
+        this.renderBackground(context, mouseX, mouseY);
+        this.renderButton(context, this.x, this.y, this.width, this.height);
+        this.renderSlider(context, mouseX, mouseY);
+        this.renderCenteredText(context);
+    }
+
+    @Override
+    public void mouseMoved(double mouseX, double mouseY) {
+        super.mouseMoved(mouseX, mouseY);
     }
 
     @Override
@@ -85,6 +96,32 @@ public class WidgetBase extends AbstractWidget implements OrderableTooltip {
         return false;
     }
 
+    @Override
+    public boolean mouseScrolled(double mouseX, double mouseY, double amount) {
+        return super.mouseScrolled(mouseX, mouseY, amount);
+    }
+
+    @Override
+    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+        return super.keyPressed(keyCode, scanCode, modifiers);
+    }
+
+    @Override
+    public boolean keyReleased(int keyCode, int scanCode, int modifiers) {
+        return super.keyReleased(keyCode, scanCode, modifiers);
+    }
+
+    @Override
+    public boolean charTyped(char chr, int modifiers) {
+        return super.charTyped(chr, modifiers);
+    }
+
+    @Nullable
+    @Override
+    public GuiNavigationPath getNavigationPath(GuiNavigation navigation) {
+        return super.getNavigationPath(navigation);
+    }
+
     public void onDrag(double mouseX, double mouseY, double deltaX, double deltaY) {
     }
 
@@ -98,6 +135,27 @@ public class WidgetBase extends AbstractWidget implements OrderableTooltip {
     @Override
     public boolean isMouseOver(double mouseX, double mouseY) {
         return insideBounds(mouseX, mouseY);
+    }
+
+    @Override
+    public void setFocused(boolean focused) {
+        this.hovered = true;
+    }
+
+    @Override
+    public boolean isFocused() {
+        return this.hovered;
+    }
+
+    @Nullable
+    @Override
+    public GuiNavigationPath getFocusedPath() {
+        return super.getFocusedPath();
+    }
+
+    @Override
+    public ScreenRect getNavigationFocus() {
+        return super.getNavigationFocus();
     }
 
     public boolean isLeftClick(int button) {
@@ -120,23 +178,23 @@ public class WidgetBase extends AbstractWidget implements OrderableTooltip {
         this.message = message;
     }
 
-    public void renderSlider(MatrixStack matrices, int mouseX, int mouseY) {
+    public void renderSlider(DrawContext context, int mouseX, int mouseY) {
     }
 
-    public void renderBackground(MatrixStack matrices, int mouseX, int mouseY) {
+    public void renderBackground(DrawContext context, int mouseX, int mouseY) {
     }
 
-    public void renderCenteredText(MatrixStack matrices) {
-        this.renderCenteredText(matrices, this.getMessage(), this.y + (this.height - 8) / 2);
+    public void renderCenteredText(DrawContext context) {
+        this.renderCenteredText(context, this.getMessage(), this.y + (this.height - 8) / 2);
     }
 
-    public void renderCenteredText(MatrixStack matrices, Text message, int y) {
-        this.renderCenteredText(matrices, message, this.x + (this.width / 2), y);
+    public void renderCenteredText(DrawContext context, Text message, int y) {
+        this.renderCenteredText(context, message, this.x + (this.width / 2), y);
     }
 
-    public void renderCenteredText(MatrixStack matrices, Text text, int x, int y) {
+    public void renderCenteredText(DrawContext context, Text text, int x, int y) {
         String message = truncateString(text.getString());
-        drawCenteredText(matrices, textRenderer, Text.literal(message).fillStyle(this.getMessage().getStyle()), x, y, 16777215);
+        context.drawCenteredTextWithShadow(textRenderer, Text.literal(message).fillStyle(this.getMessage().getStyle()), x, y, 16777215);
     }
 
     public String truncateString(String string) {
@@ -152,6 +210,41 @@ public class WidgetBase extends AbstractWidget implements OrderableTooltip {
         return result;
     }
 
+    @Override
+    public void setX(int x) {
+        this.x = x;
+    }
+
+    @Override
+    public void setY(int y) {
+        this.y = y;
+    }
+
+    @Override
+    public int getX() {
+        return x;
+    }
+
+    @Override
+    public int getY() {
+        return y;
+    }
+
+    @Override
+    public int getWidth() {
+        return width;
+    }
+
+    @Override
+    public int getHeight() {
+        return height;
+    }
+
+    @Override
+    public void forEachChild(Consumer<ClickableWidget> consumer) {
+
+    }
+
     @Environment(value = EnvType.CLIENT)
     public interface PressAction {
         void onPress(WidgetBase var1);
@@ -163,7 +256,6 @@ public class WidgetBase extends AbstractWidget implements OrderableTooltip {
         void onRender(WidgetBase var1);
     }
 
-    @Override
     public List<OrderedText> getOrderedTooltip() {
         return this.tooltip != null ? this.tooltip : ImmutableList.of();
     }

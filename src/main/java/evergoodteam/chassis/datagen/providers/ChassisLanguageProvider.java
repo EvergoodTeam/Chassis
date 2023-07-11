@@ -1,11 +1,14 @@
 package evergoodteam.chassis.datagen.providers;
 
 import evergoodteam.chassis.objects.resourcepacks.ResourcePackBase;
+import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
+import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricLanguageProvider;
+import net.minecraft.data.DataProvider;
 
 import java.util.function.Consumer;
 
-public class ChassisLanguageProvider extends FabricLanguageProvider {
+public class ChassisLanguageProvider extends FabricLanguageProvider implements FabricDataGenerator.Pack.Factory<DataProvider> {
 
     public final ResourcePackBase resourcePack;
     private Consumer<TranslationBuilder> consumer;
@@ -23,7 +26,7 @@ public class ChassisLanguageProvider extends FabricLanguageProvider {
     }
 
     public ChassisLanguageProvider(ResourcePackBase resourcePack, String languageCode) {
-        super(resourcePack.generator, languageCode);
+        super(resourcePack.output, languageCode);
         this.resourcePack = resourcePack;
     }
 
@@ -35,5 +38,10 @@ public class ChassisLanguageProvider extends FabricLanguageProvider {
     @Override
     public void generateTranslations(TranslationBuilder translationBuilder) {
         consumer.accept(translationBuilder);
+    }
+
+    @Override
+    public DataProvider create(FabricDataOutput output) {
+        return this;
     }
 }

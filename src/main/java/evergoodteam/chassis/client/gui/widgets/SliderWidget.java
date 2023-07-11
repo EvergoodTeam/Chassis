@@ -2,10 +2,10 @@ package evergoodteam.chassis.client.gui.widgets;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.widget.ClickableWidget;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.sound.SoundManager;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 
 import java.math.BigDecimal;
@@ -13,6 +13,7 @@ import java.math.RoundingMode;
 
 public class SliderWidget extends WidgetBase {
 
+    private static final Identifier TEXTURE = new Identifier("textures/gui/slider.png");
     public Double value;
     public Double min;
     public Double max;
@@ -25,12 +26,19 @@ public class SliderWidget extends WidgetBase {
     }
 
     @Override
-    public void renderSlider(MatrixStack matrices, int mouseX, int mouseY) {
-        RenderSystem.setShaderTexture(0, ClickableWidget.WIDGETS_TEXTURE);
-        RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
-        int i = (this.isMouseOver(mouseX, mouseY) ? 2 : 1) * 20;
-        this.drawTexture(matrices, this.x + (int) (this.value * (double) (this.width - 8)), this.y, 0, 46 + i, 4, 20);
-        this.drawTexture(matrices, this.x + (int) (this.value * (double) (this.width - 8)) + 4, this.y, 196, 46 + i, 4, 20);
+    public void renderSlider(DrawContext context, int mouseX, int mouseY) {
+        context.setShaderColor(1.0f, 1.0f, 1.0f, this.alpha);
+        RenderSystem.enableBlend();
+        RenderSystem.defaultBlendFunc();
+        RenderSystem.enableDepthTest();
+        context.drawNineSlicedTexture(TEXTURE, this.getX(), this.getY(), this.getWidth(), this.getHeight(), 20, 4, 200, 20, 0, this.getYImage(isFocused()));
+        context.drawNineSlicedTexture(TEXTURE, this.getX() + (int) (this.value * (double) (this.width - 8)), this.getY(), 8, 20, 20, 4, 200, 20, 0, getTextureV());
+        context.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
+    }
+
+    private int getTextureV() {
+        int i = this.hovered ? 3 : 2;
+        return i * 20;
     }
 
     @Override

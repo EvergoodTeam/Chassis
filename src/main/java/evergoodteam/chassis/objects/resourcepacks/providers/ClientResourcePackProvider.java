@@ -12,6 +12,7 @@ import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 
 import java.util.function.Consumer;
+import java.util.function.UnaryOperator;
 
 public class ClientResourcePackProvider implements ResourcePackProvider {
 
@@ -22,7 +23,7 @@ public class ClientResourcePackProvider implements ResourcePackProvider {
     /**
      * @see net.minecraft.text.Style
      */
-    private ResourcePackSource resourcePackSource = text -> Text.translatable("pack.source." + namespace, text);
+    private ResourcePackSource resourcePackSource;
 
     /**
      * Provider responsible for the ResourcePackProfile, which displays your ResourcePack in the GUI with a description
@@ -35,7 +36,11 @@ public class ClientResourcePackProvider implements ResourcePackProvider {
      */
     public ClientResourcePackProvider(String namespace, String path, String metadataKey, String hexDescColor) {
         this(namespace, path, metadataKey);
-        this.resourcePackSource = text -> Text.translatable("pack.source." + namespace, text).setStyle(Style.EMPTY.withColor(ColorUtils.getDecimalFromHex(hexDescColor)));
+
+        MutableText text = Text.translatable("pack.source." + namespace);
+        UnaryOperator<Text> unaryOperator = name -> Text.translatable("pack.nameAndSource", name, text).setStyle(Style.EMPTY.withColor(ColorUtils.getDecimalFromHex(hexDescColor)));
+
+        this.resourcePackSource = ResourcePackSource.create(unaryOperator, true);
     }
 
     /**
@@ -49,7 +54,6 @@ public class ClientResourcePackProvider implements ResourcePackProvider {
      */
     public ClientResourcePackProvider(String namespace, String path, String metadataKey, MutableText description) {
         this(namespace, path, metadataKey);
-        this.resourcePackSource = text -> description;
     }
 
     /**
@@ -67,28 +71,18 @@ public class ClientResourcePackProvider implements ResourcePackProvider {
     }
 
     @Override
-    public void register(Consumer<ResourcePackProfile> profileAdder, ResourcePackProfile.Factory factory) {
+    public void register(Consumer<ResourcePackProfile> consumer) {
 
-        ResourcePackProfile profile = ResourcePackProfile.of(
-                path,
+        ResourcePackProfile profile = ResourcePackProfile.create(
+                namespace,
+                Text.literal(namespace),
                 true,
-                () -> groupResourcePack,
-                factory,
+                factory -> groupResourcePack,
+                ResourceType.CLIENT_RESOURCES,
                 ResourcePackProfile.InsertionPosition.BOTTOM,
-                resourcePackSource // Description/source, displayed in the GUI
-        );
+                resourcePackSource);
 
         //LOGGER.info("Attempting to register Client ResourcePackProfile - {}", profile);
-        profileAdder.accept(new ResourcePackProfile(
-                profile.getName(),
-                profile.isAlwaysEnabled(),
-                profile::createResourcePack,
-                profile.getDisplayName(),
-                profile.getDescription(),
-                profile.getCompatibility(),
-                profile.getInitialPosition(),
-                profile.isPinned(),
-                profile.getSource())
-        );
+        consumer.accept(profile);
     }
 }

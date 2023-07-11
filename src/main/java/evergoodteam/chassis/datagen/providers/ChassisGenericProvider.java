@@ -8,6 +8,7 @@ import lombok.extern.log4j.Log4j2;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.DataWriter;
+import net.minecraft.util.Util;
 import org.slf4j.Logger;
 
 import java.io.ByteArrayOutputStream;
@@ -15,6 +16,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 
 import static evergoodteam.chassis.util.Reference.CMI;
 import static org.slf4j.LoggerFactory.getLogger;
@@ -42,14 +44,12 @@ public class ChassisGenericProvider implements DataProvider {
     }
 
     @Override
-    public void run(DataWriter writer) {
+    public CompletableFuture<?> run(DataWriter writer) {
+        // TODO: make a single future? check fabricDataGenHelper
         for (Path path : json.keySet()) {
-            try {
-                DataProvider.writeToPath(writer, json.get(path), path);
-            } catch (IOException iOException) {
-                LOGGER.error("Couldn't save asset to {}: {}", path, iOException);
-            }
+            DataProvider.writeToPath(writer, json.get(path), path);
         }
+        return null;
     }
 
     @Override
@@ -60,9 +60,15 @@ public class ChassisGenericProvider implements DataProvider {
     /**
      * Writes provided data to the specified path
      */
-    public static void writeToPath(DataWriter writer, Path path, byte[] data) throws IOException {
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        HashingOutputStream hashingOutputStream = new HashingOutputStream(Hashing.sha1(), byteArrayOutputStream);
-        writer.write(path, data, hashingOutputStream.hash());
+    public static CompletableFuture<?> writeToPath(DataWriter writer, Path path, byte[] data) throws IOException {
+        return CompletableFuture.runAsync(() -> {
+            try {
+                ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+                HashingOutputStream hashingOutputStream = new HashingOutputStream(Hashing.sha1(), byteArrayOutputStream);
+                writer.write(path, data, hashingOutputStream.hash());
+            } catch (IOException iOException) {
+                LOGGER.error("Failed to save file to {}: {}", path, iOException);
+            }
+        }, Util.getMainWorkerExecutor());
     }
 }

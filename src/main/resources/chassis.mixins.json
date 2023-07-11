@@ -4,14 +4,11 @@
   "package": "evergoodteam.chassis.mixin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
-    "DataGeneratorMixin",
-    "RecipeManagerMixin",
     "ResourcePackManagerMixin"
   ],
   "client": [
     "ClientMixin",
     "FontManagerMixin",
-    "ModelLoaderMixin",
     "PackScreenMixin"
   ],
   "injectors": {

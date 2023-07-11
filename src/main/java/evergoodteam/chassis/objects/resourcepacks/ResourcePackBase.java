@@ -1,27 +1,22 @@
 package evergoodteam.chassis.objects.resourcepacks;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import evergoodteam.chassis.client.models.BlockModelType;
-import evergoodteam.chassis.client.models.ItemModelType;
 import evergoodteam.chassis.configs.ConfigBase;
 import evergoodteam.chassis.configs.ConfigHandler;
 import evergoodteam.chassis.configs.options.BooleanOption;
-import evergoodteam.chassis.datagen.ChassisTagBuilder;
-import evergoodteam.chassis.datagen.providers.ChassisGenericProvider;
 import evergoodteam.chassis.datagen.providers.ChassisTextureProvider;
-import evergoodteam.chassis.objects.assets.*;
-import evergoodteam.chassis.util.JsonUtils;
 import evergoodteam.chassis.util.StringUtils;
-import evergoodteam.chassis.util.handlers.FileHandler;
-import evergoodteam.chassis.util.handlers.JsonHandler;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
+import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
 import net.minecraft.data.DataProvider;
+import net.minecraft.registry.DynamicRegistryManager;
+import net.minecraft.registry.Registries;
+import net.minecraft.registry.RegistryBuilder;
+import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
+import net.minecraft.util.Util;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
@@ -30,6 +25,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 
 import static evergoodteam.chassis.util.Reference.CMI;
 import static org.slf4j.LoggerFactory.getLogger;
@@ -52,8 +48,6 @@ public class ResourcePackBase {
     private String hexColor = "AAAAAA";
     public final ModContainer modContainer;
     public final FabricDataGenerator generator;
-    private final @Deprecated ChassisGenericProvider genericJsonProvider;
-    private final @Deprecated ChassisTextureProvider genericTextureProvider;
     public @Nullable ProviderRegistry providerRegistry;
     private boolean providersDone = false;
     public boolean noProviders = false;
@@ -94,6 +88,10 @@ public class ResourcePackBase {
         this(config, namespace, displayName, true);
     }
 
+    public FabricDataGenerator.Pack pack;
+    public FabricDataOutput output;
+    public CompletableFuture<RegistryWrapper.WrapperLookup> future;
+
     /**
      * Object from which a ResourcePack is generated
      *
@@ -115,14 +113,25 @@ public class ResourcePackBase {
                 .setEnvType(EnvType.CLIENT)
                 .setComment("Hide the %s ResourcePack from the GUI".formatted(displayName));
         this.modContainer = FabricLoader.getInstance().getModContainer(namespace).get();
-        this.generator = new FabricDataGenerator(this.root.resources, modContainer, strictValidation);
-        this.genericJsonProvider = ChassisGenericProvider.create(this);
-        this.genericTextureProvider = ChassisTextureProvider.create(this);
-        this.generator.addProvider(this.genericJsonProvider);
+
+        this.output = new FabricDataOutput(modContainer, this.root.resources, strictValidation);
+        this.future = runInternal();
+        this.generator = new FabricDataGenerator(this.root.resources, modContainer, strictValidation, future);
+        this.pack = generator.createPack();
+
         this.configInit();
         this.useDefaultIcon();
         HIDDEN.put(displayName, this.hidden);
         RESOURCE_PACKS.computeIfAbsent(config.namespace, k -> new ArrayList<>()).add(this);
+    }
+
+    private CompletableFuture<RegistryWrapper.WrapperLookup> runInternal() {
+
+        RegistryBuilder merged = new RegistryBuilder();
+
+        RegistryWrapper.WrapperLookup wrapperLookup = merged.createWrapperLookup(DynamicRegistryManager.of(Registries.REGISTRIES));
+        //BuiltinRegistries.validate(wrapperLookup.getWrapperOrThrow(RegistryKeys.PLACED_FEATURE), wrapperLookup.getWrapperOrThrow(RegistryKeys.BIOME));
+        return CompletableFuture.supplyAsync(() -> wrapperLookup, Util.getMainWorkerExecutor());
     }
 
     //region Getters
@@ -154,11 +163,11 @@ public class ResourcePackBase {
         return this.hexColor;
     }
 
-    public BooleanOption getLock(){
+    public BooleanOption getLock() {
         return locked;
     }
 
-    public boolean isLocked(){
+    public boolean isLocked() {
         return locked.getValue();
     }
 
@@ -225,7 +234,7 @@ public class ResourcePackBase {
     public ResourcePackBase setIcon(@NotNull String iconUrl) {
         DEFAULT_ICON.remove(this.displayName);
         Path iconPath = root.resources.resolve("pack.png");
-        addProvider(ChassisTextureProvider.create(this)
+        addProvider(ChassisTextureProvider.create(this, "TextureIcon")
                 .addTexture(iconUrl, iconPath));
         return this;
     }
@@ -276,266 +285,6 @@ public class ResourcePackBase {
     }
     //endregion
 
-    //region Deprecated
-    //region Blockstates
-
-    /**
-     * Creates a mirrored column-specific blockstate for the provided block (e.g. deepslate)
-     *
-     * @param path entry's path
-     * @deprecated as of release 1.2.3, use {@link evergoodteam.chassis.datagen.providers.ChassisModelProvider ChassisModelProvider} instead
-     */
-    @Deprecated
-    public ResourcePackBase createMirroredColumnBlockstate(String path) {
-        return createJsonAsset(path, root.blockstates, BlockstateJson.createMirroredColumnBlockstateJson(this.namespace, path));
-    }
-
-    /**
-     * Creates a column-specific blockstate for the provided block (e.g. quartz pillar)
-     *
-     * @param path entry's path
-     * @deprecated as of release 1.2.3, use {@link evergoodteam.chassis.datagen.providers.ChassisModelProvider ChassisModelProvider} instead
-     */
-    @Deprecated
-    public ResourcePackBase createColumnBlockstate(String path) {
-        return createJsonAsset(path, root.blockstates, BlockstateJson.createColumnBlockstateJson(this.namespace, path));
-    }
-
-    /**
-     * Creates a basic blockstate for the provided block
-     *
-     * @param path entry's path
-     * @deprecated as of release 1.2.3, use {@link evergoodteam.chassis.datagen.providers.ChassisModelProvider ChassisModelProvider} instead
-     */
-    @Deprecated
-    public ResourcePackBase createBlockstate(String path) {
-        return createJsonAsset(path, root.blockstates, BlockstateJson.createBlockstateJson(this.namespace, path));
-    }
-    //endregion
-
-    //region Lang
-
-    /**
-     * Creates a <a href="https://fabricmc.net/wiki/tutorial:lang">language file</a> to provide translations for translatable strings in-game
-     *
-     * @param language      e.g. "en_us", "zn_cn"
-     * @param mappedEntries map with the translation key for each entry
-     * @see <a href="https://minecraft.fandom.com/wiki/Language#Languages">Available languages</a>
-     * @deprecated as of release 1.2.3, use {@link evergoodteam.chassis.datagen.providers.ChassisLanguageProvider ChassisLanguageProvider} instead
-     */
-    @Deprecated
-    public ResourcePackBase createLang(String language, Map<String, String> mappedEntries) {
-        return createJsonAsset(language, root.lang, LangJson.createLangJson(mappedEntries));
-    }
-    //endregion
-
-    //region Models
-
-    /**
-     * Creates a mirrored column model for the block specified by the path (e.g. deepslate)
-     *
-     * @param path    entry's path
-     * @param texture name of the texture .png file
-     * @deprecated as of release 1.2.3, use {@link evergoodteam.chassis.datagen.providers.ChassisModelProvider ChassisModelProvider} instead
-     */
-    @Deprecated
-    public ResourcePackBase createMirroredColumnBlockModel(String path, String texture) {
-        Path blocks = root.models.resolve("block");
-        Path items = root.models.resolve("item");
-
-        createJsonAsset(path, blocks, ModelJson.createBlockModelJson(BlockModelType.COLUMN, this.namespace, "block/" + texture));
-        createJsonAsset(path + "_mirrored", blocks, ModelJson.createBlockModelJson(BlockModelType.COLUMN_MIRRORED, this.namespace, "block/" + texture));
-        createJsonAsset(path, items, ModelJson.createItemModelJson(ItemModelType.BLOCK, this.namespace, path));
-
-        return this;
-    }
-
-    /**
-     * Creates a basic block model and its corresponding item model
-     *
-     * @param path     entry's path
-     * @param texture  name of the texture .png file
-     * @param cubeType "all" or "column"
-     * @deprecated as of release 1.2.3, use {@link evergoodteam.chassis.datagen.providers.ChassisModelProvider ChassisModelProvider} instead
-     */
-    @Deprecated
-    public ResourcePackBase createBlockModels(String path, String texture, String cubeType) {
-        return createBlockModel(path, texture, cubeType);
-    }
-
-    /**
-     * Creates a basic block model and its corresponding item model
-     *
-     * @param path     entry's path
-     * @param texture  name of the texture .png file
-     * @param cubeType "all" or "column"
-     * @deprecated as of release 1.2.3, use {@link evergoodteam.chassis.datagen.providers.ChassisModelProvider ChassisModelProvider} instead
-     */
-    @Deprecated
-    public ResourcePackBase createBlockModel(String path, String texture, String cubeType) {
-        Path blocks = root.models.resolve("block");
-        Path items = root.models.resolve("item");
-
-        createJsonAsset(path, blocks, ModelJson.createBlockModelJson(cubeType, this.namespace + ":block/" + texture));
-        if ("column".equals(cubeType))
-            createJsonAsset(path + "_horizontal", blocks, ModelJson.createBlockModelJson(cubeType + "_horizontal", this.namespace + ":block/" + texture));
-        createJsonAsset(path, items, ModelJson.createItemModelJson(this.namespace, "block", path));
-
-        return this;
-    }
-
-    /**
-     * Creates a basic model for a generated item (not a handheld one)
-     *
-     * @param path    entry's path
-     * @param texture name of the texture .png file
-     * @deprecated as of release 1.2.3, use {@link evergoodteam.chassis.datagen.providers.ChassisModelProvider ChassisModelProvider} instead
-     */
-    @Deprecated
-    public ResourcePackBase createItemModel(String path, String texture) {
-        Path items = root.models.resolve("item");
-        return createJsonAsset(path, items, ModelJson.createItemModelJson(this.namespace, "generated", texture));
-    }
-    //endregion
-
-    //region Textures
-
-    /**
-     * Creates a texture from the provided image URL
-     *
-     * @param block       true to specify it's a block texture, false to specify it's an item texture
-     * @param textureURL  direct link to your .png image <p> e.g. "https://i.imgur.com/BAStRdD.png"
-     * @param textureName name of the texture .png file
-     * @deprecated as of release 1.2.3, use {@link evergoodteam.chassis.datagen.providers.ChassisTextureProvider ChassisTextureProvider} instead
-     */
-    @Deprecated
-    public ResourcePackBase createTexture(Boolean block, String textureURL, String textureName) {
-        genericTextureProvider.addTexture(textureURL, block, textureName);
-        return this;
-    }
-    //endregion
-
-    //region Loot tables
-
-    /**
-     * Creates a loot table for the block that makes it drop itself when mined
-     *
-     * @param path entry's path
-     * @deprecated as of release 1.2.3, use {@link evergoodteam.chassis.datagen.providers.ChassisBlockLootTableProvider ChassisBlockLootTableProvider} instead
-     */
-    @Deprecated
-    public ResourcePackBase createBlockDropLootTable(String path) {
-        return createBlockDropLootTable(this.namespace, path);
-    }
-
-    /**
-     * Creates a loot table for the block that makes it drop itself when mined
-     *
-     * @param path entry's path
-     * @deprecated as of release 1.2.3, use {@link evergoodteam.chassis.datagen.providers.ChassisBlockLootTableProvider ChassisBlockLootTableProvider} instead
-     */
-    @Deprecated
-    public ResourcePackBase createBlockDropLootTable(String namespace, String path) {
-        Path lootTables = root.dataNamespace.resolve("loot_tables/blocks");
-        return createJsonAsset(path, lootTables, LootJson.createBlockBreakLootJson(namespace, path));
-    }
-
-    /**
-     * @deprecated as of release 1.2.3, use {@link evergoodteam.chassis.datagen.providers.ChassisBlockLootTableProvider ChassisBlockLootTableProvider} instead
-     */
-    @Deprecated
-    public ResourcePackBase createGemOreDropLootTable(String orePath, String dropNamespace, String dropPath) {
-        return createGemOreDropLootTable(this.namespace, orePath, dropNamespace, dropPath);
-    }
-
-    /**
-     * @deprecated as of release 1.2.3, use {@link evergoodteam.chassis.datagen.providers.ChassisBlockLootTableProvider ChassisBlockLootTableProvider} instead
-     */
-    @Deprecated
-    public ResourcePackBase createGemOreDropLootTable(String oreNamespace, String orePath, String dropNamespace, String dropPath) {
-        Path lootTables = root.dataNamespace.resolve("loot_tables/blocks");
-        return createJsonAsset(orePath, lootTables, LootJson.createGemOreDropLootTable(oreNamespace, orePath, dropNamespace, dropPath));
-    }
-    //endregion
-
-    //region Tags
-
-    /**
-     * Defines the harvest tool for the specified blocks
-     *
-     * @param toolType "axe", "pickaxe", "shovel" or "hoe"
-     * @param paths    block identifiers
-     */
-    @Deprecated
-    public ResourcePackBase createRequiredToolTag(String toolType, String[] paths) {
-        Path mineable = root.data.resolve("minecraft/tags/blocks/mineable");
-        return createJsonAsset(toolType, mineable, TagJson.createTagJson(this.namespace, paths));
-    }
-
-    /**
-     * Defines the harvest level for the specified blocks
-     *
-     * @param tier  "stone", "iron" or "diamond"
-     * @param paths entries' paths
-     */
-    @Deprecated
-    public ResourcePackBase createMiningLevelTag(String tier, String[] paths) {
-        String fileName = "needs_" + tier + "_tool";
-        Path tagBlocks = root.data.resolve("minecraft/tags/blocks");
-        return createJsonAsset(fileName, tagBlocks, TagJson.createTagJson(this.namespace, paths));
-    }
-
-    /**
-     * Creates a global/common <a href="https://fabricmc.net/wiki/tutorial:tags">tag</a> for the specified entry
-     *
-     * @param path entry's path
-     */
-    @Deprecated
-    public ResourcePackBase createGlobalTag(String path) {
-        return createBlockGlobalTag(path).createItemGlobalTag(path);
-    }
-
-    /**
-     * Creates an item global/common <a href="https://fabricmc.net/wiki/tutorial:tags">tag</a> for the specified entry
-     *
-     * @param path entry's path
-     */
-    @Deprecated
-    public ResourcePackBase createItemGlobalTag(String path) {
-        return createTag(path, "c", "items", List.of(new Identifier(this.namespace, path)));
-    }
-
-    /**
-     * Creates a block global/common <a href="https://fabricmc.net/wiki/tutorial:tags">tag</a> for the specified entry
-     *
-     * @param path entry's path
-     */
-    @Deprecated
-    public ResourcePackBase createBlockGlobalTag(String path) {
-        return createTag(path, "c", "blocks", List.of(new Identifier(this.namespace, path)));
-    }
-
-    /**
-     * Creates a <a href="https://fabricmc.net/wiki/tutorial:tags">tag</a>
-     *
-     * @param fileName  name of the tag
-     * @param namespace e.g. "c" for common tags, "yourmodid" for personal tags
-     * @param type      dir path from the namespace parent, e.g. "blocks", "blocks/mineable"
-     * @param entryList entry identifiers to add to the tag
-     */
-    @Deprecated
-    public ResourcePackBase createTag(String fileName, String namespace, String type, List<Identifier> entryList) {
-        Path path = root.data.resolve(namespace + "/tags/" + type);
-        return createJsonAsset(fileName, path, TagJson.createTagJson(entryList));
-    }
-
-    @Deprecated
-    public ResourcePackBase createTag(ChassisTagBuilder<?> tagBuilder) {
-        return createJsonAsset(tagBuilder.identifier.getPath(), tagBuilder.path, tagBuilder.getAsJsonElement());
-    }
-    //endregion
-    //endregion
-
     //region Providers
 
     /**
@@ -543,8 +292,8 @@ public class ResourcePackBase {
      *
      * @see ProviderRegistry#registerProviders()
      */
-    public ResourcePackBase addProvider(DataProvider provider) {
-        this.generator.addProvider(provider);
+    public ResourcePackBase addProvider(FabricDataGenerator.Pack.Factory<DataProvider> factory) {
+        this.pack.addProvider(factory);
         return this;
     }
 
@@ -577,75 +326,6 @@ public class ResourcePackBase {
         } catch (IOException e) {
             LOGGER.error("An error occurred while running providers for {}: {}", namespace, e);
         }
-    }
-    //endregion
-
-    //region File handling
-
-    /**
-     * Creates a json file at the specified parent dir with the provided json <p>
-     * Useful when the other supplied methods are not sufficient for your needs
-     *
-     * @param fileName name of the json file
-     * @param parent   path to the parent dir of the json file
-     * @param json     valid json transcript
-     * @deprecated as of release 1.2.3, add a {@link DataProvider} instead
-     */
-    @Deprecated
-    public ResourcePackBase createJsonAsset(@NotNull String fileName, @NotNull Path parent, @NotNull String json) {
-        return createJsonAsset(fileName, parent, JsonUtils.toJsonObject(json));
-    }
-
-    /**
-     * @deprecated as of release 1.2.3, add a {@link DataProvider} instead
-     */
-    @Deprecated
-    public ResourcePackBase createJsonAsset(@NotNull String fileName, @NotNull Path parent, @NotNull JsonElement json) {
-        return createJsonAsset(fileName, parent, json.getAsJsonObject());
-    }
-
-    /**
-     * Creates a json file at the specified parent dir with the provided json <p>
-     * Useful when the other supplied methods are not sufficient for your needs
-     *
-     * @param fileName name of the json file
-     * @param parent   path to the parent dir of the json file
-     * @param json     valid {@link JsonObject}
-     * @deprecated as of release 1.2.3, add a {@link DataProvider} instead
-     */
-    @Deprecated
-    public ResourcePackBase createJsonAsset(@NotNull String fileName, @NotNull Path parent, @NotNull JsonObject json) {
-        this.genericJsonProvider.addAsset(json, parent.resolve(StringUtils.addExtension(fileName, ".json")));
-        return this;
-    }
-
-    @Deprecated
-    private ResourcePackBase writeJsonIfEmpty(JsonObject jsonObject, @NotNull Path path) {
-        Path actual = StringUtils.addExtension(path, ".json");
-        if (actual.toFile().length() == 0) {
-            //LOGGER.info("File is empty, writing at {}", file);
-            writeJson(jsonObject, actual);
-        }
-
-        return this;
-    }
-
-    @Deprecated
-    private ResourcePackBase writeJson(JsonObject jsonObject, Path path) {
-        Path actual = StringUtils.addExtension(path, ".json");
-        JsonHandler.writeToJson(jsonObject, actual);
-        return this;
-    }
-
-    /**
-     * Creates a json file at the specified path
-     *
-     * @param path NOTE: .json extension is not required
-     */
-    @Deprecated
-    private ResourcePackBase createJsonFile(Path path) {
-        FileHandler.createJsonFile(path);
-        return this;
     }
     //endregion
 }

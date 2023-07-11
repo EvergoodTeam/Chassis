@@ -33,11 +33,11 @@ public class GradientText implements Text {
     }
 
     public static GradientText translatable(String key) {
-        return GradientText.of(new TranslatableTextContent(key));
+        return GradientText.of(new TranslatableTextContent(key, null, TranslatableTextContent.EMPTY_ARGUMENTS));
     }
 
     public static GradientText translatable(String key, Object... args) {
-        return GradientText.of(new TranslatableTextContent(key, args));
+        return GradientText.of(new TranslatableTextContent(key, null, args));
     }
 
     public static GradientText literal(String string) {
@@ -60,7 +60,9 @@ public class GradientText implements Text {
      */
     public static GradientText copyOf(Text text, String string) {
         GradientText copy = GradientText.literal(string).fillStyle(text.getStyle());
-        if (text instanceof GradientText) copy.setColorPoints(((GradientText) text).getPoints());
+        if (text instanceof GradientText) {
+            if(((GradientText) text).getPoints() != null ) copy.setColorPoints(((GradientText) text).getPoints());
+        }
         return copy;
     }
 

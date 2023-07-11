@@ -1,11 +1,11 @@
 package evergoodteam.chassis.configs.options;
 
-import evergoodteam.chassis.configs.ConfigBase;
 import evergoodteam.chassis.client.gui.widgets.SliderWidget;
 import evergoodteam.chassis.client.gui.widgets.WidgetBase;
+import evergoodteam.chassis.configs.ConfigBase;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.MathHelper;
 
@@ -111,9 +111,9 @@ public class IntegerSliderOption extends AbstractOption<Integer> implements Abst
         }
 
         @Override
-        public void renderCenteredText(MatrixStack matrices){
-            super.renderCenteredText(matrices);
-            this.textRenderer.drawWithShadow(matrices, this.option.getDisplayName(), this.x - 142, y + (this.height - 8) / 2, 16777215);
+        public void renderCenteredText(DrawContext context) {
+            super.renderCenteredText(context);
+            context.drawTextWithShadow(textRenderer, this.option.getDisplayName(), this.x - 142, y + (this.height - 8) / 2, 16777215);
         }
 
         @Override
@@ -128,9 +128,9 @@ public class IntegerSliderOption extends AbstractOption<Integer> implements Abst
         }
 
         @Override
-        public void renderBackground(MatrixStack matrices, int mouseX, int mouseY) {
+        public void renderBackground(DrawContext context, int mouseX, int mouseY) {
             if (this.isMouseOver(mouseX, mouseY, this.x - 150, this.y - 2, 300, 24)) {
-                this.drawRectWithOutline(matrices, this.x - 150, this.y - 2, 300, 24, 0x2B_FFFFFF);
+                this.drawRectWithOutline(context, this.x - 150, this.y - 2, 300, 24, 0x2B_FFFFFF);
             }
         }
     }

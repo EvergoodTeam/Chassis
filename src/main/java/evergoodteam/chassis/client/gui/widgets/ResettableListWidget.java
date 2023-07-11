@@ -8,10 +8,10 @@ import evergoodteam.chassis.configs.options.CategoryOption;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.Selectable;
 import net.minecraft.client.gui.widget.ElementListWidget;
-import net.minecraft.client.util.math.MatrixStack;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -140,10 +140,10 @@ public class ResettableListWidget extends ElementListWidget<ResettableListWidget
         }
 
         @Override
-        public void render(MatrixStack matrices, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
+        public void render(DrawContext context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
             this.buttons.forEach((button) -> {
                 button.y = y;
-                button.render(matrices, mouseX, mouseY, tickDelta);
+                button.render(context, mouseX, mouseY, tickDelta);
             });
         }
 
@@ -168,9 +168,9 @@ public class ResettableListWidget extends ElementListWidget<ResettableListWidget
         }
 
         @Override
-        public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
+        public void render(DrawContext context, int mouseX, int mouseY, float delta) {
             this.active = !this.option.getValue().equals(this.option.getDefaultValue());
-            super.render(matrices, mouseX, mouseY, delta);
+            super.render(context, mouseX, mouseY, delta);
         }
     }
 }

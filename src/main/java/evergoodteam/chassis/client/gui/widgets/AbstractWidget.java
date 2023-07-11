@@ -6,18 +6,18 @@ import evergoodteam.chassis.client.gui.DrawingUtils;
 import evergoodteam.chassis.client.gui.text.GradientTextRenderer;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.Drawable;
-import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.Selectable;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.widget.ClickableWidget;
-import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.sound.PositionedSoundInstance;
 import net.minecraft.client.sound.SoundManager;
-import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
+import net.minecraft.util.math.MathHelper;
 
 public abstract class AbstractWidget extends DrawingUtils implements Drawable, Element, Selectable {
 
@@ -28,19 +28,27 @@ public abstract class AbstractWidget extends DrawingUtils implements Drawable, E
     public boolean hovered;
     public boolean active = true;
     public boolean enabled = true;
+    protected float alpha = 1.0F;
 
-    public void renderButton(MatrixStack matrices, int x, int y, int width, int height) {
+    public void renderButton(DrawContext context, int x, int y, int width, int height) {
         if (enabled) {
-            RenderSystem.setShader(GameRenderer::getPositionTexShader);
-            RenderSystem.setShaderTexture(0, ClickableWidget.WIDGETS_TEXTURE);
-            RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+            context.setShaderColor(1.0F, 1.0F, 1.0F, this.alpha);
             RenderSystem.enableBlend();
-            RenderSystem.defaultBlendFunc();
             RenderSystem.enableDepthTest();
-            int i = getYImage(this.hovered);
-            DrawableHelper.drawTexture(matrices, x, y, 0, 0, 46 + i * 20, width / 2, height, 256, 256);
-            DrawableHelper.drawTexture(matrices, x + width / 2, y, 0, 200 - width / 2f, 46 + i * 20, width / 2, height, 256, 256);
+            context.drawNineSlicedTexture(ClickableWidget.WIDGETS_TEXTURE, x, y, width, height, 20, 4, 200, 20, 0, this.getTextureY());
+            context.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         }
+    }
+
+    public int getTextureY() {
+        int i = 1;
+        if (!this.active) {
+            i = 0;
+        } else if (this.hovered) {
+            i = 2;
+        }
+
+        return 46 + i * 20;
     }
 
     public int getYImage(boolean hovered) {
@@ -49,7 +57,7 @@ public abstract class AbstractWidget extends DrawingUtils implements Drawable, E
         return 1;
     }
 
-    public void playSound(SoundEvent sound, SoundManager soundManager, float pitch) {
+    public void playSound(RegistryEntry.Reference<SoundEvent> sound, SoundManager soundManager, float pitch) {
         soundManager.play(PositionedSoundInstance.master(sound, pitch));
     }
 
