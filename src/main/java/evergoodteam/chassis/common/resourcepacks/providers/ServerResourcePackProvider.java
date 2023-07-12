@@ -1,6 +1,6 @@
-package evergoodteam.chassis.objects.resourcepacks.providers;
+package evergoodteam.chassis.common.resourcepacks.providers;
 
-import evergoodteam.chassis.objects.resourcepacks.ResourcePackBuilder;
+import evergoodteam.chassis.common.resourcepacks.FileResourcePack;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.resource.ResourcePackProfile;
 import net.minecraft.resource.ResourcePackProvider;
@@ -16,7 +16,7 @@ public class ServerResourcePackProvider implements ResourcePackProvider {
 
     public String namespace;
     public String path;
-    public ResourcePackBuilder groupResourcePack;
+    public FileResourcePack resourcePack;
     private ResourcePackSource resourcePackSource;
 
     /**
@@ -29,7 +29,7 @@ public class ServerResourcePackProvider implements ResourcePackProvider {
         this.path = path;
         MutableText text = Text.translatable("pack.source." + namespace);
         UnaryOperator<Text> unaryOperator = name -> Text.translatable("pack.nameAndSource", name, text);
-        this.groupResourcePack = new ResourcePackBuilder(path, metadataKey, ResourceType.SERVER_DATA, FabricLoader.getInstance().getConfigDir().resolve(namespace + "/resourcepacks").toAbsolutePath().normalize());
+        this.resourcePack = new FileResourcePack(path, metadataKey, ResourceType.SERVER_DATA, FabricLoader.getInstance().getConfigDir().resolve(namespace + "/resourcepacks").toAbsolutePath().normalize());
         this.resourcePackSource = ResourcePackSource.create(unaryOperator, true);
     }
 
@@ -40,7 +40,7 @@ public class ServerResourcePackProvider implements ResourcePackProvider {
                 namespace,
                 Text.literal(namespace),
                 true,
-                factory -> groupResourcePack,
+                factory -> resourcePack,
                 ResourceType.SERVER_DATA,
                 ResourcePackProfile.InsertionPosition.BOTTOM,
                 resourcePackSource);

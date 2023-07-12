@@ -1,4 +1,4 @@
-package evergoodteam.chassis.objects.resourcepacks;
+package evergoodteam.chassis.common.resourcepacks;
 
 import com.google.common.base.Charsets;
 import evergoodteam.chassis.util.StringUtils;
@@ -7,7 +7,6 @@ import net.fabricmc.fabric.impl.resource.loader.ModNioResourcePack;
 import net.minecraft.SharedConstants;
 import net.minecraft.resource.AbstractFileResourcePack;
 import net.minecraft.resource.InputSupplier;
-import net.minecraft.resource.ResourcePack;
 import net.minecraft.resource.ResourceType;
 import net.minecraft.resource.metadata.PackResourceMetadata;
 import net.minecraft.resource.metadata.ResourceMetadataReader;
@@ -28,11 +27,11 @@ import static evergoodteam.chassis.util.Reference.CMI;
 import static org.slf4j.LoggerFactory.getLogger;
 
 @Log4j2
-public class ResourcePackBuilder extends AbstractFileResourcePack implements ResourcePack {
+public class FileResourcePack extends AbstractFileResourcePack {
 
     private static final Logger LOGGER = getLogger(CMI + "/R/Builder");
     private static final Pattern RESOURCEPACK_PATH = Pattern.compile("[a-z0-9-_]+");
-    public static final List<ResourcePackBuilder> BUILT = new ArrayList<>();
+    public static final List<FileResourcePack> BUILT = new ArrayList<>();
 
     private final String id;
     private final ResourceType resourceType;
@@ -41,7 +40,7 @@ public class ResourcePackBuilder extends AbstractFileResourcePack implements Res
     private final String separator;
     private Set<String> namespaces;
 
-    public ResourcePackBuilder(String namespace, String metadataKey, ResourceType resourceType, Path basePath) {
+    public FileResourcePack(String namespace, String metadataKey, ResourceType resourceType, Path basePath) {
         super(namespace, true);
         this.id = namespace;
         this.resourceType = resourceType;
@@ -118,7 +117,6 @@ public class ResourcePackBuilder extends AbstractFileResourcePack implements Res
     }
 
     private static String getFilename(ResourceType type, Identifier id) {
-        log.info("ID: " + id);
         return String.format(Locale.ROOT, "%s/%s/%s", type.getDirectory(), id.getNamespace(), id.getPath());
     }
 

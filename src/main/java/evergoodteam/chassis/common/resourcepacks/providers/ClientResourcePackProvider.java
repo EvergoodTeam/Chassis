@@ -1,6 +1,6 @@
-package evergoodteam.chassis.objects.resourcepacks.providers;
+package evergoodteam.chassis.common.resourcepacks.providers;
 
-import evergoodteam.chassis.objects.resourcepacks.ResourcePackBuilder;
+import evergoodteam.chassis.common.resourcepacks.FileResourcePack;
 import evergoodteam.chassis.util.gui.ColorUtils;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.resource.ResourcePackProfile;
@@ -16,7 +16,7 @@ import java.util.function.UnaryOperator;
 
 public class ClientResourcePackProvider implements ResourcePackProvider {
 
-    public ResourcePackBuilder groupResourcePack;
+    public FileResourcePack groupResourcePack;
     public String namespace;
     public String path;
 
@@ -65,7 +65,7 @@ public class ClientResourcePackProvider implements ResourcePackProvider {
      * @see evergoodteam.chassis.mixin.ResourcePackManagerMixin
      */
     public ClientResourcePackProvider(String namespace, String path, String metadataKey) {
-        this.groupResourcePack = new ResourcePackBuilder(path, metadataKey, ResourceType.CLIENT_RESOURCES, FabricLoader.getInstance().getConfigDir().resolve(namespace + "/resourcepacks").toAbsolutePath().normalize());
+        this.groupResourcePack = new FileResourcePack(path, metadataKey, ResourceType.CLIENT_RESOURCES, FabricLoader.getInstance().getConfigDir().resolve(namespace + "/resourcepacks").toAbsolutePath().normalize());
         this.namespace = namespace;
         this.path = path;
     }
