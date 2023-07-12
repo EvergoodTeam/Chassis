@@ -12,13 +12,13 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.RegistryKeys;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,43 +29,42 @@ import static org.slf4j.LoggerFactory.getLogger;
 public class RegistryHandler {
 
     private static final Logger LOGGER = getLogger(CMI + "/H/Registry");
-    public static final Map<String, List<String>> REGISTERED_BLOCKS = new HashMap<>();
-    public static final Map<String, List<String>> REGISTERED_ITEMS = new HashMap<>();
+    public final Map<Block, RegistryKey<Block>> BLOCKS = new HashMap<>();
+    public final Map<Item, RegistryKey<Item>> ITEMS = new HashMap<>();
+    public final Map<ItemGroup, RegistryKey<ItemGroup>> ITEMGROUPS = new HashMap<>();
+    public final String modid;
 
+    public RegistryHandler(String modid) {
+        this.modid = modid;
+    }
     // ItemGroup
 
-    public static void addToItemGroup(Item item, RegistryKey<ItemGroup> registryKey) {
+    public void registerItemGroup(String namespace, String path, ItemGroup itemGroup) {
+        RegistryKey<ItemGroup> registryKey = RegistryKey.of(RegistryKeys.ITEM_GROUP, new Identifier(namespace, path));
+        ITEMGROUPS.put(Registry.register(Registries.ITEM_GROUP, registryKey, itemGroup), registryKey);
+    }
+
+    public void addToItemGroup(Item item, RegistryKey<ItemGroup> registryKey) {
         ItemGroupEvents.modifyEntriesEvent(registryKey).register(content -> {
             content.add(item);
         });
     }
     //
 
-    //region Block registration
+    //region Block
 
     /**
      * Registers the provided block and its item form
-     *
-     * @param namespace  your modId
-     * @param path       name to identify your block from other entries in the same namespace
-     * @param block      your block
-     * @param tooltipKey text shown as a tooltip under the item name
-     * @see evergoodteam.chassis.objects.blocks.BlockBase
      */
-    public static void registerBlockAndItem(String namespace, String path, Block block, String tooltipKey) {
+    public void registerBlockWithItem(String namespace, String path, Block block, Text tooltip) {
         registerBlock(namespace, path, block);
-        registerBlockItem(namespace, path, block, tooltipKey);
+        registerBlockItem(namespace, path, block, tooltip);
     }
 
     /**
      * Registers the provided block and its item form
-     *
-     * @param namespace your modId
-     * @param path      name to identify your block from other entries in the same namespace
-     * @param block     your block
-     * @see evergoodteam.chassis.objects.blocks.BlockBase
      */
-    public static void registerBlockAndItem(String namespace, String path, Block block) {
+    public void registerBlockWithItem(String namespace, String path, Block block) {
         registerBlock(namespace, path, block);
         registerBlockItem(namespace, path, block);
     }
@@ -76,37 +75,33 @@ public class RegistryHandler {
      * @param namespace your modId
      * @param path      name to identify your block from other entries in the same namespace
      * @param block     your block
-     * @see evergoodteam.chassis.objects.blocks.BlockBase
+     * @see evergoodteam.chassis.common.blocks.BlockBase
      */
-    public static void registerBlock(String namespace, String path, Block block) {
-        REGISTERED_BLOCKS.computeIfAbsent(namespace, k -> new ArrayList<>()).add(path);
-        Registry.register(Registries.BLOCK, new Identifier(namespace, path), block);
+    public void registerBlock(String namespace, String path, Block block) {
+        RegistryKey<Block> registryKey = RegistryKey.of(RegistryKeys.BLOCK, new Identifier(namespace, path));
+        BLOCKS.put(Registry.register(Registries.BLOCK, registryKey, block), registryKey);
     }
 
-    private static void registerBlockItem(String namespace, String path, Block block, String tooltipKey) {
+    private void registerBlockItem(String namespace, String path, Block block, Text tooltip) {
         registerItem(namespace, path,
                 new BlockItem(block, new FabricItemSettings()) {
                     @Override
-                    public void appendTooltip(ItemStack stack, @Nullable World world, List<Text> tooltip, TooltipContext context) {
-                        tooltip.add(Text.translatable(tooltipKey));
+                    public void appendTooltip(ItemStack stack, @Nullable World world, List<Text> tooltipList, TooltipContext context) {
+                        tooltipList.add(tooltip);
                     }
-                }, false);
+                });
     }
 
-    private static void registerBlockItem(String namespace, String path, Block block) {
-        registerItem(namespace, path, new BlockItem(block, new FabricItemSettings()), false);
+    private void registerBlockItem(String namespace, String path, Block block) {
+        registerItem(namespace, path, block.asItem());
     }
     //endregion
 
-    //region Item categories and registration
+    //region Item
 
-    public static void registerItem(String namespace, String path, Item item) {
-        registerItem(namespace, path, item, true);
-    }
-
-    private static void registerItem(String namespace, String path, Item item, Boolean count) {
-        if (count) REGISTERED_ITEMS.computeIfAbsent(namespace, k -> new ArrayList<>()).add(path);
-        Registry.register(Registries.ITEM, new Identifier(namespace, path), item);
+    private void registerItem(String namespace, String path, Item item) {
+        RegistryKey<Item> registryKey = RegistryKey.of(RegistryKeys.ITEM, new Identifier(namespace, path));
+        ITEMS.put(Registry.register(Registries.ITEM, registryKey, item), registryKey);
     }
     //endregion
 }
