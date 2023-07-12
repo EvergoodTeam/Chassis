@@ -15,7 +15,7 @@ public class OverlayScreen extends Screen implements Element {
 
     public OverlayWidget overlayWidget;
 
-    protected OverlayScreen(PlayerEntity player, OverlayWidget overlay) {
+    public OverlayScreen(PlayerEntity player, OverlayWidget overlay) {
         super(Text.literal("Overlay screen"));
         this.overlayWidget = overlay;
     }
