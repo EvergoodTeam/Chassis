@@ -158,10 +158,6 @@ public class WidgetBase extends AbstractWidget implements Widget {
         return super.getNavigationFocus();
     }
 
-    public boolean isLeftClick(int button) {
-        return button == 0;
-    }
-
     public boolean insideBounds(double mouseX, double mouseY) {
         return mouseX >= (double) this.x && mouseY >= (double) this.y && mouseX < (double) (this.x + this.width) && mouseY < (double) (this.y + this.height);
     }
