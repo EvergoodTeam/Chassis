@@ -37,6 +37,7 @@ public class RegistryHandler {
     public RegistryHandler(String modid) {
         this.modid = modid;
     }
+
     // ItemGroup
 
     public void registerItemGroup(String namespace, String path, ItemGroup itemGroup) {
@@ -82,7 +83,7 @@ public class RegistryHandler {
         BLOCKS.put(Registry.register(Registries.BLOCK, registryKey, block), registryKey);
     }
 
-    private void registerBlockItem(String namespace, String path, Block block, Text tooltip) {
+    public void registerBlockItem(String namespace, String path, Block block, Text tooltip) {
         registerItem(namespace, path,
                 new BlockItem(block, new FabricItemSettings()) {
                     @Override
@@ -92,14 +93,14 @@ public class RegistryHandler {
                 });
     }
 
-    private void registerBlockItem(String namespace, String path, Block block) {
+    public void registerBlockItem(String namespace, String path, Block block) {
         registerItem(namespace, path, block.asItem());
     }
     //endregion
 
     //region Item
 
-    private void registerItem(String namespace, String path, Item item) {
+    public void registerItem(String namespace, String path, Item item) {
         RegistryKey<Item> registryKey = RegistryKey.of(RegistryKeys.ITEM, new Identifier(namespace, path));
         ITEMS.put(Registry.register(Registries.ITEM, registryKey, item), registryKey);
     }
