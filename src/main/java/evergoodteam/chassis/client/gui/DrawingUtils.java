@@ -3,14 +3,19 @@ package evergoodteam.chassis.client.gui;
 import evergoodteam.chassis.client.gui.text.GradientText;
 import evergoodteam.chassis.client.gui.text.GradientTextRenderer;
 import evergoodteam.chassis.util.gui.ColorUtils;
-import lombok.extern.log4j.Log4j2;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.item.TooltipContext;
+import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
 
+import java.util.List;
+
 @Environment(value = EnvType.CLIENT)
-@Log4j2
 public abstract class DrawingUtils {
 
     /**
@@ -33,6 +38,21 @@ public abstract class DrawingUtils {
                 (centerX - gradientTextRenderer.getWidth(gradientText.asOrderedText()) / 2),
                 y,
                 transparency);
+    }
+
+    public static void renderStackToolTip(DrawContext drawContext, MinecraftClient client, ItemStack stack, int x, int y) {
+        List<Text> list = stack.getTooltip(client.player, client.options.advancedItemTooltips ? TooltipContext.Default.ADVANCED : TooltipContext.Default.BASIC);
+        drawContext.drawTooltip(client.textRenderer, list, x, y);
+    }
+
+    public static void renderStackAt(DrawContext drawContext, TextRenderer textRenderer, ItemStack stack, float x, float y, float scale) {
+        MatrixStack matrixStack = drawContext.getMatrices();
+        matrixStack.push();
+        matrixStack.translate(x, y, 0.f);
+        matrixStack.scale(scale, scale, 1);
+        drawContext.drawItem(stack, 0, 0);
+        drawContext.drawItemInSlot(textRenderer, stack, 0, 0);
+        matrixStack.pop();
     }
 
     public void drawRectWithOutline(DrawContext context, int x, int y, int width, int height, int color) {
