@@ -1,10 +1,10 @@
 package evergoodteam.chassis.configs;
 
+import evergoodteam.chassis.common.resourcepacks.ResourcePackBase;
 import evergoodteam.chassis.configs.options.*;
-import evergoodteam.chassis.objects.resourcepacks.ResourcePackBase;
+import evergoodteam.chassis.util.FileUtils;
 import evergoodteam.chassis.util.StringUtils;
-import evergoodteam.chassis.util.handlers.DirHandler;
-import evergoodteam.chassis.util.handlers.FileHandler;
+import evergoodteam.chassis.util.DirectoryUtils;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.text.Text;
 import net.minecraft.util.Util;
@@ -34,7 +34,8 @@ public class ConfigBase {
     public final BooleanOption configLocked; // Part of default set of options
     public final Map<String, BooleanOption> resourcesLocked; // Part of default set of options
     private OptionStorage optionStorage;
-    private ConfigBuilder builder;
+    private ConfigHandler handler;
+    private ConfigWriter writer;
     public final ConfigNetworking networking;
     public Boolean strictVersion = true;
 
@@ -54,12 +55,13 @@ public class ConfigBase {
                 .setComment("Lock " + StringUtils.capitalize(namespace) + " configs from being regenerated");
         this.resourcesLocked = new HashMap<>();
         this.optionStorage = new OptionStorage(this);
-        this.builder = new ConfigBuilder(this);
+        this.handler = new ConfigHandler(this);
+        this.writer = new ConfigWriter(this);
         this.networking = new ConfigNetworking(this);
 
         CONFIGURATIONS.put(namespace, this);
-        this.readProperties();  // Looks for existing values
-        if (!this.configLocked.getValue() || ConfigHandler.versionUpdated(this)) { // Resets if versions are mismatched (and strict versioning is enabled)
+        this.handler.readOptions();  // Looks for existing values
+        if (!this.configLocked.getValue() || handler.versionUpdated()) { // Resets if versions are mismatched (and strict versioning is enabled)
             this.configLocked.setValue(true);
             this.createDefaults();
         } else LOGGER.info("Configs for \"{}\" already exist, skipping first generation", this.namespace);
@@ -75,8 +77,12 @@ public class ConfigBase {
         return optionStorage;
     }
 
-    public ConfigBuilder getBuilder() {
-        return builder;
+    public ConfigHandler getHandler(){
+        return handler;
+    }
+
+    public ConfigWriter getWriter() {
+        return writer;
     }
 
     /**
@@ -115,39 +121,22 @@ public class ConfigBase {
     //region Root creation
 
     /**
-     * Reads the variables present in the .properties config file and updates the linked variables <p>
-     * NOTE: if the .properties config file is empty, it will be regenerated with the default values
-     */
-    public boolean readProperties() {
-        return ConfigHandler.readOptions(this);
-    }
-
-    /**
      * Creates all the needed dirs and the .properties config file with the required default variables
      */
     private void createDefaults() {
         // Regenerate everything
-        FileHandler.delete(this.propertiesPath);
-        DirHandler.create(this.dirPath);
-        FileHandler.createFile(this.propertiesPath);
-        builder.empty();
-        builder.writeDefaults();
-        builder.overwrite();
+        FileUtils.delete(this.propertiesPath);
+        DirectoryUtils.create(this.dirPath);
+        FileUtils.createFile(this.propertiesPath);
+        writer.empty();
+        writer.writeDefaults();
+        writer.overwrite();
 
         LOGGER.info("Generated Configs for \"{}\"", this.namespace);
     }
     //endregion
 
     //region User content
-
-    /**
-     * @deprecated as of release 1.2.3, replaced by {@link #addBooleanProperty(BooleanOption)}
-     */
-    @Deprecated
-    public ConfigBase addProperty(String name, boolean defaultValue, String comment) {
-        this.addBooleanProperty(new BooleanOption(name, defaultValue).setComment(comment));
-        return this;
-    }
 
     /**
      * Adds a config category, a group of properties with a common purpose, from the provided {@link CategoryOption}
@@ -198,21 +187,21 @@ public class ConfigBase {
      * NOTE: call only after you added all your properties!
      */
     public void registerProperties() {
-        if (!readProperties()) {
-            this.builder.writeAddons();
-            builder.overwrite();
+        if (!handler.readOptions()) {
+            this.writer.writeAddons();
+            writer.overwrite();
         }
     }
 
     /**
-     * Returns the value of the property with the specified name from the .properties config file
+     * Returns the value of the option with the specified name from the .properties config file
      */
     public @Nullable String getWrittenValue(String name) {
-        return ConfigHandler.getOption(this, name);
+        return handler.getOptionValue(name);
     }
 
     /**
-     * Sets a property's value to the specified one if it is different from the original
+     * Writes an option's value to the specified one if it is different from the original
      *
      * @param option   your property
      * @param newValue property's new value
@@ -222,24 +211,23 @@ public class ConfigBase {
     }
 
     /**
-     * Sets a property's value to the specified one if it is different from the original
+     * Writes an option's value to the specified one if it is different from the original
      *
      * @param name     name of your property
      * @param newValue property's new value
      */
-    // TODO: check names
     public <T> void setWrittenValue(String name, T newValue) {
         overwrite(name, String.valueOf(newValue));
     }
 
     /**
-     * Overwrites the property specified by the provided name with the provided value
+     * Overwrites the option specified by the provided name with the provided value
      *
      * @param name     name of your property
      * @param newValue property's new value
      */
     private void overwrite(String name, String newValue) {
-        builder.overwrite(name, newValue);
+        writer.overwrite(name, newValue);
     }
     //endregion
 

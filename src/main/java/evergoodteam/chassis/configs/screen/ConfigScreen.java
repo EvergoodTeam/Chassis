@@ -4,7 +4,6 @@ import evergoodteam.chassis.client.gui.text.ChassisScreenTexts;
 import evergoodteam.chassis.client.gui.text.GradientText;
 import evergoodteam.chassis.client.gui.widgets.ResettableListWidget;
 import evergoodteam.chassis.configs.ConfigBase;
-import evergoodteam.chassis.configs.ConfigHandler;
 import evergoodteam.chassis.configs.options.AbstractOption;
 import evergoodteam.chassis.configs.options.CategoryOption;
 import lombok.extern.log4j.Log4j2;
@@ -42,7 +41,7 @@ public class ConfigScreen extends ConfigOptionsScreen {
     protected void init() {
         if (!retainValues) { // Prevent values from being reset
             optionList = new ArrayList<>();
-            config.readProperties();
+            config.getHandler().readOptions();
 
             for (CategoryOption category : config.getOptionStorage().getCategories()) {
                 if (!category.equals(config.getOptionStorage().getGenericCategory())) optionList.add(category);
@@ -76,7 +75,7 @@ public class ConfigScreen extends ConfigOptionsScreen {
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
         if (keyCode == GLFW.GLFW_KEY_ESCAPE) {
-            if (ConfigHandler.isntWritten(config))
+            if (config.getHandler().writtenNotUpdated())
                 this.client.setScreen(new ConfirmScreen(this::discardCallback, ChassisScreenTexts.DISCARD, ChassisScreenTexts.DISCARD_D));
             else client.setScreen(parent);
             return true;
@@ -111,7 +110,7 @@ public class ConfigScreen extends ConfigOptionsScreen {
         // Save and close
         this.addDrawableChild(ButtonWidget.builder(ChassisScreenTexts.SAVE, (buttonWidget) -> {
             config.getOptionStorage().getOptions().forEach(option -> config.setWrittenValue(option.getName(), option.getValue()));
-            config.readProperties();
+            config.getHandler().readOptions();
 
             LOGGER.debug("Saved config options for \"{}\"", config.namespace);
 

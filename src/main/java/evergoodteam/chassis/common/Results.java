@@ -1,6 +1,6 @@
 package evergoodteam.chassis.common;
 
-public enum Result {
+public enum Results {
     SUCCESS,
     FAILURE,
     ERROR

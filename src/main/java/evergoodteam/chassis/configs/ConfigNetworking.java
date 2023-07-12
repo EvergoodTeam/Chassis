@@ -1,6 +1,6 @@
 package evergoodteam.chassis.configs;
 
-import evergoodteam.chassis.common.Result;
+import evergoodteam.chassis.common.Results;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
@@ -40,14 +40,14 @@ public class ConfigNetworking {
                 String request = buf.readString();
 
                 client.execute(() -> {
-                    String raw = ConfigHandler.getCommonProperties(ConfigBase.getConfig(requestNamespace));
+                    String raw = ConfigBase.getConfig(requestNamespace).getHandler().getCommonOptions();
                     //LOGGER.info("RAW: {}", raw);
                     //LOGGER.info("RECEIVED: {}", request);
 
                     if (!request.equals(raw))
-                        responseSender.sendPacket(new Identifier(requestNamespace, "handshake"), PacketByteBufs.create().writeEnumConstant(Result.FAILURE));
+                        responseSender.sendPacket(new Identifier(requestNamespace, "handshake"), PacketByteBufs.create().writeEnumConstant(Results.FAILURE));
                     else
-                        responseSender.sendPacket(new Identifier(requestNamespace, "handshake"), PacketByteBufs.create().writeEnumConstant(Result.SUCCESS));
+                        responseSender.sendPacket(new Identifier(requestNamespace, "handshake"), PacketByteBufs.create().writeEnumConstant(Results.SUCCESS));
                 });
             });
     }
@@ -58,14 +58,14 @@ public class ConfigNetworking {
             ServerPlayNetworking.send(handler.player, new Identifier(this.namespace, "sync"),
                     PacketByteBufs.create()
                             .writeString(this.namespace)
-                            .writeString(ConfigHandler.getCommonProperties(this.config)));
+                            .writeString(this.config.getHandler().getCommonOptions()));
         });
     }
 
     public void registerServerReceiver() {
         if (enabled)
             ServerPlayNetworking.registerGlobalReceiver(new Identifier(this.namespace, "handshake"), (server, player, handler, buf, responseSender) -> {
-                Result result = buf.readEnumConstant(Result.class);
+                Results result = buf.readEnumConstant(Results.class);
                 server.execute(() -> {
                     //LOGGER.info("Handshake response from " + player.getName().getString() + " : " + result.toString());
                     switch (result) {
