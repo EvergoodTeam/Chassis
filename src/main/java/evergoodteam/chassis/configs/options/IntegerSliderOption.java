@@ -14,8 +14,8 @@ import java.util.List;
 
 public class IntegerSliderOption extends AbstractOption<Integer> implements AbstractOption.Interval<Integer> {
 
-    private final Integer min;
-    private final Integer max;
+    private Integer min;
+    private Integer max;
 
     public IntegerSliderOption(String name, int min, int max, int defaultValue) {
         this(name, min, max, defaultValue, Text.literal(name), Text.empty());
@@ -39,6 +39,16 @@ public class IntegerSliderOption extends AbstractOption<Integer> implements Abst
     @Override
     public Integer getMax() {
         return this.max;
+    }
+
+    @Override
+    public void setMin(Integer min) {
+        this.min = min;
+    }
+
+    @Override
+    public void setMax(Integer max) {
+        this.max = max;
     }
 
     @Override

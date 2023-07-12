@@ -123,5 +123,9 @@ public abstract class AbstractOption<T> {
         T getMin();
 
         T getMax();
+
+        void setMin(T min);
+
+        void setMax(T max);
     }
 }

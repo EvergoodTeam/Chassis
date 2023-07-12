@@ -14,8 +14,8 @@ import java.util.List;
 
 public class DoubleSliderOption extends AbstractOption<Double> implements AbstractOption.Interval<Double> {
 
-    private final Double min;
-    private final Double max;
+    private Double min;
+    private Double max;
 
     public DoubleSliderOption(String name, double min, double max, double defaultValue) {
         this(name, min, max, defaultValue, Text.literal(name), Text.empty());
@@ -39,6 +39,16 @@ public class DoubleSliderOption extends AbstractOption<Double> implements Abstra
     @Override
     public Double getMax() {
         return this.max;
+    }
+
+    @Override
+    public void setMin(Double min) {
+        this.min = min;
+    }
+
+    @Override
+    public void setMax(Double max) {
+        this.max = max;
     }
 
     @Override
