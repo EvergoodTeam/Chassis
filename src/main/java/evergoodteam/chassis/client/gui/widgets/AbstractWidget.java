@@ -57,6 +57,10 @@ public abstract class AbstractWidget extends DrawingUtils implements Drawable, E
         return 1;
     }
 
+    public boolean isLeftClick(int button) {
+        return button == 0;
+    }
+
     public void playSound(RegistryEntry.Reference<SoundEvent> sound, SoundManager soundManager, float pitch) {
         soundManager.play(PositionedSoundInstance.master(sound, pitch));
     }
