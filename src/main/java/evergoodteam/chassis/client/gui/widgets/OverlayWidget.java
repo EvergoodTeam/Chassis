@@ -48,7 +48,7 @@ public class OverlayWidget extends AbstractWidget {
             x = (int) (mouseX + deltaX - distanceX);
             y = (int) (mouseY + deltaY - distanceY);
 
-            updateCallback.onUpdate();
+            updateCallback.onUpdate(x, y);
 
             return true;
         }
@@ -61,7 +61,7 @@ public class OverlayWidget extends AbstractWidget {
 
     @Environment(value = EnvType.CLIENT)
     public interface UpdateCallback {
-        void onUpdate();
+        void onUpdate(int x, int y);
 
         void onSave();
     }
