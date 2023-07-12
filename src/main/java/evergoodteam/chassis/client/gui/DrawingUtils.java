@@ -40,21 +40,6 @@ public abstract class DrawingUtils {
                 transparency);
     }
 
-    public static void renderStackToolTip(DrawContext drawContext, MinecraftClient client, ItemStack stack, int x, int y) {
-        List<Text> list = stack.getTooltip(client.player, client.options.advancedItemTooltips ? TooltipContext.Default.ADVANCED : TooltipContext.Default.BASIC);
-        drawContext.drawTooltip(client.textRenderer, list, x, y);
-    }
-
-    public static void renderStackAt(DrawContext drawContext, TextRenderer textRenderer, ItemStack stack, float x, float y, float scale) {
-        MatrixStack matrixStack = drawContext.getMatrices();
-        matrixStack.push();
-        matrixStack.translate(x, y, 0.f);
-        matrixStack.scale(scale, scale, 1);
-        drawContext.drawItem(stack, 0, 0);
-        drawContext.drawItemInSlot(textRenderer, stack, 0, 0);
-        matrixStack.pop();
-    }
-
     public void drawRectWithOutline(DrawContext context, int x, int y, int width, int height, int color) {
         drawRectWithOutline(context, x, y, width, height, color, color);
     }
