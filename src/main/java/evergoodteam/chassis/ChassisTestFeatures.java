@@ -1,12 +1,12 @@
 package evergoodteam.chassis;
 
 import evergoodteam.chassis.client.gui.text.GradientText;
-import evergoodteam.chassis.configs.options.*;
+import evergoodteam.chassis.config.option.*;
 import evergoodteam.chassis.datagen.providers.*;
-import evergoodteam.chassis.common.blocks.BlockBase;
-import evergoodteam.chassis.common.blocks.PillarBase;
-import evergoodteam.chassis.common.groups.ItemGroupBase;
-import evergoodteam.chassis.common.items.ItemBase;
+import evergoodteam.chassis.common.block.BlockBase;
+import evergoodteam.chassis.common.block.PillarBase;
+import evergoodteam.chassis.common.group.ItemGroupBase;
+import evergoodteam.chassis.common.item.ItemBase;
 import evergoodteam.chassis.util.handlers.RegistryHandler;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
@@ -27,8 +27,6 @@ import net.minecraft.loot.function.SetCountLootFunction;
 import net.minecraft.loot.provider.number.ConstantLootNumberProvider;
 import net.minecraft.loot.provider.number.UniformLootNumberProvider;
 import net.minecraft.recipe.book.RecipeCategory;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.tag.ItemTags;
 import net.minecraft.registry.tag.TagKey;

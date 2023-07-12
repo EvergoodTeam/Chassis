@@ -76,7 +76,7 @@ public class RegistryHandler {
      * @param namespace your modId
      * @param path      name to identify your block from other entries in the same namespace
      * @param block     your block
-     * @see evergoodteam.chassis.common.blocks.BlockBase
+     * @see evergoodteam.chassis.common.block.BlockBase
      */
     public void registerBlock(String namespace, String path, Block block) {
         RegistryKey<Block> registryKey = RegistryKey.of(RegistryKeys.BLOCK, new Identifier(namespace, path));

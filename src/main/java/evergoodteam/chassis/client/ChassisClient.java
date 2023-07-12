@@ -1,7 +1,7 @@
 package evergoodteam.chassis.client;
 
 import evergoodteam.chassis.client.gui.text.GradientTextRenderer;
-import evergoodteam.chassis.configs.ConfigBase;
+import evergoodteam.chassis.config.ConfigBase;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;

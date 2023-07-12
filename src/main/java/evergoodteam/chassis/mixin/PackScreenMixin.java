@@ -1,6 +1,6 @@
 package evergoodteam.chassis.mixin;
 
-import evergoodteam.chassis.common.resourcepacks.ResourcePackBase;
+import evergoodteam.chassis.common.resourcepack.ResourcePackBase;
 import net.minecraft.client.gui.screen.pack.PackListWidget;
 import net.minecraft.client.gui.screen.pack.PackScreen;
 import net.minecraft.client.gui.screen.pack.ResourcePackOrganizer;

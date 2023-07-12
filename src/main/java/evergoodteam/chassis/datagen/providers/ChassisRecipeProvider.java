@@ -1,6 +1,6 @@
 package evergoodteam.chassis.datagen.providers;
 
-import evergoodteam.chassis.common.resourcepacks.ResourcePackBase;
+import evergoodteam.chassis.common.resourcepack.ResourcePackBase;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;

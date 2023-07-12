@@ -3,7 +3,7 @@ package evergoodteam.chassis.datagen.providers;
 import com.google.common.hash.Hashing;
 import com.google.common.hash.HashingOutputStream;
 import com.google.gson.JsonElement;
-import evergoodteam.chassis.common.resourcepacks.ResourcePackBase;
+import evergoodteam.chassis.common.resourcepack.ResourcePackBase;
 import lombok.extern.log4j.Log4j2;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.minecraft.data.DataProvider;
