@@ -38,27 +38,6 @@ public class OverlayWidget extends AbstractWidget {
         drawRectWithOutline(context, x, y, width, height, color, outlineColor);
     }
 
-    @Override
-    public boolean mouseDragged(double mouseX, double mouseY, int button, double deltaX, double deltaY) {
-        if (isLeftClick(button) && insideBounds(mouseX, mouseY)) {
-
-            // Drag the preview around, keeping the cursor at the same distance from previous XY
-            int distanceX = (int) (mouseX - x);
-            int distanceY = (int) (mouseY - y);
-            x = (int) (mouseX + deltaX - distanceX);
-            y = (int) (mouseY + deltaY - distanceY);
-
-            updateCallback.onUpdate(x, y);
-
-            return true;
-        }
-        return false;
-    }
-
-    public boolean insideBounds(double mouseX, double mouseY) {
-        return mouseX >= (double) this.x && mouseY >= (double) this.y && mouseX < (double) (this.x + this.width) && mouseY < (double) (this.y + this.height);
-    }
-
     @Environment(value = EnvType.CLIENT)
     public interface UpdateCallback {
         void onUpdate(int x, int y);
