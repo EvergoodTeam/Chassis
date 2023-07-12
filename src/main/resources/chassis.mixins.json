@@ -9,6 +9,7 @@
   "client": [
     "ClientMixin",
     "FontManagerMixin",
+    "InGameHudMixin",
     "PackScreenMixin"
   ],
   "injectors": {
