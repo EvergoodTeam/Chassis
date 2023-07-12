@@ -20,19 +20,15 @@ import java.util.Map;
 import static evergoodteam.chassis.util.Reference.CMI;
 import static org.slf4j.LoggerFactory.getLogger;
 
-// TODO: Update name
-public class ConfigBuilder {
+public class ConfigWriter {
 
-    private static final Logger LOGGER = getLogger(CMI + "/C/Builder");
-    private final String NL = System.lineSeparator();
-
+    private static final Logger LOGGER = getLogger(CMI + "/C/Writer");
     private ConfigBase config;
     private Path path;
     private File file;
-    public List<String> lines = new ArrayList<>();
+    private List<String> lines = new ArrayList<>();
 
-    // TODO: use OptionStorage
-    public ConfigBuilder(@NotNull ConfigBase config) {
+    public ConfigWriter(@NotNull ConfigBase config) {
         this.config = config;
         this.path = config.propertiesPath;
         this.file = config.propertiesFile;
@@ -42,13 +38,12 @@ public class ConfigBuilder {
         return this.config;
     }
 
-    /*
-    public boolean getLine(String propertyName){
-        return lines.contains(property(propertyName, ));
-    }*/
-
     public void empty() {
         this.lines = new ArrayList<>();
+    }
+
+    public void replaceLines(List<String> newLines){
+        this.lines = newLines;
     }
 
     /**
@@ -109,7 +104,7 @@ public class ConfigBuilder {
     //region Writing handler
     public void overwrite(String propertyName, String newValue) {
         //List<String> lines = ConfigHandler.getContents(config);
-        Map<String, String> properties = ConfigHandler.getPropertyMap(config);
+        Map<String, String> properties = config.getHandler().getOptionMap();
         String oldValue = properties.get(propertyName);
 
         if (oldValue != null && !oldValue.equals(newValue)) {
@@ -134,7 +129,7 @@ public class ConfigBuilder {
     /**
      * Writes the provided strings with line breaks
      */
-    private ConfigBuilder addLine(List<String> lines) {
+    private ConfigWriter addLine(List<String> lines) {
         //return write(NL, lines.toArray(new String[0]));
         this.lines.addAll(lines);
         return this;
@@ -143,7 +138,7 @@ public class ConfigBuilder {
     /**
      * Writes the provided string with a line break
      */
-    private ConfigBuilder addLine(String string) {
+    private ConfigWriter addLine(String string) {
         //return write(NL, string);
         lines.add(string);
         return this;
@@ -152,7 +147,7 @@ public class ConfigBuilder {
     /**
      * Writes the provided strings giving each the specified suffix
      */
-    private ConfigBuilder writeAppend(String suffix, String... strings) {
+    private ConfigWriter writeAppend(String suffix, String... strings) {
         try (FileWriter fw = new FileWriter(this.file, true)) {
             BufferedWriter bw = new BufferedWriter(fw);
 
@@ -171,7 +166,7 @@ public class ConfigBuilder {
     //region Components
 
     public String title() {
-        return "# %s %s Configs".formatted(StringUtils.capitalize(config.namespace), ConfigHandler.getModVersion(config));
+        return "# %s %s Configs".formatted(StringUtils.capitalize(config.namespace), config.getHandler().getModVersion());
     }
 
     public String date() {
