@@ -1,4 +1,4 @@
-package evergoodteam.chassis.util.handlers;
+package evergoodteam.chassis.util;
 
 import org.apache.commons.io.FileUtils;
 import org.jetbrains.annotations.NotNull;
@@ -12,7 +12,7 @@ import java.nio.file.Path;
 import static evergoodteam.chassis.util.Reference.CMI;
 import static org.slf4j.LoggerFactory.getLogger;
 
-public class DirHandler {
+public class DirectoryUtils {
 
     private static final Logger LOGGER = getLogger(CMI + "/H/Dir");
 
@@ -30,8 +30,7 @@ public class DirHandler {
     }
 
     /**
-     * Creates a directory at the specified path if one doesn't exist already,
-     * while also creating the missing parent dirs
+     * Creates a directory at the specified path if one doesn't exist already, while also creating the missing parent dirs
      */
     public static void create(Path path) {
         //LOGGER.info("Attempting to create dir at {}", path);

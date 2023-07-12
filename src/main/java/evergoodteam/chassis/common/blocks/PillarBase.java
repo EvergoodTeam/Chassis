@@ -1,4 +1,4 @@
-package evergoodteam.chassis.objects.blocks;
+package evergoodteam.chassis.common.blocks;
 
 import evergoodteam.chassis.client.ChassisClient;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;

@@ -1,7 +1,7 @@
 package evergoodteam.chassis.util;
 
 import evergoodteam.chassis.configs.ConfigBase;
-import evergoodteam.chassis.objects.resourcepacks.ResourcePackBase;
+import evergoodteam.chassis.common.resourcepacks.ResourcePackBase;
 
 public class Reference {
 

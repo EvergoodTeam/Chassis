@@ -1,6 +1,6 @@
-package evergoodteam.chassis.objects.resourcepacks;
+package evergoodteam.chassis.common.resourcepacks;
 
-import evergoodteam.chassis.util.handlers.DirHandler;
+import evergoodteam.chassis.util.DirectoryUtils;
 
 import java.nio.file.Path;
 
@@ -33,9 +33,9 @@ public class ResourcePackRoot {
     }
 
     public void createRoot() {
-        DirHandler.clean(resourcePack.getRootPath());
-        DirHandler.create(resources);
-        DirHandler.create(resources, new String[]{"assets", "data"});
+        DirectoryUtils.clean(resourcePack.getRootPath());
+        DirectoryUtils.create(resources);
+        DirectoryUtils.create(resources, new String[]{"assets", "data"});
         if(resourcePack.noProviders) resourcePack.getLock().setValue(true);
     }
 }

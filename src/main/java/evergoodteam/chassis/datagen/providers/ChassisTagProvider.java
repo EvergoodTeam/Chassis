@@ -1,6 +1,6 @@
 package evergoodteam.chassis.datagen.providers;
 
-import evergoodteam.chassis.objects.resourcepacks.ResourcePackBase;
+import evergoodteam.chassis.common.resourcepacks.ResourcePackBase;
 import lombok.extern.log4j.Log4j2;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;

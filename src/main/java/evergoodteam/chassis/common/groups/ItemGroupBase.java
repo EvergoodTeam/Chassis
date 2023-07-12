@@ -1,4 +1,4 @@
-package evergoodteam.chassis.objects.groups;
+package evergoodteam.chassis.common.groups;
 
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
 import net.minecraft.item.ItemConvertible;

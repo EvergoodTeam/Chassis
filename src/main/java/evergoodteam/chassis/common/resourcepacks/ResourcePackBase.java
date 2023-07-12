@@ -1,7 +1,6 @@
-package evergoodteam.chassis.objects.resourcepacks;
+package evergoodteam.chassis.common.resourcepacks;
 
 import evergoodteam.chassis.configs.ConfigBase;
-import evergoodteam.chassis.configs.ConfigHandler;
 import evergoodteam.chassis.configs.options.BooleanOption;
 import evergoodteam.chassis.datagen.providers.ChassisTextureProvider;
 import evergoodteam.chassis.util.StringUtils;
@@ -267,12 +266,12 @@ public class ResourcePackBase {
     //region Configs
     private void configInit() {
         config.resourcesLocked.put(namespace, locked);
-        ConfigHandler.readOptions(config);
+        config.getHandler().readOptions();
 
-        if (ConfigHandler.getOption(config, locked.getName()) == null) {
+        if ((config.getHandler().getOptionValue(locked.getName())) == null) {
             root.createRoot();
-            config.getBuilder().writeResources();
-            config.getBuilder().overwrite();
+            config.getWriter().writeResources();
+            config.getWriter().overwrite();
 
             LOGGER.info("Generated resources for \"{}\"", this.namespace);
         } else if (!locked.getWrittenValue(config)) {

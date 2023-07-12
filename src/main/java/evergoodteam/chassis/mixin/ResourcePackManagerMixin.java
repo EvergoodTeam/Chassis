@@ -1,9 +1,9 @@
 package evergoodteam.chassis.mixin;
 
 import com.google.common.collect.ImmutableSet;
-import evergoodteam.chassis.objects.resourcepacks.ResourcePackBase;
-import evergoodteam.chassis.objects.resourcepacks.providers.ClientResourcePackProvider;
-import evergoodteam.chassis.objects.resourcepacks.providers.ServerResourcePackProvider;
+import evergoodteam.chassis.common.resourcepacks.ResourcePackBase;
+import evergoodteam.chassis.common.resourcepacks.providers.ClientResourcePackProvider;
+import evergoodteam.chassis.common.resourcepacks.providers.ServerResourcePackProvider;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.resource.ResourcePackManager;

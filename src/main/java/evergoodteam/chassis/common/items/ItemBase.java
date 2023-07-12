@@ -1,4 +1,4 @@
-package evergoodteam.chassis.objects.items;
+package evergoodteam.chassis.common.items;
 
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.minecraft.item.Item;

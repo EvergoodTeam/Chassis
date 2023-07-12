@@ -1,4 +1,4 @@
-package evergoodteam.chassis.objects.blocks;
+package evergoodteam.chassis.common.blocks;
 
 import evergoodteam.chassis.client.ChassisClient;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
@@ -8,8 +8,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-// TODO: clean up constructors with version group change
-// TODO: support all block classes
 public class BlockBase extends Block {
 
     public BlockBase(Float hardness, Float resistance, BlockSoundGroup sound) {

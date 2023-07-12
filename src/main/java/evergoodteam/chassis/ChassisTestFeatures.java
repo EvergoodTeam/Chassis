@@ -3,10 +3,10 @@ package evergoodteam.chassis;
 import evergoodteam.chassis.client.gui.text.GradientText;
 import evergoodteam.chassis.configs.options.*;
 import evergoodteam.chassis.datagen.providers.*;
-import evergoodteam.chassis.objects.blocks.BlockBase;
-import evergoodteam.chassis.objects.blocks.PillarBase;
-import evergoodteam.chassis.objects.groups.ItemGroupBase;
-import evergoodteam.chassis.objects.items.ItemBase;
+import evergoodteam.chassis.common.blocks.BlockBase;
+import evergoodteam.chassis.common.blocks.PillarBase;
+import evergoodteam.chassis.common.groups.ItemGroupBase;
+import evergoodteam.chassis.common.items.ItemBase;
 import evergoodteam.chassis.util.handlers.RegistryHandler;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
@@ -139,6 +139,8 @@ public class ChassisTestFeatures {
 
     public static void init() {
 
+        RegistryHandler registryHandler = new RegistryHandler(MODID);
+
         CHASSIS_CONFIGS.setDisplayTitle(GradientText.literal("Chassis")
                 .setColorPoints(50, "264653", "2a9d8f", "e9c46a", "f4a261", "e76f51", "264653")
                 .setScrollDelay(4));
@@ -182,14 +184,14 @@ public class ChassisTestFeatures {
 
         // Blocks/Items
 
-        RegistryHandler.registerBlockAndItem("chassis", "testblock", TEST_BLOCK);
-        RegistryHandler.registerItem("chassis", "testitem", TEST_ITEM);
-        RegistryHandler.registerBlockAndItem("chassis", "birch", BIRCH);
+        registryHandler.registerBlockWithItem("chassis", "testblock", TEST_BLOCK);
+        registryHandler.registerItem("chassis", "testitem", TEST_ITEM);
+        registryHandler.registerBlockWithItem("chassis", "birch", BIRCH);
 
-        Registry.register(Registries.ITEM_GROUP, TEST_GROUP.registry, TEST_GROUP.group);
+        registryHandler.registerItemGroup("chassis", "testgroup", TEST_GROUP.group);
 
-        RegistryHandler.addToItemGroup(TEST_BLOCK.asItem(), TEST_GROUP.registry);
-        RegistryHandler.addToItemGroup(TEST_ITEM, TEST_GROUP.registry);
-        RegistryHandler.addToItemGroup(BIRCH.asItem(), TEST_GROUP.registry);
+        registryHandler.addToItemGroup(TEST_BLOCK.asItem(), TEST_GROUP.registry);
+        registryHandler.addToItemGroup(TEST_ITEM, TEST_GROUP.registry);
+        registryHandler.addToItemGroup(BIRCH.asItem(), TEST_GROUP.registry);
     }
 }
