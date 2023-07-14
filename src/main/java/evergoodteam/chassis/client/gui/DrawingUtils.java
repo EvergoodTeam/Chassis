@@ -1,22 +1,39 @@
 package evergoodteam.chassis.client.gui;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import evergoodteam.chassis.client.gui.text.GradientText;
 import evergoodteam.chassis.client.gui.text.GradientTextRenderer;
 import evergoodteam.chassis.util.gui.ColorUtils;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.item.TooltipContext;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
 
-import java.util.List;
-
 @Environment(value = EnvType.CLIENT)
 public abstract class DrawingUtils {
+
+    public static void drawItemWithCount(MinecraftClient client, DrawContext drawContext, ItemStack stack, float x, float y){
+        drawItemWithCount(client, drawContext, stack, x, y, 1f);
+    }
+
+    public static void drawItemWithCount(MinecraftClient client, DrawContext drawContext, ItemStack stack, float x, float y, float scale) {
+        MatrixStack matrices = drawContext.getMatrices();
+        matrices.push();
+        matrices.translate(x, y, 0.f);
+        matrices.scale(scale, scale, 1);
+
+        //DiffuseLighting.enableForLevel(matrixStack.peek().getPositionMatrix());
+        RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
+        drawContext.drawItem(stack, 0, 0);
+        RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
+        drawContext.drawItemInSlot(client.textRenderer, stack, 0, 0);
+        RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
+
+        matrices.pop();
+    }
 
     /**
      * Attempts to draw text with a scrolling list of colors. If no color points are found, the color held by the text will be fed to the gradientTextRenderer.
