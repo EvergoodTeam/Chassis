@@ -94,7 +94,7 @@ public class RegistryHandler {
     }
 
     public void registerBlockItem(String namespace, String path, Block block) {
-        registerItem(namespace, path, block.asItem());
+        registerItem(namespace, path, new BlockItem(block, new FabricItemSettings()));
     }
     //endregion
 
