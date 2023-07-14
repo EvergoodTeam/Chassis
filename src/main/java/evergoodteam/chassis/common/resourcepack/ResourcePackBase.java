@@ -319,9 +319,9 @@ public class ResourcePackBase {
                 generator.run();
                 locked.setValue(true);
                 config.setWrittenValue(locked, true);
-                providersDone = true;
-                LOGGER.debug("Providers for {} done", namespace);
-            } else LOGGER.debug("Couldn't run providers for {} because the resource is locked", namespace);
+                LOGGER.info("Providers for {} done", namespace);
+            } else LOGGER.error("Couldn't run providers for {} because the resource is locked", namespace);
+            providersDone = true;
         } catch (IOException e) {
             LOGGER.error("An error occurred while running providers for {}: {}", namespace, e);
         }
