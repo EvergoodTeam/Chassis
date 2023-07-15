@@ -1,6 +1,6 @@
 package evergoodteam.chassis.common.block;
 
-import evergoodteam.chassis.client.ChassisClient;
+import evergoodteam.chassis.util.handlers.RegistryHandler;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.block.Block;
 import net.minecraft.block.PillarBlock;
@@ -27,7 +27,7 @@ public class PillarBase extends PillarBlock {
     }
 
     public PillarBase setTransparent(){
-        ChassisClient.addTransparentBlock(this);
+        RegistryHandler.addTransparentBlock(this);
         return this;
     }
 

@@ -55,7 +55,7 @@ public class ChassisTestFeatures {
     static final Block BIRCH = new PillarBase(FabricBlockSettings.copyOf(Blocks.BIRCH_LOG));
     static final ItemGroupBase TEST_GROUP = ItemGroupBase.createItemGroup("chassis", "testgroup", TEST_BLOCK);
     // has to be registered
-
+/*
     public static void initProviderRegistry() {
         CHASSIS_RESOURCES.providerRegistry = () -> {
             CHASSIS_RESOURCES
@@ -133,7 +133,7 @@ public class ChassisTestFeatures {
                     )
                     .runProviders();
         };
-    }
+    }*/
 
     public static void init() {
 
@@ -165,7 +165,7 @@ public class ChassisTestFeatures {
                                 .setEnvType(EnvType.CLIENT))
                 .addCategory(GENERAL
                         .setComment("General options")
-                        .addBooleanProperty(CHASSIS_RESOURCES.getHideResourcePackProperty())
+                        //.addBooleanProperty(CHASSIS_RESOURCES.getHideResourcePackProperty())
                         .addBooleanProperty(new BooleanOption("boolean", false, Text.literal("Boolean"), Text.literal("Boolean Tooltip"))
                                 .setComment("Boolean comment"))
                         .addDoubleProperty(new DoubleSliderOption("double", 3, 8, 4.5, Text.literal("Slider"), Text.literal("Double Tooltip"))
@@ -181,7 +181,7 @@ public class ChassisTestFeatures {
                 .registerProperties();
 
         // Blocks/Items
-
+/*
         registryHandler.registerBlockWithItem("chassis", "testblock", TEST_BLOCK);
         registryHandler.registerItem("chassis", "testitem", TEST_ITEM);
         registryHandler.registerBlockWithItem("chassis", "birch", BIRCH);
@@ -190,6 +190,6 @@ public class ChassisTestFeatures {
 
         registryHandler.addToItemGroup(TEST_BLOCK.asItem(), TEST_GROUP.registry);
         registryHandler.addToItemGroup(TEST_ITEM, TEST_GROUP.registry);
-        registryHandler.addToItemGroup(BIRCH.asItem(), TEST_GROUP.registry);
+        registryHandler.addToItemGroup(BIRCH.asItem(), TEST_GROUP.registry);*/
     }
 }

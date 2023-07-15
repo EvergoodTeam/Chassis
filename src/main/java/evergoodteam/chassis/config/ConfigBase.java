@@ -5,6 +5,7 @@ import evergoodteam.chassis.config.option.*;
 import evergoodteam.chassis.util.FileUtils;
 import evergoodteam.chassis.util.StringUtils;
 import evergoodteam.chassis.util.DirectoryUtils;
+import evergoodteam.chassis.util.handlers.RegistryHandler;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.text.Text;
 import net.minecraft.util.Util;
@@ -22,8 +23,7 @@ import static org.slf4j.LoggerFactory.getLogger;
 public class ConfigBase {
 
     private static final Logger LOGGER = getLogger(CMI + "/Config");
-    public static final Map<String, ConfigBase> CONFIGURATIONS = new HashMap<>();
-    private static final Path CONFIG_DIR = FabricLoader.getInstance().getConfigDir();
+    private final Path CONFIG_DIR;
 
     // TODO: switch to getters
     public final String namespace;
@@ -46,6 +46,7 @@ public class ConfigBase {
      */
     // TODO: use modContainer?
     public ConfigBase(String namespace) {
+        this.CONFIG_DIR = FabricLoader.getInstance().getConfigDir();
         this.namespace = namespace;
         this.dirPath = CONFIG_DIR.resolve(namespace);
         this.propertiesPath = this.dirPath.resolve(namespace + ".properties");
@@ -59,7 +60,7 @@ public class ConfigBase {
         this.writer = new ConfigWriter(this);
         this.networking = new ConfigNetworking(this);
 
-        CONFIGURATIONS.put(namespace, this);
+        RegistryHandler.registerConfiguration(namespace, this);
         this.handler.readOptions();  // Looks for existing values
         if (!this.configLocked.getValue() || handler.versionUpdated()) { // Resets if versions are mismatched (and strict versioning is enabled)
             this.configLocked.setValue(true);
@@ -91,14 +92,7 @@ public class ConfigBase {
      * @param namespace name of the configs
      */
     public static @Nullable ConfigBase getConfig(String namespace) {
-        return CONFIGURATIONS.getOrDefault(namespace, null);
-    }
-
-    /**
-     * Gets all the existing Configs created through {@link ConfigBase}
-     */
-    public static Map<String, ConfigBase> getConfigurations() {
-        return CONFIGURATIONS;
+        return RegistryHandler.getConfigurations().getOrDefault(namespace, null);
     }
 
     public BooleanOption getLock(){

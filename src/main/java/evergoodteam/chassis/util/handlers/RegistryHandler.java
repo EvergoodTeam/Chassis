@@ -1,6 +1,6 @@
 package evergoodteam.chassis.util.handlers;
 
-
+import evergoodteam.chassis.config.ConfigBase;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.minecraft.block.Block;
@@ -19,9 +19,7 @@ import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static evergoodteam.chassis.util.Reference.CMI;
 import static org.slf4j.LoggerFactory.getLogger;
@@ -29,6 +27,8 @@ import static org.slf4j.LoggerFactory.getLogger;
 public class RegistryHandler {
 
     private static final Logger LOGGER = getLogger(CMI + "/H/Registry");
+    private static final Map<String, ConfigBase> CONFIGURATIONS = new HashMap<>();
+    private static final Set<Block> TRANSPARENT_BLOCKS = new HashSet<>();
     public final Map<Block, RegistryKey<Block>> BLOCKS = new HashMap<>();
     public final Map<Item, RegistryKey<Item>> ITEMS = new HashMap<>();
     public final Map<ItemGroup, RegistryKey<ItemGroup>> ITEMGROUPS = new HashMap<>();
@@ -36,6 +36,27 @@ public class RegistryHandler {
 
     public RegistryHandler(String modid) {
         this.modid = modid;
+    }
+
+    public static void registerConfiguration(String namespace, ConfigBase config) {
+        CONFIGURATIONS.put(namespace, config);
+    }
+
+
+    // TODO: have only chassis register configs?
+    /**
+     * Gets all the existing Configs created through {@link ConfigBase}
+     */
+    public static Map<String, ConfigBase> getConfigurations() {
+        return CONFIGURATIONS;
+    }
+
+    public static void addTransparentBlock(Block block) {
+        TRANSPARENT_BLOCKS.add(block);
+    }
+
+    public static Set<Block> getTransparentBlocks() {
+        return TRANSPARENT_BLOCKS;
     }
 
     // ItemGroup
