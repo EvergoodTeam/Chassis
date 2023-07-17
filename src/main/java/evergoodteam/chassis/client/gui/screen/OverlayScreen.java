@@ -6,7 +6,6 @@ import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.text.Text;
 import org.lwjgl.glfw.GLFW;
 
@@ -15,15 +14,15 @@ public class OverlayScreen extends Screen implements Element {
 
     public OverlayWidget overlayWidget;
 
-    public OverlayScreen(PlayerEntity player, OverlayWidget overlay) {
-        super(Text.literal("Overlay screen"));
+    public OverlayScreen(OverlayWidget overlay) {
+        super(Text.literal("Overlay"));
         this.overlayWidget = overlay;
     }
 
     @Override
     public void render(DrawContext context, int mouseX, int mouseY, float delta) {
-        super.render(context, mouseX, mouseY, delta);
         this.renderBackground(context);
+        super.render(context, mouseX, mouseY, delta);
         overlayWidget.render(context, mouseX, mouseY, delta);
     }
 
