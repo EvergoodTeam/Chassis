@@ -38,8 +38,8 @@ public class ConfigHandler {
     }
 
     public String getModVersion() {
-        if (FabricLoader.getInstance().getModContainer(config.namespace).isPresent())
-            return FabricLoader.getInstance().getModContainer(config.namespace).get().getMetadata().getVersion().getFriendlyString();
+        if (FabricLoader.getInstance().getModContainer(config.modid).isPresent())
+            return FabricLoader.getInstance().getModContainer(config.modid).get().getMetadata().getVersion().getFriendlyString();
         return "";
     }
 

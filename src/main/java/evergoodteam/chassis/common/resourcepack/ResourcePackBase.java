@@ -121,7 +121,7 @@ public class ResourcePackBase {
         this.configInit();
         this.useDefaultIcon();
         HIDDEN.put(displayName, this.hidden);
-        RESOURCE_PACKS.computeIfAbsent(config.namespace, k -> new ArrayList<>()).add(this);
+        RESOURCE_PACKS.computeIfAbsent(config.modid, k -> new ArrayList<>()).add(this);
     }
 
     private CompletableFuture<RegistryWrapper.WrapperLookup> runInternal() {

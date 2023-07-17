@@ -166,7 +166,7 @@ public class ConfigWriter {
     //region Components
 
     public String title() {
-        return "# %s %s Configs".formatted(StringUtils.capitalize(config.namespace), config.getHandler().getModVersion());
+        return "# %s %s Configs".formatted(StringUtils.capitalize(config.modid), config.getHandler().getModVersion());
     }
 
     public String date() {

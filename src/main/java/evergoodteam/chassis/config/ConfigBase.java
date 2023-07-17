@@ -22,11 +22,11 @@ import static org.slf4j.LoggerFactory.getLogger;
 
 public class ConfigBase {
 
-    private static final Logger LOGGER = getLogger(CMI + "/Config");
-    private final Path CONFIG_DIR;
+    private final Logger LOGGER = getLogger(CMI + "/Config");
+    private final Path CONFIG_DIR = FabricLoader.getInstance().getConfigDir();
 
     // TODO: switch to getters
-    public final String namespace;
+    public final String modid;
     public final Path dirPath;
     public final Path propertiesPath;
     public final File propertiesFile;
@@ -42,30 +42,29 @@ public class ConfigBase {
     /**
      * Object from which Configs will be generated
      *
-     * @param namespace name of your Configs
+     * @param modid name of your Configs
      */
     // TODO: use modContainer?
-    public ConfigBase(String namespace) {
-        this.CONFIG_DIR = FabricLoader.getInstance().getConfigDir();
-        this.namespace = namespace;
-        this.dirPath = CONFIG_DIR.resolve(namespace);
-        this.propertiesPath = this.dirPath.resolve(namespace + ".properties");
+    public ConfigBase(String modid) {
+        this.modid = modid;
+        this.dirPath = CONFIG_DIR.resolve(modid);
+        this.propertiesPath = this.dirPath.resolve(modid + ".properties");
         this.propertiesFile = new File(this.propertiesPath.toString());
-        this.title = Text.literal(StringUtils.capitalize(namespace));
-        this.configLocked = new BooleanOption(namespace + "ConfigLocked", false)
-                .setComment("Lock " + StringUtils.capitalize(namespace) + " configs from being regenerated");
+        this.title = Text.literal(StringUtils.capitalize(modid));
+        this.configLocked = new BooleanOption(modid + "ConfigLocked", false)
+                .setComment("Lock " + StringUtils.capitalize(modid) + " configs from being regenerated");
         this.resourcesLocked = new HashMap<>();
         this.optionStorage = new OptionStorage(this);
         this.handler = new ConfigHandler(this);
         this.writer = new ConfigWriter(this);
         this.networking = new ConfigNetworking(this);
 
-        RegistryHandler.registerConfiguration(namespace, this);
+        RegistryHandler.registerConfiguration(modid, this);
         this.handler.readOptions();  // Looks for existing values
         if (!this.configLocked.getValue() || handler.versionUpdated()) { // Resets if versions are mismatched (and strict versioning is enabled)
             this.configLocked.setValue(true);
             this.createDefaults();
-        } else LOGGER.info("Configs for \"{}\" already exist, skipping first generation", this.namespace);
+        } else LOGGER.info("Configs for \"{}\" already exist, skipping first generation", this.modid);
     }
 
     //region Getters
@@ -87,12 +86,12 @@ public class ConfigBase {
     }
 
     /**
-     * Gets the configs associated to the provided namespace
+     * Gets the configs associated to the provided modid
      *
-     * @param namespace name of the configs
+     * @param modid name of the configs
      */
-    public static @Nullable ConfigBase getConfig(String namespace) {
-        return RegistryHandler.getConfigurations().getOrDefault(namespace, null);
+    public static @Nullable ConfigBase getConfig(String modid) {
+        return RegistryHandler.getConfigurations().getOrDefault(modid, null);
     }
 
     public BooleanOption getLock(){
@@ -126,7 +125,7 @@ public class ConfigBase {
         writer.writeDefaults();
         writer.overwrite();
 
-        LOGGER.info("Generated Configs for \"{}\"", this.namespace);
+        LOGGER.info("Generated Configs for \"{}\"", this.modid);
     }
     //endregion
 

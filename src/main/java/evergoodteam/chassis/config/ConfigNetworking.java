@@ -21,7 +21,7 @@ public class ConfigNetworking {
 
     public ConfigNetworking(ConfigBase config) {
         this.config = config;
-        this.namespace = config.namespace;
+        this.namespace = config.modid;
     }
 
     public void enable() {
@@ -34,7 +34,7 @@ public class ConfigNetworking {
 
     public void registerClientReceiver() {
         if (enabled)
-            ClientPlayNetworking.registerGlobalReceiver(new Identifier(this.config.namespace, "sync"), (client, handler, buf, responseSender) -> {
+            ClientPlayNetworking.registerGlobalReceiver(new Identifier(this.config.modid, "sync"), (client, handler, buf, responseSender) -> {
 
                 String requestNamespace = buf.readString();
                 String request = buf.readString();

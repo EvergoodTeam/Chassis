@@ -6,7 +6,6 @@ import evergoodteam.chassis.client.gui.widget.ResettableListWidget;
 import evergoodteam.chassis.config.ConfigBase;
 import evergoodteam.chassis.config.option.AbstractOption;
 import evergoodteam.chassis.config.option.CategoryOption;
-import lombok.extern.log4j.Log4j2;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.DrawContext;
@@ -23,7 +22,6 @@ import java.util.List;
 import static evergoodteam.chassis.util.Reference.CMI;
 import static org.slf4j.LoggerFactory.getLogger;
 
-@Log4j2
 @Environment(EnvType.CLIENT)
 public class ConfigScreen extends ConfigOptionsScreen {
 
@@ -99,7 +97,7 @@ public class ConfigScreen extends ConfigOptionsScreen {
 
             this.refreshList();
 
-            LOGGER.debug("Reset config options for \"{}\"", config.namespace);
+            LOGGER.debug("Reset config options for \"{}\"", config.modid);
         }).position(this.width / 2 + 60, this.height - 27).size(100, 20).build());
 
         // Open .properties file
@@ -112,7 +110,7 @@ public class ConfigScreen extends ConfigOptionsScreen {
             config.getOptionStorage().getOptions().forEach(option -> config.setWrittenValue(option.getName(), option.getValue()));
             config.getHandler().readOptions();
 
-            LOGGER.debug("Saved config options for \"{}\"", config.namespace);
+            LOGGER.debug("Saved config options for \"{}\"", config.modid);
 
             client.setScreen(this.parent);
         }).position(this.width / 2 - 50, this.height - 27).size(100, 20).build());
