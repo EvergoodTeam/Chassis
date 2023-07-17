@@ -44,10 +44,11 @@ import static evergoodteam.chassis.util.Reference.*;
 
 public class ChassisTestFeatures {
 
+    /*
     private static final Logger LOGGER = LoggerFactory.getLogger(CMI + "/Testing");
     static final List<Block> BLOCKS = new ArrayList<>();
     static final List<Item> ITEMS = new ArrayList<>();
-    /*
+
     static final Block TEST_BLOCK = new BlockBase(FabricBlockSettings.create().requiresTool().hardness(1.5f).resistance(6.0f).sounds(BlockSoundGroup.METAL).nonOpaque())
             .addTo(BLOCKS)
             .setTransparent();
@@ -57,7 +58,7 @@ public class ChassisTestFeatures {
     static final ItemGroupBase TEST_GROUP = ItemGroupBase.createItemGroup("chassis", "testgroup", TEST_BLOCK);
     */
 
-/*
+    /*
     public static void initProviderRegistry() {
         CHASSIS_RESOURCES.providerRegistry = () -> {
             CHASSIS_RESOURCES
