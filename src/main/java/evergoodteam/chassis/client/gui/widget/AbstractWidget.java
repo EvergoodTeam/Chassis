@@ -11,7 +11,7 @@ import net.minecraft.client.gui.Drawable;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.Selectable;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
-import net.minecraft.client.gui.widget.ClickableWidget;
+import net.minecraft.client.gui.widget.PressableWidget;
 import net.minecraft.client.sound.PositionedSoundInstance;
 import net.minecraft.client.sound.SoundManager;
 import net.minecraft.registry.entry.RegistryEntry;
@@ -34,7 +34,7 @@ public abstract class AbstractWidget extends DrawingUtils implements Drawable, E
             context.setShaderColor(1.0F, 1.0F, 1.0F, this.alpha);
             RenderSystem.enableBlend();
             RenderSystem.enableDepthTest();
-            context.drawNineSlicedTexture(ClickableWidget.WIDGETS_TEXTURE, x, y, width, height, 20, 4, 200, 20, 0, this.getTextureY());
+            context.drawGuiTexture(PressableWidget.TEXTURES.get(this.active, this.getType() != SelectionType.NONE), x, y, width, height);
             context.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         }
     }

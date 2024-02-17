@@ -31,8 +31,8 @@ public class SliderWidget extends WidgetBase {
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
         RenderSystem.enableDepthTest();
-        context.drawNineSlicedTexture(TEXTURE, this.getX(), this.getY(), this.getWidth(), this.getHeight(), 20, 4, 200, 20, 0, this.getYImage(isFocused()));
-        context.drawNineSlicedTexture(TEXTURE, this.getX() + (int) (this.value * (double) (this.width - 8)), this.getY(), 8, 20, 20, 4, 200, 20, 0, getTextureV());
+        context.drawTexture(TEXTURE, this.getX(), this.getY(), this.getWidth(), this.getHeight(), 20, 4, 200, 20, 0, this.getYImage(isFocused()));
+        context.drawTexture(TEXTURE, this.getX() + (int) (this.value * (double) (this.width - 8)), this.getY(), 8, 20, 20, 4, 200, 20, 0, getTextureV());
         context.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
     }
 

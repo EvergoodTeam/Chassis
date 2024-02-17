@@ -5,6 +5,7 @@ import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricAdvancementProvider;
 import net.minecraft.advancement.Advancement;
+import net.minecraft.advancement.AdvancementEntry;
 import net.minecraft.data.DataProvider;
 import net.minecraft.util.Identifier;
 
@@ -34,7 +35,7 @@ public class ChassisAdvancementProvider extends FabricAdvancementProvider implem
     }
 
     @Override
-    public void generateAdvancement(Consumer<Advancement> consumer) {
+    public void generateAdvancement(Consumer<AdvancementEntry> consumer) {
         for(Identifier identifier : builderMap.keySet()){
             builderMap.get(identifier).build(consumer, identifier.toString());
         }

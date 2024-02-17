@@ -1,3 +1,5 @@
 accessWidener	v1 named
 
 extendable method net/minecraft/client/gui/widget/EntryListWidget getEntryAtPosition (DD)Lnet/minecraft/client/gui/widget/EntryListWidget$Entry;
+accessible field net/minecraft/client/gui/widget/PressableWidget TEXTURES Lnet/minecraft/client/gui/screen/ButtonTextures;
+accessible field net/minecraft/loot/context/LootContextTypes MAP Lcom/google/common/collect/BiMap;
