@@ -51,7 +51,7 @@ public class ChassisLootTableProvider extends SimpleFabricLootTableProvider impl
 
     @Override
     public String getName() {
-        return "Loot Table " + Objects.requireNonNull(LootContextTypes.getId(lootContextType), "Could not get id for loot context type");
+        return "Loot Table " + Objects.requireNonNull(LootContextTypes.MAP.inverse().get(lootContextType), "Could not get id for loot context type");
     }
 
     @Override

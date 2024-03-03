@@ -53,7 +53,7 @@ public class ConfigScreen extends ConfigOptionsScreen {
 
     @Override
     public void render(DrawContext context, int mouseX, int mouseY, float delta) {
-        this.renderBackground(context);
+        this.renderBackground(context, mouseX, mouseY, delta);
         this.list.render(context, mouseX, mouseY, delta);
 
         if (this.title instanceof GradientText) ((GradientText) this.title).scroll();

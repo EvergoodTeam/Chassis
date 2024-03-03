@@ -2,10 +2,7 @@ package evergoodteam.chassis.common.resourcepack.providers;
 
 import evergoodteam.chassis.common.resourcepack.FileResourcePack;
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.resource.ResourcePackProfile;
-import net.minecraft.resource.ResourcePackProvider;
-import net.minecraft.resource.ResourcePackSource;
-import net.minecraft.resource.ResourceType;
+import net.minecraft.resource.*;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 
@@ -40,7 +37,17 @@ public class ServerResourcePackProvider implements ResourcePackProvider {
                 namespace,
                 Text.literal(namespace),
                 true,
-                factory -> resourcePack,
+                new ResourcePackProfile.PackFactory() {
+                    @Override
+                    public ResourcePack open(String name) {
+                        return resourcePack;
+                    }
+
+                    @Override
+                    public ResourcePack openWithOverlays(String name, ResourcePackProfile.Metadata metadata) {
+                        return resourcePack;
+                    }
+                },
                 ResourceType.SERVER_DATA,
                 ResourcePackProfile.InsertionPosition.BOTTOM,
                 resourcePackSource);

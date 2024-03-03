@@ -11,6 +11,9 @@ import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
+import net.minecraft.text.TextColor;
+
+import java.util.List;
 
 @Environment(value = EnvType.CLIENT)
 public abstract class DrawingUtils {
@@ -42,8 +45,11 @@ public abstract class DrawingUtils {
         if (text instanceof GradientText) {
             drawCenteredGradientText(context, gradientTextRenderer, (GradientText) text, centerX, y, transparency);
         } else {
-            int color = ColorUtils.getDecimalFromHex(text.getStyle().getColor().getHexCode());
-            GradientText gradientText = GradientText.copyOf(text).setColorPoints(color);
+            GradientText gradientText = GradientText.copyOf(text);
+            TextColor color = text.getStyle().getColor();
+            if (color != null) {
+                gradientText.setColorPoints(List.of(ColorUtils.getDecimalFromHex(color.getHexCode())));
+            }
             drawCenteredGradientText(context, gradientTextRenderer, gradientText, centerX, y, transparency);
         }
     }

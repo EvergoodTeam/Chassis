@@ -3,10 +3,7 @@ package evergoodteam.chassis.common.resourcepack.providers;
 import evergoodteam.chassis.common.resourcepack.FileResourcePack;
 import evergoodteam.chassis.util.gui.ColorUtils;
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.resource.ResourcePackProfile;
-import net.minecraft.resource.ResourcePackProvider;
-import net.minecraft.resource.ResourcePackSource;
-import net.minecraft.resource.ResourceType;
+import net.minecraft.resource.*;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
@@ -77,7 +74,17 @@ public class ClientResourcePackProvider implements ResourcePackProvider {
                 namespace,
                 Text.literal(namespace),
                 true,
-                factory -> groupResourcePack,
+                new ResourcePackProfile.PackFactory() {
+                    @Override
+                    public ResourcePack open(String name) {
+                        return groupResourcePack;
+                    }
+
+                    @Override
+                    public ResourcePack openWithOverlays(String name, ResourcePackProfile.Metadata metadata) {
+                        return groupResourcePack;
+                    }
+                },
                 ResourceType.CLIENT_RESOURCES,
                 ResourcePackProfile.InsertionPosition.BOTTOM,
                 resourcePackSource);
