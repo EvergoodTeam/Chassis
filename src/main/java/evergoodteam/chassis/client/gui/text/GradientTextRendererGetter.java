@@ -4,7 +4,7 @@ import java.util.Optional;
 
 public interface GradientTextRendererGetter {
 
-    default Optional<GradientTextRenderer> createGradientTextRenderer(){
+    default Optional<GradientTextRenderer> chassisCreateGradientTextRenderer(){
         return Optional.empty();
     }
 }
