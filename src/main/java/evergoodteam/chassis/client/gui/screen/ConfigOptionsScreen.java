@@ -41,17 +41,8 @@ public class ConfigOptionsScreen extends Screen {
 
     // TODO: [NU] have tooltips also use gradients when present in the text
     public void renderTooltip(DrawContext context, ResettableListWidget buttonList, int mouseX, int mouseY) {
-
-        Optional<WidgetBase> hoveredWidget = buttonList.getHoveredWidget(mouseX, mouseY);
-        if (hoveredWidget.isPresent()) {
-            WidgetBase current = hoveredWidget.get();
-            List<OrderedText> tooltipList = current.getOrderedTooltip();
-            if (current instanceof TextWidget)
-                context.chassisDrawOrderedTooltipWithoutJump(textRenderer, tooltipList, mouseX, mouseY);
-            else context.drawOrderedTooltip(textRenderer, tooltipList, mouseX, mouseY);
-        }
-
-
+        List<OrderedText> tooltipList = getHoveredButtonTooltip(buttonList, mouseX, mouseY);
+        context.drawOrderedTooltip(textRenderer, tooltipList, mouseX, mouseY);
     }
 
     public static List<OrderedText> getHoveredButtonTooltip(ResettableListWidget buttonList, int mouseX, int mouseY) {

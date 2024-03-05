@@ -61,9 +61,7 @@ public class ConfigScreen extends ConfigOptionsScreen {
         if (this.title instanceof GradientText) ((GradientText) this.title).scroll();
         this.drawCenteredGradientTitle(context);
 
-        // TODO: have tooltips also use gradients when present in the text
-        List<OrderedText> tooltipList = getHoveredButtonTooltip(this.list, mouseX, mouseY);
-        context.drawOrderedTooltip(textRenderer, tooltipList, mouseX, mouseY);
+        this.renderTooltip(context, this.list, mouseX, mouseY);
     }
 
     @Override
