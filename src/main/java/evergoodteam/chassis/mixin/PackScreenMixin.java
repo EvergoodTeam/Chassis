@@ -28,12 +28,11 @@ public class PackScreenMixin {
     private static final Logger LOGGER = getLogger(CMI + "/R/Screen");
 
     /**
-     * Fixex random selection of icon when icon is missing
+     * Fixes random selection of icon when icon is missing
      */
     @Inject(at = @At("HEAD"), method = "loadPackIcon(Lnet/minecraft/client/texture/TextureManager;Lnet/minecraft/resource/ResourcePackProfile;)Lnet/minecraft/util/Identifier;", cancellable = true)
     public void injectLoadPackIcon(TextureManager textureManager, ResourcePackProfile resourcePackProfile, CallbackInfoReturnable<Identifier> cir) {
-
-        if (ResourcePackBase.getDefaultIconNamespaces().contains(resourcePackProfile.getDisplayName().getString())) {
+        if (ResourcePackBase.getResourcesWithDefaultIcon().contains(resourcePackProfile.getDisplayName().getString())) {
             //LOGGER.info("Attempting to set unknown pack icon before error is thrown / random texture");
             cir.setReturnValue(new Identifier("textures/misc/unknown_pack.png"));
         }

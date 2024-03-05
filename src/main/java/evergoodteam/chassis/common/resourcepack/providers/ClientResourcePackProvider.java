@@ -35,7 +35,7 @@ public class ClientResourcePackProvider implements ResourcePackProvider {
         this(namespace, path, metadataKey);
 
         MutableText text = Text.translatable("pack.source." + namespace);
-        UnaryOperator<Text> unaryOperator = name -> Text.translatable("pack.nameAndSource", name, text).setStyle(Style.EMPTY.withColor(ColorUtils.getDecimalFromHex(hexDescColor)));
+        UnaryOperator<Text> unaryOperator = name -> Text.translatable("pack.nameAndSource", name, text).setStyle(Style.EMPTY.withColor(ColorUtils.RGB.getIntFromHexRGB(hexDescColor)));
 
         this.resourcePackSource = ResourcePackSource.create(unaryOperator, true);
     }

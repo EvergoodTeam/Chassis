@@ -16,12 +16,12 @@ public class ConfigNetworking {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CMI + "/C/Network");
     public final ConfigBase config;
-    public final String namespace;
+    public final Identifier identifier;
     private boolean enabled = true;
 
     public ConfigNetworking(ConfigBase config) {
         this.config = config;
-        this.namespace = config.modid;
+        this.identifier = config.getIdentifier();
     }
 
     public void enable() {
@@ -34,20 +34,20 @@ public class ConfigNetworking {
 
     public void registerClientReceiver() {
         if (enabled)
-            ClientPlayNetworking.registerGlobalReceiver(new Identifier(this.config.modid, "sync"), (client, handler, buf, responseSender) -> {
+            ClientPlayNetworking.registerGlobalReceiver(this.identifier.withSuffixedPath("sync"), (client, handler, buf, responseSender) -> {
 
-                String requestNamespace = buf.readString();
+                Identifier requestIdentifier = Identifier.tryParse(buf.readString());
                 String request = buf.readString();
 
                 client.execute(() -> {
-                    String raw = ConfigBase.getConfig(requestNamespace).getHandler().getCommonOptions();
+                    String raw = ConfigBase.getConfig(requestIdentifier).getWriter().getSerializer().getMappedStoredUserOptions().toString();
                     //LOGGER.info("RAW: {}", raw);
                     //LOGGER.info("RECEIVED: {}", request);
 
                     if (!request.equals(raw))
-                        responseSender.sendPacket(new Identifier(requestNamespace, "handshake"), PacketByteBufs.create().writeEnumConstant(Result.FAILURE));
+                        responseSender.sendPacket(requestIdentifier.withSuffixedPath("handshake"), PacketByteBufs.create().writeEnumConstant(Result.FAILURE));
                     else
-                        responseSender.sendPacket(new Identifier(requestNamespace, "handshake"), PacketByteBufs.create().writeEnumConstant(Result.SUCCESS));
+                        responseSender.sendPacket(requestIdentifier.withSuffixedPath("handshake"), PacketByteBufs.create().writeEnumConstant(Result.SUCCESS));
                 });
             });
     }
@@ -55,16 +55,16 @@ public class ConfigNetworking {
     public void registerJoinListener() {
         if (enabled) ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
             //LOGGER.info("Server sent config handshake for " + this.namespace + " to " + handler.player.getName().getString());
-            ServerPlayNetworking.send(handler.player, new Identifier(this.namespace, "sync"),
+            ServerPlayNetworking.send(handler.player, this.identifier.withSuffixedPath("sync"),
                     PacketByteBufs.create()
-                            .writeString(this.namespace)
-                            .writeString(this.config.getHandler().getCommonOptions()));
+                            .writeString(this.identifier.toString())
+                            .writeString(this.config.getWriter().getSerializer().getMappedStoredUserOptions().toString()));
         });
     }
 
     public void registerServerReceiver() {
         if (enabled)
-            ServerPlayNetworking.registerGlobalReceiver(new Identifier(this.namespace, "handshake"), (server, player, handler, buf, responseSender) -> {
+            ServerPlayNetworking.registerGlobalReceiver(this.identifier.withSuffixedPath("handshake"), (server, player, handler, buf, responseSender) -> {
                 Result result = buf.readEnumConstant(Result.class);
                 server.execute(() -> {
                     //LOGGER.info("Handshake response from " + player.getName().getString() + " : " + result.toString());
@@ -72,7 +72,7 @@ public class ConfigNetworking {
 
                         case FAILURE -> {
                             player.networkHandler.disconnect(Text.literal("Config is mismatched between server and client!"));
-                            LOGGER.warn("Config mismatch for {}, disconnecting", this.namespace);
+                            LOGGER.warn("Config mismatch for {}, disconnecting", this.identifier);
                         }
 
                         case ERROR -> {

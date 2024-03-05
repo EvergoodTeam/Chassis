@@ -4,14 +4,14 @@ import com.google.common.collect.ImmutableList;
 import evergoodteam.chassis.client.gui.text.ChassisScreenTexts;
 import evergoodteam.chassis.client.gui.widget.CyclingWidget;
 import evergoodteam.chassis.client.gui.widget.WidgetBase;
+import evergoodteam.chassis.client.gui.widget.interfaces.ConfigWidgetEntry;
 import evergoodteam.chassis.config.ConfigBase;
-import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.text.Text;
 
-import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 public class BooleanOption extends AbstractOption<Boolean> {
 
@@ -23,19 +23,24 @@ public class BooleanOption extends AbstractOption<Boolean> {
         this(name, defaultValue, displayName, Text.empty());
     }
 
+    @Override
+    public Builder<Boolean, BooleanOption> getBuilder() {
+        return new Builder<>(this);
+    }
+
     public BooleanOption(String name, Boolean defaultValue, Text displayName, Text tooltip) {
         super(name, defaultValue, displayName, tooltip);
     }
 
     @Override
-    public Collection<Boolean> getValues() {
+    public ImmutableList<Boolean> getValues() {
         return ImmutableList.of(Boolean.TRUE, Boolean.FALSE);
     }
 
     @Override
     public Boolean getWrittenValue(ConfigBase config) {
-        String written = config.getWrittenValue(this.getName());
-        return written != null ? Boolean.valueOf(written) : getDefaultValue();
+        Optional<String> op = config.getWrittenValue(this);
+        return op.map(Boolean::valueOf).orElseGet(this::getDefaultValue);
     }
 
     @Environment(value = net.fabricmc.api.EnvType.CLIENT)
@@ -45,62 +50,37 @@ public class BooleanOption extends AbstractOption<Boolean> {
     }
 
     @Override
-    public BooleanOption setEnvType(EnvType type) {
-        super.setEnvType(type);
-        return this;
-    }
-
-    @Override
-    public BooleanOption setComment(String comment) {
-        super.setComment(comment);
-        return this;
-    }
-
-    @Override
-    public BooleanOption setDisplayName(Text displayName) {
-        super.setDisplayName(displayName);
-        return this;
-    }
-
-    @Override
-    public BooleanOption setTooltip(Text tooltip) {
-        super.setTooltip(tooltip);
-        return this;
-    }
-
-    @Override
-    public void updateValueFromString(String newValue) {
+    public void setValueFromString(String newValue) {
         this.setValue(Boolean.valueOf(newValue));
     }
 
-    @Override
-    public BooleanOption hideDefault(Boolean bool) {
-        super.hideDefault(bool);
-        return this;
-    }
-
     @Environment(value = net.fabricmc.api.EnvType.CLIENT)
-    public static class BooleanConfigWidget extends CyclingWidget<Boolean> {
+    public static class BooleanConfigWidget extends CyclingWidget<Boolean> implements ConfigWidgetEntry {
 
         public final BooleanOption option;
 
         public BooleanConfigWidget(BooleanOption option, int width) {
-            super(width, List.of(Boolean.TRUE, Boolean.FALSE), new CyclingWidget.UpdateOptionValue<>(option), value -> value ? ChassisScreenTexts.ON : ChassisScreenTexts.OFF);
-            this.initially(option.getValue()).setTooltip(option.getTooltip());
+            super(width, List.of(Boolean.TRUE, Boolean.FALSE), value -> value ? ChassisScreenTexts.ON : ChassisScreenTexts.OFF);
+            this.initially(option.getValue()).setOrderedTooltip(option.getTooltip());
+            this.setAddedY(2);
             this.option = option;
+            option.addUpdateCallback(new OptionUpdateCallback<>() {
+                @Override
+                public void onUpdate(Boolean newValue) {
+                    initially(newValue);
+                }
+            });
+        }
+
+        @Override
+        public void onValueUpdate(Boolean value){
+            option.setValue(value);
         }
 
         @Override
         public void renderCenteredText(DrawContext context) {
             super.renderCenteredText(context);
             context.drawTextWithShadow(textRenderer, this.option.getDisplayName(), this.x - 142, y + (this.height - 8) / 2, 16777215);
-        }
-
-        @Override
-        public void renderBackground(DrawContext context, int mouseX, int mouseY) {
-            if (this.isMouseOver(mouseX, mouseY, this.x - 150, this.y - 2, 300, 24)) {
-                this.drawRectWithOutline(context, this.x - 150, this.y - 2, 300, 24, 0x2B_FFFFFF);
-            }
         }
     }
 }

@@ -1,17 +1,19 @@
 package evergoodteam.chassis.config.option;
 
+import com.google.common.collect.ImmutableList;
 import evergoodteam.chassis.client.gui.widget.SliderWidget;
 import evergoodteam.chassis.client.gui.widget.WidgetBase;
+import evergoodteam.chassis.client.gui.widget.interfaces.ConfigWidgetEntry;
 import evergoodteam.chassis.config.ConfigBase;
+import lombok.extern.log4j.Log4j2;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.text.Text;
-import net.minecraft.util.math.MathHelper;
 
-import java.util.Collection;
-import java.util.List;
+import java.util.Optional;
 
+@Log4j2
 public class DoubleSliderOption extends AbstractOption<Double> implements AbstractOption.Interval<Double> {
 
     private Double min;
@@ -52,14 +54,19 @@ public class DoubleSliderOption extends AbstractOption<Double> implements Abstra
     }
 
     @Override
-    public Collection<Double> getValues() {
-        return List.of(min, max);
+    public Builder<Double, DoubleSliderOption> getBuilder() {
+        return new Builder<>(this);
+    }
+
+    @Override
+    public ImmutableList<Double> getValues() {
+        return ImmutableList.of(min, max);
     }
 
     @Override
     public Double getWrittenValue(ConfigBase config) {
-        String written = config.getWrittenValue(this.getName());
-        return written != null ? Double.valueOf(written) : getDefaultValue();
+        Optional<String> op = config.getWrittenValue(this);
+        return op.map(Double::valueOf).orElseGet(this::getDefaultValue);
     }
 
     @Environment(value = EnvType.CLIENT)
@@ -69,42 +76,12 @@ public class DoubleSliderOption extends AbstractOption<Double> implements Abstra
     }
 
     @Override
-    public DoubleSliderOption setEnvType(EnvType type) {
-        super.setEnvType(type);
-        return this;
-    }
-
-    @Override
-    public DoubleSliderOption setComment(String comment) {
-        super.setComment(comment);
-        return this;
-    }
-
-    @Override
-    public DoubleSliderOption setDisplayName(Text displayName) {
-        super.setDisplayName(displayName);
-        return this;
-    }
-
-    @Override
-    public DoubleSliderOption setTooltip(Text tooltip) {
-        super.setTooltip(tooltip);
-        return this;
-    }
-
-    @Override
-    public void updateValueFromString(String newValue) {
+    public void setValueFromString(String newValue) {
         this.setValue(Double.valueOf(newValue));
     }
 
-    @Override
-    public DoubleSliderOption hideDefault(Boolean bool) {
-        super.hideDefault(bool);
-        return this;
-    }
-
     @Environment(value = EnvType.CLIENT)
-    public static class DoubleConfigSlider extends SliderWidget {
+    public static class DoubleConfigSlider extends SliderWidget implements ConfigWidgetEntry {
 
         public final DoubleSliderOption option;
 
@@ -116,8 +93,16 @@ public class DoubleSliderOption extends AbstractOption<Double> implements Abstra
             super(x, y, width, height, Text.literal(String.valueOf(option.getValue())),
                     convertFromBounds(option.getValue(), option.getMin(), option.getMax()),
                     option.getMin(), option.getMax());
+            this.setAddedY(2);
             this.option = option;
-            this.setTooltip(option.getTooltip());
+            this.setOrderedTooltip(option.getTooltip());
+        }
+
+        @Override
+        public void onReset(){
+            log.error("RESET: " + option.getValue());
+            setValueSilently(convertFromBounds(option.getValue(), this.min, this.max));
+            log.error(this.value);
         }
 
         @Override
@@ -127,16 +112,8 @@ public class DoubleSliderOption extends AbstractOption<Double> implements Abstra
         }
 
         @Override
-        public void onValueUpdate() {
-            Double result = Double.valueOf(twoDecimalPlaces(MathHelper.map(this.value, 0.0, 1.0, option.min, option.max)));
-            this.option.setValue(result);
-        }
-
-        @Override
-        public void renderBackground(DrawContext context, int mouseX, int mouseY) {
-            if (this.isMouseOver(mouseX, mouseY, this.x - 150, this.y - 2, 300, 24)) {
-                this.drawRectWithOutline(context, this.x - 150, this.y - 2, 300, 24, 0x2B_FFFFFF);
-            }
+        public void onValueUpdate(double newValue) {
+            option.setValue(twoDecimalPlaces(newValue).doubleValue());
         }
     }
 }

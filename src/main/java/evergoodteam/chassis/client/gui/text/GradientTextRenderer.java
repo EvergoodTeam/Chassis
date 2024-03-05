@@ -1,16 +1,16 @@
 package evergoodteam.chassis.client.gui.text;
 
 import com.google.common.collect.Lists;
-import lombok.extern.log4j.Log4j2;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.font.*;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.text.*;
-import net.minecraft.util.Formatting;
+import net.minecraft.text.CharacterVisitor;
+import net.minecraft.text.OrderedText;
+import net.minecraft.text.Style;
+import net.minecraft.text.TextColor;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.math.MathHelper;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
@@ -20,15 +20,14 @@ import java.util.List;
 import java.util.function.Function;
 
 /**
- * Modified version of {@link TextRenderer} with changes to support individual letter coloring
+ * Modified version of {@link TextRenderer} with changes to support individual letter coloring.
  */
-@Log4j2
 public class GradientTextRenderer extends TextRenderer {
 
     private static final Vector3f FORWARD_SHIFT = new Vector3f(0.0F, 0.0F, 0.03F);
     public final Function<Identifier, FontStorage> fontStorageAccessor;
     public final TextHandler handler;
-    final boolean validateAdvance;
+    public final boolean validateAdvance;
     private List<Integer> points;
 
     public GradientTextRenderer(Function<Identifier, FontStorage> fontStorageAccessor, TextHandler handler) {
@@ -46,56 +45,20 @@ public class GradientTextRenderer extends TextRenderer {
         return this.fontStorageAccessor.apply(id);
     }
 
-    public int getWidth(OrderedText text) {
-        return MathHelper.ceil(this.handler.getWidth(text));
-    }
-
-    public GradientTextRenderer attemptFeedingPoints(Text text) {
-        if (text instanceof GradientText) this.points = ((GradientText) text).getPoints();
-        return this;
-    }
-
-    public GradientTextRenderer feedPoints(List<Integer> points) {
+    public GradientTextRenderer setPoints(@Nullable List<Integer> points) {
         this.points = points;
         return this;
     }
 
-    // Redirect drawing without AW
+    public List<Integer> getPoints() {
+        return this.points;
+    }
+
     @Override
-    public int draw(OrderedText text, float x, float y, int color, boolean shadow, Matrix4f matrix, VertexConsumerProvider vertexConsumers, TextLayerType layerType, int backgroundColor, int light) {
-        return this.drawInternal(text, x, y, color, shadow, matrix, vertexConsumers, layerType, backgroundColor, light);
-    }
-
-    public int drawInternal(OrderedText text, float x, float y, int color, boolean shadow, Matrix4f matrix, VertexConsumerProvider vertexConsumerProvider, TextRenderer.TextLayerType layerType, int backgroundColor, int light) {
-        color = GradientTextRenderer.tweakTransparency(color);
-        Matrix4f matrix4f = new Matrix4f(matrix);
-        if (shadow) {
-            this.drawLayer(text, x, y, color, true, matrix, vertexConsumerProvider, layerType, backgroundColor, light);
-            matrix4f.translate(FORWARD_SHIFT);
-        }
-
-        x = this.drawLayer(text, x, y, color, false, matrix4f, vertexConsumerProvider, layerType, backgroundColor, light);
-        return (int) x + (shadow ? 1 : 0);
-    }
-
-    public static int tweakTransparency(int argb) {
-        if ((argb & 0xFC000000) == 0) {
-            return argb | 0xFF000000;
-        }
-        return argb;
-    }
-
-    private float drawLayer(OrderedText text, float x, float y, int color, boolean shadow, Matrix4f matrix, VertexConsumerProvider vertexConsumerProvider, TextRenderer.TextLayerType layerType, int underlineColor, int light) {
-        GradientTextRenderer.GradientDrawer drawer = new GradientTextRenderer.GradientDrawer(vertexConsumerProvider, x, y, color, shadow, matrix, layerType, light, this.points);
+    public float drawLayer(OrderedText text, float x, float y, int fallbackColor, boolean shadow, Matrix4f matrix, VertexConsumerProvider vertexConsumerProvider, TextRenderer.TextLayerType layerType, int underlineColor, int light) {
+        GradientTextRenderer.GradientDrawer drawer = new GradientTextRenderer.GradientDrawer(vertexConsumerProvider, x, y, fallbackColor, shadow, matrix, layerType, light, this.points);
         text.accept(drawer);
         return drawer.drawLayer(underlineColor, x);
-    }
-
-    public void drawGlyph(GlyphRenderer glyphRenderer, boolean bold, boolean italic, float weight, float x, float y, Matrix4f matrix, VertexConsumer vertexConsumer, float red, float green, float blue, float alpha, int light) {
-        glyphRenderer.draw(italic, x, y, matrix, vertexConsumer, red, green, blue, alpha, light);
-        if (bold) {
-            glyphRenderer.draw(italic, x + weight, y, matrix, vertexConsumer, red, green, blue, alpha, light);
-        }
     }
 
     @Environment(EnvType.CLIENT)
@@ -103,9 +66,9 @@ public class GradientTextRenderer extends TextRenderer {
         final VertexConsumerProvider vertexConsumers;
         private final boolean shadow;
         private final float brightnessMultiplier;
-        private final float red;
-        private final float green;
-        private final float blue;
+        private final float r;
+        private final float g;
+        private final float b;
         private final float alpha;
         private final Matrix4f matrix;
         private final TextRenderer.TextLayerType layerType;
@@ -114,31 +77,23 @@ public class GradientTextRenderer extends TextRenderer {
         float y;
         @Nullable
         private List<GlyphRenderer.Rectangle> rectangles;
-        public List<Integer> gradients;
+        public List<Integer> colorPoints;
         private int index = 0;
 
-        private void addRectangle(GlyphRenderer.Rectangle rectangle) {
-            if (this.rectangles == null) {
-                this.rectangles = Lists.newArrayList();
-            }
-
-            this.rectangles.add(rectangle);
-        }
-
-        public GradientDrawer(VertexConsumerProvider vertexConsumers, float x, float y, int color, boolean shadow, Matrix4f matrix, TextRenderer.TextLayerType layerType, int light, List<Integer> points) {
+        public GradientDrawer(VertexConsumerProvider vertexConsumers, float x, float y, int fallbackColor, boolean shadow, Matrix4f matrix, TextRenderer.TextLayerType layerType, int light, List<Integer> points) {
             this.vertexConsumers = vertexConsumers;
             this.x = x;
             this.y = y;
             this.shadow = shadow;
             this.brightnessMultiplier = shadow ? 0.25F : 1.0F;
-            this.red = (float) (color >> 16 & 255) / 255.0F * this.brightnessMultiplier;
-            this.green = (float) (color >> 8 & 255) / 255.0F * this.brightnessMultiplier;
-            this.blue = (float) (color & 255) / 255.0F * this.brightnessMultiplier;
-            this.alpha = (float) (color >> 24 & 255) / 255.0F;
+            this.r = (float) (fallbackColor >> 16 & 255) / 255.0F * this.brightnessMultiplier;
+            this.g = (float) (fallbackColor >> 8 & 255) / 255.0F * this.brightnessMultiplier;
+            this.b = (float) (fallbackColor & 255) / 255.0F * this.brightnessMultiplier;
+            this.alpha = (float) (fallbackColor >> 24 & 255) / 255.0F;
             this.matrix = matrix;
             this.layerType = layerType;
             this.light = light;
-            this.gradients = points;
+            this.colorPoints = points;
         }
 
         public boolean accept(int i, Style style, int j) {
@@ -146,55 +101,46 @@ public class GradientTextRenderer extends TextRenderer {
             Glyph glyph = fontStorage.getGlyph(j, GradientTextRenderer.this.validateAdvance);
             GlyphRenderer glyphRenderer = style.isObfuscated() && j != 32 ? fontStorage.getObfuscatedGlyphRenderer(glyph) : fontStorage.getGlyphRenderer(j);
 
-            boolean bl = style.isBold();
-            float f = this.alpha;
-
             TextColor textColor = style.getColor();
+            boolean isBold = style.isBold();
+            float red = this.r;
+            float green = this.g;
+            float blue = this.b;
 
-            float g;
-            float h;
-            float l;
-
-            if (gradients == null || gradients.isEmpty())
-                textColor = Style.EMPTY.withColor(Formatting.WHITE).getColor();
-            else if (gradients.size() == 1) textColor = TextHelper.getColor(gradients.get(0));
-            else {
-                if (index == gradients.size()) index = 0;
-                textColor = Style.EMPTY.withColor(gradients.get(index)).getColor();
+            if (colorPoints != null && !colorPoints.isEmpty()) {
+                if (index == colorPoints.size()) index = 0;
+                textColor = TextHelper.getTextColor(colorPoints.get(index)); // set textColor as a derivative of colorPoints
                 index++;
             }
 
+            // update rgb and apply brightness multiplier, regardless of it being a derivative, otherwise normal formatted Text will just be white
             if (textColor != null) {
-                int k = textColor.getRgb();
-                g = (float) (k >> 16 & 255) / 255.0F * this.brightnessMultiplier;
-                h = (float) (k >> 8 & 255) / 255.0F * this.brightnessMultiplier;
-                l = (float) (k & 255) / 255.0F * this.brightnessMultiplier;
-            } else {
-                g = this.red;
-                h = this.green;
-                l = this.blue;
+                int rgb = textColor.getRgb();
+                red = (float) (rgb >> 16 & 255) / 255.0F * this.brightnessMultiplier;
+                green = (float) (rgb >> 8 & 255) / 255.0F * this.brightnessMultiplier;
+                blue = (float) (rgb & 255) / 255.0F * this.brightnessMultiplier;
             }
 
-            float n;
-            float m;
+            float widthOffset;
+            float heightOffset;
             if (!(glyphRenderer instanceof EmptyGlyphRenderer)) {
-                m = bl ? glyph.getBoldOffset() : 0.0F;
-                n = this.shadow ? glyph.getShadowOffset() : 0.0F;
+                heightOffset = isBold ? glyph.getBoldOffset() : 0.0F;
+                widthOffset = this.shadow ? glyph.getShadowOffset() : 0.0F;
+
                 VertexConsumer vertexConsumer = this.vertexConsumers.getBuffer(glyphRenderer.getLayer(this.layerType));
-                GradientTextRenderer.this.drawGlyph(glyphRenderer, bl, style.isItalic(), m, this.x + n, this.y + n, this.matrix, vertexConsumer, g, h, l, f, this.light);
+                GradientTextRenderer.this.drawGlyph(glyphRenderer, isBold, style.isItalic(), heightOffset, this.x + widthOffset, this.y + widthOffset, this.matrix, vertexConsumer, red, green, blue, alpha, this.light);
             }
 
-            m = glyph.getAdvance(bl);
-            n = this.shadow ? 1.0F : 0.0F;
+            heightOffset = glyph.getAdvance(isBold);
+            widthOffset = this.shadow ? 1.0F : 0.0F;
             if (style.isStrikethrough()) {
-                this.addRectangle(new GlyphRenderer.Rectangle(this.x + n - 1.0F, this.y + n + 4.5F, this.x + n + m, this.y + n + 4.5F - 1.0F, 0.01F, g, h, l, f));
+                this.addRectangle(new GlyphRenderer.Rectangle(this.x + widthOffset - 1.0F, this.y + widthOffset + 4.5F, this.x + widthOffset + heightOffset, this.y + widthOffset + 4.5F - 1.0F, 0.01F, red, green, blue, alpha));
             }
-
             if (style.isUnderlined()) {
-                this.addRectangle(new GlyphRenderer.Rectangle(this.x + n - 1.0F, this.y + n + 9.0F, this.x + n + m, this.y + n + 9.0F - 1.0F, 0.01F, g, h, l, f));
+                this.addRectangle(new GlyphRenderer.Rectangle(this.x + widthOffset - 1.0F, this.y + widthOffset + 9.0F, this.x + widthOffset + heightOffset, this.y + widthOffset + 9.0F - 1.0F, 0.01F, red, green, blue, alpha));
             }
 
-            this.x += m;
+            this.x += heightOffset;
             return true;
         }
 
@@ -219,6 +165,14 @@ public class GradientTextRenderer extends TextRenderer {
             }
 
             return this.x;
+        }
+
+        public void addRectangle(GlyphRenderer.Rectangle rectangle) {
+            if (this.rectangles == null) {
+                this.rectangles = Lists.newArrayList();
+            }
+
+            this.rectangles.add(rectangle);
         }
     }
 }

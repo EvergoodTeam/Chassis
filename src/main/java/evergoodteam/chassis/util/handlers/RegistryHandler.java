@@ -1,5 +1,8 @@
 package evergoodteam.chassis.util.handlers;
 
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
+import evergoodteam.chassis.common.group.ItemGroupBase;
 import evergoodteam.chassis.config.ConfigBase;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
@@ -27,53 +30,57 @@ import static org.slf4j.LoggerFactory.getLogger;
 public class RegistryHandler {
 
     private static final Logger LOGGER = getLogger(CMI + "/H/Registry");
-    private static final Map<String, ConfigBase> CONFIGURATIONS = new HashMap<>();
+    private static final Map<Identifier, ConfigBase> CONFIGURATIONS = new HashMap<>();
     private static final Set<Block> TRANSPARENT_BLOCKS = new HashSet<>();
-    public final Map<Block, RegistryKey<Block>> BLOCKS = new HashMap<>();
-    public final Map<Item, RegistryKey<Item>> ITEMS = new HashMap<>();
-    public final Map<ItemGroup, RegistryKey<ItemGroup>> ITEMGROUPS = new HashMap<>();
+    private final Map<Block, RegistryKey<Block>> BLOCKS = new HashMap<>();
+    private final Map<Item, RegistryKey<Item>> ITEMS = new HashMap<>();
+    private final Map<ItemGroup, RegistryKey<ItemGroup>> ITEMGROUPS = new HashMap<>();
     public final String modid;
 
     public RegistryHandler(String modid) {
         this.modid = modid;
     }
 
-    public static void registerConfiguration(String namespace, ConfigBase config) {
-        CONFIGURATIONS.put(namespace, config);
+    // TODO: have only chassis register configs?
+    public static void registerConfiguration(ConfigBase config) {
+        CONFIGURATIONS.put(config.getIdentifier(), config);
     }
 
-
-    // TODO: have only chassis register configs?
     /**
      * Gets all the existing Configs created through {@link ConfigBase}
      */
-    public static Map<String, ConfigBase> getConfigurations() {
-        return CONFIGURATIONS;
+    public static ImmutableMap<Identifier, ConfigBase> getConfigurations() {
+        return ImmutableMap.copyOf(CONFIGURATIONS);
     }
 
     public static void addTransparentBlock(Block block) {
         TRANSPARENT_BLOCKS.add(block);
     }
 
-    public static Set<Block> getTransparentBlocks() {
-        return TRANSPARENT_BLOCKS;
+    public static ImmutableSet<Block> getTransparentBlocks() {
+        return ImmutableSet.copyOf(TRANSPARENT_BLOCKS);
     }
 
-    // ItemGroup
+    // region ItemGroup
 
-    public void registerItemGroup(String namespace, String path, ItemGroup itemGroup) {
-        RegistryKey<ItemGroup> registryKey = RegistryKey.of(RegistryKeys.ITEM_GROUP, new Identifier(namespace, path));
+    public void registerItemGroup(ItemGroupBase itemGroupBase){
+        registerItemGroup(itemGroupBase.getRegistryKey(), itemGroupBase.get());
+    }
+
+    public void registerItemGroup(RegistryKey<ItemGroup> registryKey, ItemGroup itemGroup) {
         ITEMGROUPS.put(Registry.register(Registries.ITEM_GROUP, registryKey, itemGroup), registryKey);
     }
 
-    public void addToItemGroup(Item item, RegistryKey<ItemGroup> registryKey) {
-        ItemGroupEvents.modifyEntriesEvent(registryKey).register(content -> {
-            content.add(item);
-        });
+    public void addToItemGroup(Item item, ItemGroupBase itemGroupBase){
+        addToItemGroup(item, itemGroupBase.getRegistryKey());
     }
-    //
 
-    //region Block
+    public void addToItemGroup(Item item, RegistryKey<ItemGroup> registryKey) {
+        ItemGroupEvents.modifyEntriesEvent(registryKey).register(content -> content.add(item));
+    }
+    // endregion
+
+    // region Block
 
     /**
      * Registers the provided block and its item form
@@ -117,13 +124,13 @@ public class RegistryHandler {
     public void registerBlockItem(String namespace, String path, Block block) {
         registerItem(namespace, path, new BlockItem(block, new FabricItemSettings()));
     }
-    //endregion
+    // endregion
 
-    //region Item
+    // region Item
 
     public void registerItem(String namespace, String path, Item item) {
         RegistryKey<Item> registryKey = RegistryKey.of(RegistryKeys.ITEM, new Identifier(namespace, path));
         ITEMS.put(Registry.register(Registries.ITEM, registryKey, item), registryKey);
     }
-    //endregion
+    // endregion
 }

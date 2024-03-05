@@ -7,6 +7,7 @@ import net.minecraft.sound.BlockSoundGroup;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 public class BlockBase extends Block {
 

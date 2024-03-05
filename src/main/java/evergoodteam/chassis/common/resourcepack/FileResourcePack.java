@@ -29,7 +29,7 @@ import static org.slf4j.LoggerFactory.getLogger;
 @Log4j2
 public class FileResourcePack extends AbstractFileResourcePack {
 
-    private static final Logger LOGGER = getLogger(CMI + "/R/Builder");
+    private static final Logger LOGGER = getLogger(CMI + "/R/File");
     private static final Pattern RESOURCEPACK_PATH = Pattern.compile("[a-z0-9-_]+");
     public static final List<FileResourcePack> BUILT = new ArrayList<>();
 
@@ -122,8 +122,9 @@ public class FileResourcePack extends AbstractFileResourcePack {
 
     @Override
     public Set<String> getNamespaces(ResourceType type) {
-
         if (this.namespaces == null) {
+
+            log.info(type.getDirectory());
 
             Path file = getPath(type.getDirectory());
 

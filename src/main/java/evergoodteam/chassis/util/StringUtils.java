@@ -1,13 +1,11 @@
 package evergoodteam.chassis.util;
 
-import com.google.common.base.Splitter;
-import com.google.common.collect.Iterables;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 public class StringUtils {
 
@@ -17,43 +15,61 @@ public class StringUtils {
      * @param string     your string
      * @param lineLength how long a line should be
      */
-    public static List<String> wrapWords(String string, int lineLength) {
-        return wrapWords(string, "", lineLength);
+    public static List<String> wrapString(String string, int lineLength) {
+        return wrapString(string, "", lineLength);
     }
 
     /**
      * Wraps a string into lines with the specified length
      *
      * @param string     your string
-     * @param linePrefix prefix for each line e.g. "# "
+     * @param linePrefix prefix for each line, e.g. "# "
      * @param lineLength how long a line should be
      */
-    public static List<String> wrapWords(String string, String linePrefix, int lineLength) {
-        Iterable<String> spaceSplit = Splitter.on(" ").split(string);
-        List<String> wordList = List.of(Iterables.toArray(spaceSplit, String.class));
-
-        int letters = 0;
-        int words = 0;
-        for (String word : wordList) {
-            letters += word.length() + 1; // Account for space
-            if (letters - 1 > lineLength) break; // Without last space
-            words++;
-        }
-
+    public static List<String> wrapString(String string, String linePrefix, int lineLength) {
         List<String> result = new ArrayList<>();
-        for (int i = 0; i < wordList.size(); i++) {
-            String current = linePrefix;
-            for (int j = 0; j < words && i < wordList.size(); j++) {
-                current = current + wordList.get(i);
-                if (j != words - 1) {
-                    current = current + " ";
-                    i++;
-                }
+        String nextLine = string;
+
+        int index = 1;
+        for(int i = 0; i < index; i++){
+            if (nextLine.length() > lineLength) {
+                String cut = nextLine.substring(0, nextLine.length() - (nextLine.length() - lineLength) - linePrefix.length() - 1);
+                nextLine = nextLine.substring(lineLength - linePrefix.length() - 1);
+
+                if(nextLine.charAt(0) == ' ') nextLine = nextLine.substring(1);
+                else if(cut.charAt(cut.length() - 1) != ' ') cut += "-";
+
+                result.add(linePrefix + cut);
+                index++;
             }
-            result.add(current);
+            else result.add(linePrefix + nextLine);
         }
 
         return result;
+    }
+
+    public static String replaceWithCapital(String string, String... regex){
+        String result = string;
+        for(String reg : regex){
+            result = replaceWithCapital(result, reg);
+        }
+        return result;
+    }
+
+    public static String replaceWithCapital(String string, String regex){
+        return Pattern.compile(regex).matcher(string).replaceAll(result -> result.group(1).toUpperCase());
+    }
+
+    public static String replaceWith(String string, String newChar, String... regex){
+        String result = string;
+        for(String reg : regex){
+            result = replaceWith(result, newChar, reg);
+        }
+        return result;
+    }
+
+    public static String replaceWith(String string, String newChar, String regex){
+        return Pattern.compile(regex).matcher(string).replaceAll(result -> newChar);
     }
 
     /**
@@ -167,7 +183,7 @@ public class StringUtils {
      * @param open   string before the target
      * @param close  string after the target
      */
-    public static @Nullable String between(String string, String open, String close) {
+    public static String between(String string, String open, String close) {
         int start = string.indexOf(open);
         if (start != -1) {
             int end = string.indexOf(close, start + open.length());
@@ -176,6 +192,6 @@ public class StringUtils {
             }
         }
 
-        return null;
+        return "";
     }
 }

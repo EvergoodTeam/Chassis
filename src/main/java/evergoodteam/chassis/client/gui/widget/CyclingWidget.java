@@ -15,23 +15,21 @@ public class CyclingWidget<T> extends WidgetBase {
 
     public int index;
     public List<T> values;
-    public final UpdateCallback<T> updateCallback;
     public Function<T, Text> valueToText;
 
-    public CyclingWidget(int width, List<T> values, UpdateCallback<T> updateCallback, Function<T, Text> valueToText) {
-        this(width, values, updateCallback);
+    public CyclingWidget(int width, List<T> values, Function<T, Text> valueToText) {
+        this(width, values);
         this.valueToText = valueToText;
     }
 
-    public CyclingWidget(int width, List<T> values, UpdateCallback<T> updateCallback) {
-        this(width / 2, 0, 100, 20, values, updateCallback);
+    public CyclingWidget(int width, List<T> values) {
+        this(width / 2, 0, 100, 20, values);
     }
 
-    public CyclingWidget(int x, int y, int width, int height, List<T> values, UpdateCallback<T> updateCallback) {
+    public CyclingWidget(int x, int y, int width, int height, List<T> values) {
         super(x, y, width, height, Text.empty());
         this.index = 0;
         this.values = values;
-        this.updateCallback = updateCallback;
     }
 
     @Override
@@ -48,10 +46,10 @@ public class CyclingWidget<T> extends WidgetBase {
         T nextValue = getValue(this.index);
 
         this.updateMessage(nextValue);
-        this.updateCallback.onValueChange(this, nextValue);
+        this.onValueUpdate(nextValue);
     }
 
-    public CyclingWidget<T> initially(T value) {
+    public CyclingWidget<T> initially(T value) { // Can be considered an equivalent of setValueSilently
         int i = this.values.indexOf(value);
         if (i != -1) {
             this.index = i;
@@ -65,6 +63,9 @@ public class CyclingWidget<T> extends WidgetBase {
         else this.setMessage(Text.literal(String.valueOf(value)));
     }
 
+    public void onValueUpdate(T value) {
+    }
+
     public T getValue(int index) {
         return this.values.get(index);
     }
@@ -72,17 +73,5 @@ public class CyclingWidget<T> extends WidgetBase {
     public CyclingWidget<T> setValueToText(Function<T, Text> valueToText) {
         this.valueToText = valueToText;
         return this;
-    }
-
-    public record UpdateOptionValue<T>(AbstractOption<T> option) implements CyclingWidget.UpdateCallback<T> {
-        @Override
-        public void onValueChange(CyclingWidget<T> button, T value) {
-            option.setValue(value);
-        }
-    }
-
-    @Environment(value = EnvType.CLIENT)
-    public static interface UpdateCallback<T> {
-        void onValueChange(CyclingWidget<T> var1, T var2);
     }
 }

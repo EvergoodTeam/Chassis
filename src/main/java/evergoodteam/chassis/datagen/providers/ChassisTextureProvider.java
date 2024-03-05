@@ -3,6 +3,7 @@ package evergoodteam.chassis.datagen.providers;
 import evergoodteam.chassis.common.resourcepack.ResourcePackBase;
 import evergoodteam.chassis.util.StringUtils;
 import evergoodteam.chassis.util.UrlUtils;
+import lombok.extern.log4j.Log4j2;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.minecraft.data.DataProvider;
@@ -20,6 +21,7 @@ import java.util.concurrent.CompletableFuture;
 import static evergoodteam.chassis.util.Reference.CMI;
 import static org.slf4j.LoggerFactory.getLogger;
 
+@Log4j2
 public class ChassisTextureProvider implements DataProvider, FabricDataGenerator.Pack.Factory<DataProvider> {
 
     private static final Logger LOGGER = getLogger(CMI + "/D/Texture");
@@ -63,14 +65,25 @@ public class ChassisTextureProvider implements DataProvider, FabricDataGenerator
 
     @Override
     public CompletableFuture<?> run(DataWriter writer) {
-        for (Path path : textures.keySet()) {
-            try (InputStream in = new URL(textures.get(path)).openStream()) {
-                return ChassisGenericProvider.writeToPath(writer, path, in.readAllBytes());
+
+        Map<Path, byte[]> mappedData = new HashMap<>();
+
+        textures.forEach((path, url) -> {
+            InputStream in;
+            try {
+                in = new URL(textures.get(path)).openStream();
+                mappedData.put(path, in.readAllBytes());
             } catch (IOException e) {
                 LOGGER.error("Error on creating a texture .png file", e);
+                throw new RuntimeException(e);
             }
+        });
+
+        try {
+            return AbstractResourceProvider.writeToPath(writer, mappedData);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
-        return null;
     }
 
     @Override

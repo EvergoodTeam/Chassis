@@ -34,15 +34,19 @@ public class ChassisAdvancementProvider extends FabricAdvancementProvider implem
         return this;
     }
 
+    /*
     @Override
-    public void generateAdvancement(Consumer<AdvancementEntry> consumer) {
-        for(Identifier identifier : builderMap.keySet()){
-            builderMap.get(identifier).build(consumer, identifier.toString());
-        }
-    }
+    public void generateAdvancement(Consumer<Advancement> consumer) {
+        builderMap.forEach(((identifier, builder) -> builderMap.get(identifier).build(consumer, identifier.toString())));
+    }*/
 
     @Override
     public DataProvider create(FabricDataOutput output) {
         return this;
+    }
+
+    @Override
+    public void generateAdvancement(Consumer<AdvancementEntry> consumer) {
+
     }
 }

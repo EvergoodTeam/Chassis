@@ -8,9 +8,11 @@
   ],
   "client": [
     "ClientMixin",
+    "DrawContextMixin",
     "FontManagerMixin",
     "InGameHudMixin",
-    "PackScreenMixin"
+    "PackScreenMixin",
+    "shader.GameRendererMixin"
   ],
   "injectors": {
     "defaultRequire": 1

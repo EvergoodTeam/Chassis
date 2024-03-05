@@ -50,6 +50,9 @@
       ],
       "net/minecraft/class_2403": [
         "evergoodteam/chassis/datagen/ProviderSizeGetter"
+      ],
+      "net/minecraft/class_332": [
+        "evergoodteam/chassis/client/gui/ChassisDrawContext"
       ]
     }
   }
