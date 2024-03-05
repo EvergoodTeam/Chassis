@@ -2,7 +2,6 @@ package evergoodteam.chassis.client.gui.widget;
 
 import evergoodteam.chassis.client.gui.text.GradientText;
 import evergoodteam.chassis.util.gui.ColorUtils;
-import lombok.extern.log4j.Log4j2;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -10,7 +9,6 @@ import net.minecraft.util.Formatting;
 /**
  * Displays centered text without rendering the button texture
  */
-@Log4j2
 public class TextWidget extends WidgetBase {
 
     public Text description = Text.empty();

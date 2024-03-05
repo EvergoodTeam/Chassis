@@ -1,6 +1,5 @@
 package evergoodteam.chassis.client.gui.widget;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import evergoodteam.chassis.util.gui.ColorAHSB;
 import evergoodteam.chassis.util.gui.ColorUtils;
 import net.fabricmc.api.EnvType;

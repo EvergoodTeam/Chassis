@@ -1,8 +1,6 @@
 package evergoodteam.chassis.client.gui.widget;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import evergoodteam.chassis.util.gui.ColorUtils;
-import lombok.extern.log4j.Log4j2;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.sound.SoundManager;
@@ -45,7 +43,8 @@ public class SliderWidget extends WidgetBase {
         context.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
     }
 
-    public void renderBack(DrawContext context, int mouseX, int mouseY){}
+    public void renderBack(DrawContext context, int mouseX, int mouseY) {
+    }
 
     public Identifier getTexture() {
         return TEXTURE;
@@ -84,7 +83,7 @@ public class SliderWidget extends WidgetBase {
         this.setValue((mouseX - (double) (this.x + 4)) / (double) (this.width - sliderWidth));
     }
 
-    public void setValueFromMouseY(double mouseY){
+    public void setValueFromMouseY(double mouseY) {
         this.setValue((mouseY - this.y) / this.height);
     }
 
@@ -97,7 +96,7 @@ public class SliderWidget extends WidgetBase {
         this.updateMessage();
     }
 
-    public void setValueSilently(double value){
+    public void setValueSilently(double value) {
         this.value = MathHelper.clamp(value, 0.0, 1.0);
         this.updateMessage();
     }

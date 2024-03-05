@@ -67,7 +67,7 @@ public class SquarePickerWidget extends SliderWidget {
         this.updateMessage();
     }
 
-    public void onValueUpdate(double newValueX, double newValueY){
+    public void onValueUpdate(double newValueX, double newValueY) {
     }
 
     public void setValuesSilently(double valueX, double valueY) {

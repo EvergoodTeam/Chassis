@@ -26,7 +26,7 @@ public class OverlayWidget extends WidgetBase {
         this.renderBackground(context, mouseX, mouseY, delta);
     }
 
-    public void renderBackground(DrawContext context, int mouseX, int mouseY, float delta){
+    public void renderBackground(DrawContext context, int mouseX, int mouseY, float delta) {
         drawRectWithOutline(context, x, y, width, height, backgroundColor, outlineColor);
     }
 

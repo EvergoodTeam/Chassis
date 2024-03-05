@@ -7,7 +7,6 @@ import net.minecraft.sound.BlockSoundGroup;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
-import java.util.function.Consumer;
 
 public class BlockBase extends Block {
 
@@ -23,7 +22,7 @@ public class BlockBase extends Block {
         super(blockSettings);
     }
 
-    public BlockBase setTransparent(){
+    public BlockBase setTransparent() {
         RegistryHandler.addTransparentBlock(this);
         return this;
     }

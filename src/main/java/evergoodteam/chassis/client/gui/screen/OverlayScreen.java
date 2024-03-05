@@ -32,15 +32,6 @@ public class OverlayScreen extends Screen implements Element {
     public void render(DrawContext context, int mouseX, int mouseY, float delta) {
         this.renderBackground(context, mouseX, mouseY, delta);
 
-        /*
-        if(parent != null) {
-            parent.resize(client, this.width, this.height);
-            parent.render(context, mouseX, mouseY, delta);
-        }*/
-
-        // textRenderer is rendering text above the overlay
-        // TODO: z represents layer priority, e.g. z = 400 is used for tooltips to show above everything => check screen rendering and overlay
-        //context.fillGradient(0, 0, this.width, this.height, -1072689136, -804253680);
         super.render(context, mouseX, mouseY, delta);
         overlayWidget.render(context, mouseX, mouseY, delta);
     }

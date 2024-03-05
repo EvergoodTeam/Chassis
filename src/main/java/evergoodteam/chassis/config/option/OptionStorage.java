@@ -35,12 +35,12 @@ public class OptionStorage {
     }
 
     @ApiStatus.Internal
-    public CategoryOption getConfigLockCat(){
+    public CategoryOption getConfigLockCat() {
         return this.configLock;
     }
 
     @ApiStatus.Internal
-    public CategoryOption getResourceLockCat(){
+    public CategoryOption getResourceLockCat() {
         return this.resourceLock;
     }
 
@@ -52,7 +52,7 @@ public class OptionStorage {
         return categories;
     }
 
-    public List<CategoryOption> getUserCategories(){
+    public List<CategoryOption> getUserCategories() {
         List<CategoryOption> result = new ArrayList<>(categories);
         result.remove(configLock);
         result.remove(resourceLock);
@@ -75,7 +75,7 @@ public class OptionStorage {
         stringSetOptions.store(option);
     }
 
-    public @Nullable AbstractOption<?> getOption(String name){
+    public @Nullable AbstractOption<?> getOption(String name) {
         return getOptions().stream().filter(option -> option.getName().equals(name)).findFirst().orElse(null);
     }
 
@@ -125,12 +125,12 @@ public class OptionStorage {
         }
 
         public void store(T option) {
-            if(!storage.keys.contains(option.getName())){
+            if (!storage.keys.contains(option.getName())) {
                 storage.keys.add(option.getName());
                 storage.properties.list.add(option);
                 list.add(option);
-            }
-            else LOGGER.error("The option \"{}\" will be ignored because an option with such name already exists", option.getName());
+            } else
+                LOGGER.error("The option \"{}\" will be ignored because an option with such name already exists", option.getName());
         }
 
         public @Nullable T get(String name) {

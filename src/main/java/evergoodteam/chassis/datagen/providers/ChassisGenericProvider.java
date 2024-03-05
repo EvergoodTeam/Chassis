@@ -2,9 +2,7 @@ package evergoodteam.chassis.datagen.providers;
 
 import com.google.gson.JsonElement;
 import evergoodteam.chassis.common.resourcepack.ResourcePackBase;
-import lombok.extern.log4j.Log4j2;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
-import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.DataWriter;
 import org.slf4j.Logger;
@@ -17,7 +15,6 @@ import java.util.concurrent.CompletableFuture;
 import static evergoodteam.chassis.util.Reference.CMI;
 import static org.slf4j.LoggerFactory.getLogger;
 
-@Log4j2
 public class ChassisGenericProvider extends AbstractResourceProvider {
 
     private static final Logger LOGGER = getLogger(CMI + "/D/Generic");

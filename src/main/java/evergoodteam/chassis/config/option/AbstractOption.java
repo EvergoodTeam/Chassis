@@ -8,7 +8,9 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.text.Text;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 public abstract class AbstractOption<T> {
 
@@ -54,7 +56,7 @@ public abstract class AbstractOption<T> {
         return value;
     }
 
-    public ImmutableCollection<T> getValues(){
+    public ImmutableCollection<T> getValues() {
         return ImmutableList.of(value);
     }
 
@@ -85,7 +87,7 @@ public abstract class AbstractOption<T> {
         return tooltip;
     }
 
-    public boolean isCommentHidden(){
+    public boolean isCommentHidden() {
         return commentHidden;
     }
 
@@ -173,7 +175,7 @@ public abstract class AbstractOption<T> {
      */
     public abstract void setValueFromString(String newValue);
 
-    public void hideComment(boolean bool){
+    public void hideComment(boolean bool) {
         this.commentHidden = bool;
     }
 
@@ -204,24 +206,26 @@ public abstract class AbstractOption<T> {
         /**
          * Normal callback method that is called everytime the option is updated through {@link AbstractOption#setValue(Object)}.
          */
-        default void onUpdate(T newValue){}
+        default void onUpdate(T newValue) {
+        }
 
         /**
          * Generic callback method that is called when the option is updated through either {@link AbstractOption#setValue(Object)} or {@link AbstractOption#setValueSilently(Object)}.
          */
         // TODO: fix need for silent calls
-        default void onAnyUpdate(T newValue){}
+        default void onAnyUpdate(T newValue) {
+        }
     }
 
-    public static class Builder<T, E extends AbstractOption<T>>{
+    public static class Builder<T, E extends AbstractOption<T>> {
 
         E option;
 
-        Builder(E option){
+        Builder(E option) {
             this.option = option;
         }
 
-        public Builder<T, E> setEnvType(EnvType envType){
+        public Builder<T, E> setEnvType(EnvType envType) {
             option.setEnvType(envType);
             return this;
         }
@@ -256,7 +260,7 @@ public abstract class AbstractOption<T> {
             return this;
         }
 
-        public E build(){
+        public E build() {
             return option;
         }
     }

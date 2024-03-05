@@ -73,7 +73,7 @@ public class BooleanOption extends AbstractOption<Boolean> {
         }
 
         @Override
-        public void onValueUpdate(Boolean value){
+        public void onValueUpdate(Boolean value) {
             option.setValue(value);
         }
 

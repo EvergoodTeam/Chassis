@@ -77,7 +77,7 @@ public class StringSetOption extends AbstractOption<String> {
         }
 
         @Override
-        public void onValueUpdate(String value){
+        public void onValueUpdate(String value) {
             option.setValue(value);
         }
 

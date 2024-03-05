@@ -63,7 +63,7 @@ public class RegistryHandler {
 
     // region ItemGroup
 
-    public void registerItemGroup(ItemGroupBase itemGroupBase){
+    public void registerItemGroup(ItemGroupBase itemGroupBase) {
         registerItemGroup(itemGroupBase.getRegistryKey(), itemGroupBase.get());
     }
 
@@ -71,7 +71,7 @@ public class RegistryHandler {
         ITEMGROUPS.put(Registry.register(Registries.ITEM_GROUP, registryKey, itemGroup), registryKey);
     }
 
-    public void addToItemGroup(Item item, ItemGroupBase itemGroupBase){
+    public void addToItemGroup(Item item, ItemGroupBase itemGroupBase) {
         addToItemGroup(item, itemGroupBase.getRegistryKey());
     }
 

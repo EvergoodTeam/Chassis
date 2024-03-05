@@ -33,6 +33,8 @@ public class WidgetBase extends AbstractWidget {
         this.width = width;
         this.height = height;
         this.message = message;
+
+        this.init();
     }
 
     public void setMessage(String message) {
@@ -63,7 +65,7 @@ public class WidgetBase extends AbstractWidget {
         setOrderedTooltip(tooltip, (this.width / 10) * 8);
     }
 
-    public void setOrderedTooltip(Text tooltip, int width){
+    public void setOrderedTooltip(Text tooltip, int width) {
         setOrderedTooltip(wrapLines(client, tooltip, width));
     }
 
@@ -71,7 +73,7 @@ public class WidgetBase extends AbstractWidget {
         this.orderedTooltip = tooltip;
     }
 
-    public List<OrderedText> wrapLines(MinecraftClient client, Text text, int width){
+    public List<OrderedText> wrapLines(MinecraftClient client, Text text, int width) {
         return client.textRenderer.wrapLines(text, width);
     }
 
@@ -173,11 +175,11 @@ public class WidgetBase extends AbstractWidget {
         context.drawCenteredTextWithShadow(textRenderer, Text.literal(message).fillStyle(this.getMessage().getStyle()), x, y, ColorUtils.WHITE);
     }
 
-    public boolean isTruncatable(Text text){
+    public boolean isTruncatable(Text text) {
         return textRenderer.getWidth(text) > textRenderer.getWidth(this.truncateString(text.getString()));
     }
 
-    public String truncateString(String string){
+    public String truncateString(String string) {
         return truncateString(string, this.truncateWidth);
     }
 
@@ -200,10 +202,13 @@ public class WidgetBase extends AbstractWidget {
 
     public interface WidgetUpdateCallback {
 
-        default void onPress(WidgetBase widget) {}
+        default void onPress(WidgetBase widget) {
+        }
 
-        default void onPositionUpdate(int x, int y) {}
+        default void onPositionUpdate(int x, int y) {
+        }
 
-        default void onSave() {}
+        default void onSave() {
+        }
     }
 }

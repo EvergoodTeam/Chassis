@@ -1,12 +1,10 @@
 package evergoodteam.chassis.config;
 
-import lombok.extern.log4j.Log4j2;
 import org.slf4j.Logger;
 
 import static evergoodteam.chassis.util.Reference.CMI;
 import static org.slf4j.LoggerFactory.getLogger;
 
-@Log4j2
 public class ConfigHandler {
 
     private static final Logger LOGGER = getLogger(CMI + "/C/Handler");
@@ -26,7 +24,7 @@ public class ConfigHandler {
         } else LOGGER.info("Configs \"{}\" already exist, skipping first generation", config.getIdentifier());
     }
 
-    public void writeResourceLocks(){
+    public void writeResourceLocks() {
         config.getWriter().updateInternalResourceLockFromStored();
         config.getWriter().overwriteWithStored();
     }

@@ -2,8 +2,6 @@ package evergoodteam.chassis.mixin.shader;
 
 import com.mojang.datafixers.util.Pair;
 import evergoodteam.chassis.client.gui.shader.ShaderWrapper;
-import net.fabricmc.fabric.api.client.rendering.v1.CoreShaderRegistrationCallback;
-import net.fabricmc.fabric.impl.client.rendering.FabricShaderProgram;
 import net.minecraft.client.gl.ShaderProgram;
 import net.minecraft.client.gl.ShaderStage;
 import net.minecraft.client.render.GameRenderer;
@@ -14,7 +12,6 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.function.Consumer;
 

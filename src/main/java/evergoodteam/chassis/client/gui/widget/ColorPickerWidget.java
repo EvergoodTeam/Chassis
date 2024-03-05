@@ -41,7 +41,6 @@ public class ColorPickerWidget extends DropdownWidget {
         this.children.addAll(colorPicker.getChildren());
     }
 
-    // TODO: [NU] add rgb TextFields
     @Override
     public void render(DrawContext context, int mouseX, int mouseY, float delta) {
         renderPreview(context, mouseX, mouseY, delta);

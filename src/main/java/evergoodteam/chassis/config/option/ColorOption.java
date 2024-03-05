@@ -6,19 +6,17 @@ import evergoodteam.chassis.client.gui.widget.WidgetBase;
 import evergoodteam.chassis.client.gui.widget.interfaces.ConfigWidgetEntry;
 import evergoodteam.chassis.util.gui.ColorAHSB;
 import evergoodteam.chassis.util.gui.ColorUtils;
-import lombok.extern.log4j.Log4j2;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.DrawContext;
 
 import java.util.Set;
 
-@Log4j2
 public class ColorOption extends StringSetOption {
 
     private boolean open = false;
 
-    public ColorOption(OptionUpdateCallback<String> updateCallback, String name, String defaultColor){
+    public ColorOption(OptionUpdateCallback<String> updateCallback, String name, String defaultColor) {
         this(name, defaultColor);
         this.addUpdateCallback(updateCallback);
     }
@@ -27,11 +25,11 @@ public class ColorOption extends StringSetOption {
         super(name, defaultColor, Set.of(defaultColor));
     }
 
-    public int getIntColorValue(){
+    public int getIntColorValue() {
         return ColorUtils.ARGB.getIntFromHexARGB(this.getValue());
     }
 
-    public void setDropdownState(boolean open){
+    public void setDropdownState(boolean open) {
         this.open = open;
     }
 
@@ -40,13 +38,13 @@ public class ColorOption extends StringSetOption {
         return new Builder(this);
     }
 
-    public static class Builder extends AbstractOption.Builder<String, ColorOption>{
+    public static class Builder extends AbstractOption.Builder<String, ColorOption> {
 
         Builder(ColorOption option) {
             super(option);
         }
 
-        public Builder setDropdownState(boolean open){
+        public Builder setDropdownState(boolean open) {
             option.setDropdownState(open);
             return this;
         }
@@ -79,7 +77,7 @@ public class ColorOption extends StringSetOption {
             this.option.addUpdateCallback(new OptionUpdateCallback<>() {
 
                 @Override
-                public void onUpdate(String newValue){
+                public void onUpdate(String newValue) {
                     colorPicker.ashb.setValue(ColorUtils.ARGB.getIntFromHexARGB(newValue));
                     colorPicker.ashb.updateAll();
                     updateTextField(option.getValue());
@@ -110,10 +108,10 @@ public class ColorOption extends StringSetOption {
             });
         }
 
-        public void updateTextField(String text){
+        public void updateTextField(String text) {
             textField.setTextSilently(text);
-            if(ColorUtils.Hex.isARGBHex(text)) textField.setOrderedTooltip(ChassisScreenTexts.ARGB);
-            else if(ColorUtils.Hex.isRGBHex(text)) textField.setOrderedTooltip(ChassisScreenTexts.RGB);
+            if (ColorUtils.Hex.isARGBHex(text)) textField.setOrderedTooltip(ChassisScreenTexts.ARGB);
+            else if (ColorUtils.Hex.isRGBHex(text)) textField.setOrderedTooltip(ChassisScreenTexts.RGB);
             else textField.setOrderedTooltip(ChassisScreenTexts.INVALID);
         }
 

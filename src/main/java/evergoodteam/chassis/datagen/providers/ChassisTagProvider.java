@@ -1,7 +1,6 @@
 package evergoodteam.chassis.datagen.providers;
 
 import evergoodteam.chassis.common.resourcepack.ResourcePackBase;
-import lombok.extern.log4j.Log4j2;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
@@ -11,12 +10,10 @@ import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.registry.tag.TagKey;
 
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
 
-@Log4j2
 public class ChassisTagProvider<T> extends FabricTagProvider<T> implements FabricDataGenerator.Pack.Factory<DataProvider> {
 
     public final ResourcePackBase resourcePack;

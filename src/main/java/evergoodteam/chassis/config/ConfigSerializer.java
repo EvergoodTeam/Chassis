@@ -6,7 +6,6 @@ import evergoodteam.chassis.config.option.CategoryOption;
 import evergoodteam.chassis.util.CollectionUtils;
 import evergoodteam.chassis.util.FileUtils;
 import evergoodteam.chassis.util.StringUtils;
-import lombok.extern.log4j.Log4j2;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
 import org.slf4j.Logger;
@@ -18,7 +17,6 @@ import java.util.stream.Collectors;
 import static evergoodteam.chassis.util.Reference.CMI;
 import static org.slf4j.LoggerFactory.getLogger;
 
-@Log4j2
 public class ConfigSerializer {
 
     private static final Logger LOGGER = getLogger(CMI + "/C/Serializer");

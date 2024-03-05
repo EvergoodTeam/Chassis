@@ -1,6 +1,5 @@
 package evergoodteam.chassis.client.gui.widget;
 
-import evergoodteam.chassis.config.option.AbstractOption;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.screen.Screen;

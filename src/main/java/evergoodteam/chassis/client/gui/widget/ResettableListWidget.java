@@ -2,13 +2,11 @@ package evergoodteam.chassis.client.gui.widget;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import com.mojang.blaze3d.systems.RenderSystem;
 import evergoodteam.chassis.client.gui.text.ChassisScreenTexts;
 import evergoodteam.chassis.client.gui.widget.interfaces.ConfigWidgetEntry;
 import evergoodteam.chassis.config.option.AbstractOption;
 import evergoodteam.chassis.config.option.CategoryOption;
 import evergoodteam.chassis.util.gui.ColorUtils;
-import lombok.extern.log4j.Log4j2;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
@@ -16,17 +14,12 @@ import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.ParentElement;
 import net.minecraft.client.gui.Selectable;
-import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ElementListWidget;
-import net.minecraft.client.render.RenderLayer;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.MathHelper;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
 // TODO: dropdowns at the bottom of the page wont move back up the page when closed
-@Log4j2
 @Environment(value = EnvType.CLIENT)
 public class ResettableListWidget extends ElementListWidget<ResettableListWidget.ButtonEntry> {
 
@@ -143,7 +136,8 @@ public class ResettableListWidget extends ElementListWidget<ResettableListWidget
         int indexedHeight = 4; // Account for initial gap
 
         for (ButtonEntry buttonEntry : this.children()) {
-            if(mouseY <= this.top + this.headerHeight || mouseY >= this.bottom) continue; // fixes tooltip showing outside actual scrollable list
+            if (mouseY <= this.top + this.headerHeight || mouseY >= this.bottom)
+                continue; // fixes tooltip showing outside actual scrollable list
 
             if (currentPosition - indexedHeight >= 0 && currentPosition - indexedHeight <= buttonEntry.height) {
                 if (mouseX < (double) this.getScrollbarPositionX() && mouseX >= (double) rowX && mouseX <= (double) rowX2) {
@@ -258,8 +252,7 @@ public class ResettableListWidget extends ElementListWidget<ResettableListWidget
             drawHoveredBorder(context, index, y, x, entryWidth, this.height, mouseX, mouseY, hovered, tickDelta);
 
             this.children.forEach((button) -> {
-                if(button == null) return;
-                //log.info(button + " " + (button == this.reset));
+                if (button == null) return;
                 button.setY(y + button.getAddedY());
                 button.render(context, mouseX, mouseY, tickDelta);
             });

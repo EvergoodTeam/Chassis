@@ -3,7 +3,6 @@ package evergoodteam.chassis.config;
 import evergoodteam.chassis.config.option.*;
 import evergoodteam.chassis.util.StringUtils;
 import evergoodteam.chassis.util.handlers.RegistryHandler;
-import lombok.extern.log4j.Log4j2;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
@@ -19,7 +18,6 @@ import static evergoodteam.chassis.util.Reference.CMI;
 import static org.slf4j.LoggerFactory.getLogger;
 
 // TODO: use getters
-@Log4j2
 public class ConfigBase {
 
     private final Logger LOGGER = getLogger(CMI + "/Config");
@@ -67,7 +65,7 @@ public class ConfigBase {
         RegistryHandler.registerConfiguration(this);
     }
 
-    public Identifier getIdentifier(){
+    public Identifier getIdentifier() {
         return this.identifier;
     }
 
@@ -78,11 +76,11 @@ public class ConfigBase {
      * @see ConfigHandler#setup()
      */
     // TODO: version mismatch doesnt take into account the possibility that mod was just updated, aka nothing is broken
-    public boolean isStrictVersioningEnabled(){
+    public boolean isStrictVersioningEnabled() {
         return this.strictVersion;
     }
 
-    public ConfigBase setStrictVersioning(boolean strictVersion){
+    public ConfigBase setStrictVersioning(boolean strictVersion) {
         this.strictVersion = strictVersion;
         return this;
     }
@@ -95,11 +93,11 @@ public class ConfigBase {
         return optionStorage;
     }
 
-    public ConfigHandler getHandler(){
+    public ConfigHandler getHandler() {
         return handler;
     }
 
-    public ConfigNetworking getNetworkHandler(){
+    public ConfigNetworking getNetworkHandler() {
         return this.networking;
     }
 
@@ -107,19 +105,19 @@ public class ConfigBase {
         return configWriter;
     }
 
-    public BooleanOption getLock(){
+    public BooleanOption getLock() {
         return configLocked;
     }
 
-    public boolean isLocked(){
+    public boolean isLocked() {
         return configLocked.getValue();
     }
 
-    public Optional<String> getWrittenValue(AbstractOption<?> option){
-        if(configWriter.getSerializer().getMappedWrittenOptions().get(option.getName()) == null) return Optional.empty();
+    public Optional<String> getWrittenValue(AbstractOption<?> option) {
+        if (configWriter.getSerializer().getMappedWrittenOptions().get(option.getName()) == null)
+            return Optional.empty();
         return Optional.of(configWriter.getSerializer().getMappedWrittenOptions().get(option.getName()));
     }
-
 
 
     public ConfigBase setDisplayTitle(Text title) {

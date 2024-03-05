@@ -5,7 +5,6 @@ import evergoodteam.chassis.client.gui.widget.SliderWidget;
 import evergoodteam.chassis.client.gui.widget.WidgetBase;
 import evergoodteam.chassis.client.gui.widget.interfaces.ConfigWidgetEntry;
 import evergoodteam.chassis.config.ConfigBase;
-import lombok.extern.log4j.Log4j2;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.DrawContext;
@@ -13,7 +12,6 @@ import net.minecraft.text.Text;
 
 import java.util.Optional;
 
-@Log4j2
 public class DoubleSliderOption extends AbstractOption<Double> implements AbstractOption.Interval<Double> {
 
     private Double min;
@@ -99,10 +97,8 @@ public class DoubleSliderOption extends AbstractOption<Double> implements Abstra
         }
 
         @Override
-        public void onReset(){
-            log.error("RESET: " + option.getValue());
+        public void onReset() {
             setValueSilently(convertFromBounds(option.getValue(), this.min, this.max));
-            log.error(this.value);
         }
 
         @Override

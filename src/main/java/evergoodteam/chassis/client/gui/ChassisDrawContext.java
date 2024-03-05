@@ -42,7 +42,7 @@ public interface ChassisDrawContext {
     /**
      * Draws a line filled with a horizontal gradient.
      */
-    default void chassisDrawGradientLine(RenderLayer layer, int x1, int x2, int y, int z, int start, int end){
+    default void chassisDrawGradientLine(RenderLayer layer, int x1, int x2, int y, int z, int start, int end) {
         if (x2 < x1) {
             int i = x1;
             x1 = x2;
@@ -52,11 +52,11 @@ public interface ChassisDrawContext {
         this.chassisFillHorizontalGradient(layer, x1, y, x2 + 1, y + 1, start, end, z);
     }
 
-    default void chassisFillHorizontalGradient(int startX, int startY, int endX, int endY, int colorStart, int colorEnd){
+    default void chassisFillHorizontalGradient(int startX, int startY, int endX, int endY, int colorStart, int colorEnd) {
         this.chassisFillHorizontalGradient(startX, startY, endX, endY, 0, colorStart, colorEnd);
     }
 
-    default void chassisFillHorizontalGradient(int startX, int startY, int endX, int endY, int z, int colorStart, int colorEnd){
+    default void chassisFillHorizontalGradient(int startX, int startY, int endX, int endY, int z, int colorStart, int colorEnd) {
         this.chassisFillHorizontalGradient(RenderLayer.getGui(), startX, startY, endX, endY, colorStart, colorEnd, z);
     }
 

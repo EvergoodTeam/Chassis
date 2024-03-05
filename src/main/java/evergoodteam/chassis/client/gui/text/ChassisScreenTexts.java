@@ -1,6 +1,5 @@
 package evergoodteam.chassis.client.gui.text;
 
-import evergoodteam.chassis.client.gui.text.TextHelper;
 import net.minecraft.text.Text;
 
 public class ChassisScreenTexts {

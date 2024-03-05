@@ -16,7 +16,7 @@ public class ColorAHSB {
         updateAll();
     }
 
-    public void setCallback(ColorUpdateCallback updateCallback){
+    public void setCallback(ColorUpdateCallback updateCallback) {
         this.callback = updateCallback;
     }
 
@@ -28,7 +28,7 @@ public class ColorAHSB {
         return ColorUtils.Hex.getHexFromARGB(this.value);
     }
 
-    public int getValue(){
+    public int getValue() {
         return this.value;
     }
 
@@ -55,7 +55,7 @@ public class ColorAHSB {
         recalculateValue();
     }
 
-    public float getAlpha(){
+    public float getAlpha() {
         return this.alpha;
     }
 
@@ -76,7 +76,7 @@ public class ColorAHSB {
         recalculateValue();
     }
 
-    public float getHue(){
+    public float getHue() {
         return this.hue;
     }
 
@@ -99,11 +99,11 @@ public class ColorAHSB {
         recalculateValue();
     }
 
-    public float getSaturation(){
+    public float getSaturation() {
         return this.saturation;
     }
 
-    public float getBrightness(){
+    public float getBrightness() {
         return this.brightness;
     }
 

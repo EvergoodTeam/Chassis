@@ -6,7 +6,6 @@ import evergoodteam.chassis.client.gui.widget.WidgetBase;
 import evergoodteam.chassis.client.gui.widget.interfaces.ConfigWidgetEntry;
 import evergoodteam.chassis.config.ConfigBase;
 import evergoodteam.chassis.util.gui.ColorUtils;
-import lombok.extern.log4j.Log4j2;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.DrawContext;
@@ -16,7 +15,6 @@ import net.minecraft.text.Text;
 import java.util.ArrayList;
 import java.util.List;
 
-@Log4j2
 public class CategoryOption extends AbstractOption<String> {
 
     private final ConfigBase config;
@@ -99,10 +97,12 @@ public class CategoryOption extends AbstractOption<String> {
     }
 
     @Override
-    public void setValue(String newValue) {}
+    public void setValue(String newValue) {
+    }
 
     @Override
-    public void setValueFromString(String newValue) {}
+    public void setValueFromString(String newValue) {
+    }
 
     public void useFrame(boolean frame) {
         this.frame = frame;
@@ -135,7 +135,7 @@ public class CategoryOption extends AbstractOption<String> {
         }
 
         @Override
-        public int getExtendedHeight(){
+        public int getExtendedHeight() {
             return 0;
         }
 
@@ -143,17 +143,14 @@ public class CategoryOption extends AbstractOption<String> {
         public void render(DrawContext context, int mouseX, int mouseY, float delta) {
             if (this.enabled) {
                 if (this.frame) {
-                    if(this.getMessage() instanceof GradientText gradientText && gradientText.getPoints().size() > 1) {
+                    if (this.getMessage() instanceof GradientText gradientText && gradientText.getPoints().size() > 1) {
                         List<Integer> points = gradientText.getPoints();
                         int first = ColorUtils.ARGB.convertARGBWithAlpha(0x2b, points.get(0));
                         int last = ColorUtils.ARGB.convertARGBWithAlpha(0x2b, points.get(points.size() / 2 + 1));
                         //log.error(points.size());
                         this.drawGradientFrameWithBackground(context, x, y, width, height, first, last, outline);
-                    }
-
-                    else this.drawFrameWithBackground(context, x, y, width, height, background, outline);
-                }
-                else
+                    } else this.drawFrameWithBackground(context, x, y, width, height, background, outline);
+                } else
                     this.drawRectWithOutline(context, x, y, width, height, background, outline);
                 this.renderText(context);
             }
@@ -166,9 +163,10 @@ public class CategoryOption extends AbstractOption<String> {
 
 
         @Override
-        public void drawHoveredHighlight(WidgetBase widget, DrawContext context, int centerX, int y, double mouseX, double mouseY){
-            if(this.frame) widget.drawRectangle(context, this.x, this.y, this.width, this.height, this.background);
-            else widget.drawRectWithOutline(context, this.x, this.y, this.width, this.height, this.background, this.outline);
+        public void drawHoveredHighlight(WidgetBase widget, DrawContext context, int centerX, int y, double mouseX, double mouseY) {
+            if (this.frame) widget.drawRectangle(context, this.x, this.y, this.width, this.height, this.background);
+            else
+                widget.drawRectWithOutline(context, this.x, this.y, this.width, this.height, this.background, this.outline);
         }
 
         @Override

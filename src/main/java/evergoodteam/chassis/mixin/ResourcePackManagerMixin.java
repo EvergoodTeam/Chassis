@@ -5,7 +5,6 @@ import evergoodteam.chassis.common.resourcepack.ResourcePackBase;
 import evergoodteam.chassis.common.resourcepack.providers.ClientResourcePackProvider;
 import evergoodteam.chassis.common.resourcepack.providers.ServerResourcePackProvider;
 import evergoodteam.chassis.util.StringUtils;
-import lombok.extern.log4j.Log4j2;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.resource.ResourcePackManager;
@@ -29,7 +28,6 @@ import java.util.Set;
 import static evergoodteam.chassis.util.Reference.CMI;
 import static org.slf4j.LoggerFactory.getLogger;
 
-@Log4j2
 @Mixin(ResourcePackManager.class)
 public class ResourcePackManagerMixin {
 
@@ -72,10 +70,11 @@ public class ResourcePackManagerMixin {
                 resourcePacks.forEach(resourcePack -> {
 
                     String friendlyPath = StringUtils.replaceWith(identifier.toString(), "/", ":+");
-                    if(friendlyPath.split("/")[0].equals(friendlyPath.split("/")[1])) friendlyPath = friendlyPath.split("/")[0];
-                    log.info(friendlyPath);
+                    if (friendlyPath.split("/")[0].equals(friendlyPath.split("/")[1]))
+                        friendlyPath = friendlyPath.split("/")[0];
 
-                    if(resourcePack.providerRegistry != null && !resourcePack.areProvidersDone()) resourcePack.providerRegistry.registerProviders();
+                    if (resourcePack.providerRegistry != null && !resourcePack.areProvidersDone())
+                        resourcePack.providerRegistry.registerProviders();
                     if (finalClient) {
                         providersCopy.add(new ClientResourcePackProvider(friendlyPath, resourcePack.getName(), resourcePack.getMetadataKey(), resourcePack.getHexColor()));
                         //LOGGER.info("Injected our ClientProvider into providers: {}", this.providers);

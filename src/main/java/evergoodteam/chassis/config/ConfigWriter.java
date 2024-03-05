@@ -3,21 +3,22 @@ package evergoodteam.chassis.config;
 import com.google.common.io.CharSink;
 import evergoodteam.chassis.util.DirectoryUtils;
 import evergoodteam.chassis.util.FileUtils;
-import lombok.extern.log4j.Log4j2;
 import org.jetbrains.annotations.ApiStatus;
 import org.slf4j.Logger;
 
 import java.io.IOException;
 import java.io.Writer;
 import java.nio.file.Files;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static evergoodteam.chassis.util.Reference.CMI;
 import static org.slf4j.LoggerFactory.getLogger;
 
-@Log4j2
 public class ConfigWriter {
 
     private static final Logger LOGGER = getLogger(CMI + "/C/Writer");

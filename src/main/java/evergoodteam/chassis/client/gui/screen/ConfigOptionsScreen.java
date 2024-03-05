@@ -5,7 +5,6 @@ import evergoodteam.chassis.client.ChassisClient;
 import evergoodteam.chassis.client.gui.DrawingUtils;
 import evergoodteam.chassis.client.gui.text.GradientTextRenderer;
 import evergoodteam.chassis.client.gui.widget.ResettableListWidget;
-import evergoodteam.chassis.client.gui.widget.TextWidget;
 import evergoodteam.chassis.client.gui.widget.WidgetBase;
 import evergoodteam.chassis.config.ConfigBase;
 import net.fabricmc.api.EnvType;
