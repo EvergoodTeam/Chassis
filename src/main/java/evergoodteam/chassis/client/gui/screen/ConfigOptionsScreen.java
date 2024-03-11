@@ -3,6 +3,7 @@ package evergoodteam.chassis.client.gui.screen;
 import com.google.common.collect.ImmutableList;
 import evergoodteam.chassis.client.ChassisClient;
 import evergoodteam.chassis.client.gui.DrawingUtils;
+import evergoodteam.chassis.client.gui.text.GradientText;
 import evergoodteam.chassis.client.gui.text.GradientTextRenderer;
 import evergoodteam.chassis.client.gui.widget.ResettableListWidget;
 import evergoodteam.chassis.client.gui.widget.WidgetBase;
@@ -35,7 +36,7 @@ public class ConfigOptionsScreen extends Screen {
     }
 
     public void drawCenteredGradientTitle(DrawContext context) {
-        DrawingUtils.drawCenteredGradientText(context, gradientTextRenderer, this.title, this.width / 2, 15, 16777215);
+        DrawingUtils.drawCenteredGradientText(context, gradientTextRenderer, GradientText.copyOf(this.title), this.width / 2, 15, 16777215);
     }
 
     // TODO: [NU] have tooltips also use gradients when present in the text

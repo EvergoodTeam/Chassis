@@ -144,10 +144,6 @@ public abstract class DrawingUtils {
         textRenderer.drawWithOutline(text.asOrderedText(), x, y, color, outlineColor, context.getMatrices().peek().getPositionMatrix(), context.getVertexConsumers(), light);
     }
 
-    public static void drawCenteredGradientText(DrawContext context, GradientTextRenderer gradientTextRenderer, Text text, int centerX, int y, int transparency) {
-        drawCenteredGradientText(context, gradientTextRenderer, (GradientText) text, centerX, y, transparency);
-    }
-
     /**
      * Attempts to draw text with a scrolling list of colors. If no color points are found, the color held by the text will be used
      */
