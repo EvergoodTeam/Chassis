@@ -26,6 +26,7 @@ public class ConfigHandler {
 
     public void writeResourceLocks() {
         config.getWriter().updateInternalResourceLockFromStored();
+        // TODO: find better way: if resource is unlocked and providers arent run, the resource stays unlocked => stored options (no options are stored this early) are written. Currently has a fix at configInit in ResourcePackBase
         config.getWriter().overwriteWithStored();
     }
 
@@ -41,7 +42,7 @@ public class ConfigHandler {
      * Reads the written option values and assigns them to the stored options.
      */
     public void readAllOptions() {
-        //log.error("READING ALL OPTIONS FOR: " + config.modid);
+        //log.error("READING ALL OPTIONS FOR: " + config.getIdentifier());
         readLocks();
         readUserOptions();
     }

@@ -171,7 +171,7 @@ public class ConfigBase {
      * FILE SHOULD ALREADY EXIST. Writes user options to the config file.
      */
     public void registerProperties() {
-        //log.info("REGISTERING PROPERTIES");
+        //log.info("REGISTERING PROPERTIES ----------------------------------------------------------");
         configWriter.updateStoredUserFromWritten();
         configWriter.overwriteWithStored();
     }

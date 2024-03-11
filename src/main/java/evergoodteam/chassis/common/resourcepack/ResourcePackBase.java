@@ -70,7 +70,7 @@ public class ResourcePackBase {
      * @param displayName name to display in the GUI
      */
     public ResourcePackBase(ConfigBase config, String name, String displayName) {
-        this(config, name, displayName, true);
+        this(config, name, displayName, true, false);
     }
 
     public FabricDataOutput output;
@@ -85,7 +85,7 @@ public class ResourcePackBase {
      * @param displayName      name to display in the GUI
      * @param strictValidation if a cache should be generated and checked each time providers are run
      */
-    public ResourcePackBase(ConfigBase config, String name, String displayName, boolean strictValidation) {
+    public ResourcePackBase(ConfigBase config, String name, String displayName, boolean strictValidation, boolean noProviders) {
         this.config = config;
         this.name = name;
         this.displayName = displayName;
@@ -107,6 +107,8 @@ public class ResourcePackBase {
         this.future = runInternal();
         this.generator = new FabricDataGenerator(this.root.resources, modContainer, strictValidation, future);
         this.pack = generator.createPack();
+
+        this.noProviders = noProviders;
 
         this.configInit();
         this.useDefaultIcon();
@@ -207,6 +209,12 @@ public class ResourcePackBase {
     //endregion
 
     //region Setters
+
+    public ResourcePackBase setNoProviders(boolean noProviders) {
+        this.noProviders = noProviders;
+        return this;
+    }
+
     public ResourcePackBase setColor(@NotNull String hexColor) {
         this.hexColor = hexColor;
         return this;
@@ -257,6 +265,9 @@ public class ResourcePackBase {
     private void configInit() {
         config.getOptionStorage().getResourceLockCat().addBooleanOption(locked);
         config.getHandler().readLocks();
+
+        // Prevents overriding configs' stored options with an empty array when there are no providers to be run, meaning that later there are no stored user options to match written ones
+        if (noProviders) locked.setValue(true);
 
         if (!locked.getValue()) {
             root.createRoot();
