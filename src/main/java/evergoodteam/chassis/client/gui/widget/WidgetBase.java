@@ -1,48 +1,85 @@
 package evergoodteam.chassis.client.gui.widget;
 
 import com.google.common.collect.ImmutableList;
+import evergoodteam.chassis.util.gui.ColorUtils;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.ScreenRect;
-import net.minecraft.client.gui.navigation.GuiNavigation;
-import net.minecraft.client.gui.navigation.GuiNavigationPath;
-import net.minecraft.client.gui.widget.ClickableWidget;
-import net.minecraft.client.gui.widget.Widget;
 import net.minecraft.text.OrderedText;
 import net.minecraft.text.Text;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Consumer;
 
 @Environment(value = EnvType.CLIENT)
-public class WidgetBase extends AbstractWidget implements Widget {
+public class WidgetBase extends AbstractWidget {
 
-    public int x;
-    public int y;
-    public int width;
-    public int height;
     public Text message;
-    public List<OrderedText> tooltip;
-    public PressAction onPress;
-
-    public WidgetBase(int x, int y, int width, int height, Text message, PressAction onPress) {
-        this(x, y, width, height, message);
-        this.onPress = onPress;
-    }
+    public int truncateWidth = 8;
+    public List<OrderedText> orderedTooltip;
+    private final WidgetUpdateCallback updateCallback;
+    protected final List<WidgetBase> children = new ArrayList<>();
 
     public WidgetBase(int x, int y, int width, int height, Text message) {
+        this(null, x, y, width, height, message);
+    }
+
+    public WidgetBase(WidgetUpdateCallback callback, int x, int y, int width, int height, Text message) {
+        this.updateCallback = callback;
         this.x = x;
         this.y = y;
         this.width = width;
         this.height = height;
         this.message = message;
+
+        this.init();
+    }
+
+    public void setMessage(String message) {
+        setMessage(Text.literal(message));
+    }
+
+    public void setMessage(Text message) {
+        this.message = message;
+    }
+
+    public Text getMessage() {
+        return this.message;
+    }
+
+    @Override
+    public List<WidgetBase> getChildren() {
+        return this.children;
+    }
+
+    public List<OrderedText> getOrderedTooltip() {
+        return this.orderedTooltip != null ? this.orderedTooltip : ImmutableList.of();
+    }
+
+    /**
+     * Sets this widget's tooltip, setting its maximum width to 80% of the width of this widget.
+     */
+    public void setOrderedTooltip(Text tooltip) {
+        setOrderedTooltip(tooltip, (this.width / 10) * 8);
+    }
+
+    public void setOrderedTooltip(Text tooltip, int width) {
+        setOrderedTooltip(wrapLines(client, tooltip, width));
+    }
+
+    public void setOrderedTooltip(List<OrderedText> tooltip) {
+        this.orderedTooltip = tooltip;
+    }
+
+    public List<OrderedText> wrapLines(MinecraftClient client, Text text, int width) {
+        return client.textRenderer.wrapLines(text, width);
     }
 
     @Override
     public void render(DrawContext context, int mouseX, int mouseY, float delta) {
+        if (!isEnabled()) return;
         this.hovered = this.isMouseOver(mouseX, mouseY);
         if (this.hovered) onHover();
         this.renderBackground(context, mouseX, mouseY);
@@ -59,7 +96,7 @@ public class WidgetBase extends AbstractWidget implements Widget {
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         if (!this.active) return false;
-        if (isLeftClick(button) && insideBounds(mouseX, mouseY)) {
+        if (isLeftClick(button) && isMouseOver(mouseX, mouseY)) {
             onClick(mouseX, mouseY);
             playDownSound(MinecraftClient.getInstance().getSoundManager());
             return true;
@@ -72,7 +109,16 @@ public class WidgetBase extends AbstractWidget implements Widget {
     }
 
     public void onPress() {
-        if (this.onPress != null) this.onPress.onPress(this);
+        if (hasUpdateCallback()) this.updateCallback.onPress(this);
+    }
+
+    public boolean hasUpdateCallback() {
+        return getWidgetUpdateCallback() != null;
+    }
+
+    @Nullable
+    public WidgetBase.WidgetUpdateCallback getWidgetUpdateCallback() {
+        return updateCallback;
     }
 
     @Override
@@ -96,82 +142,18 @@ public class WidgetBase extends AbstractWidget implements Widget {
         return false;
     }
 
-    @Override
-    public boolean mouseScrolled(double mouseX, double mouseY, double horizontalAmount, double verticalAmount) {
-        return super.mouseScrolled(mouseX, mouseY, horizontalAmount, verticalAmount);
-    }
-
-    @Override
-    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        return super.keyPressed(keyCode, scanCode, modifiers);
-    }
-
-    @Override
-    public boolean keyReleased(int keyCode, int scanCode, int modifiers) {
-        return super.keyReleased(keyCode, scanCode, modifiers);
-    }
-
-    @Override
-    public boolean charTyped(char chr, int modifiers) {
-        return super.charTyped(chr, modifiers);
-    }
-
-    @Nullable
-    @Override
-    public GuiNavigationPath getNavigationPath(GuiNavigation navigation) {
-        return super.getNavigationPath(navigation);
-    }
-
     public void onDrag(double mouseX, double mouseY, double deltaX, double deltaY) {
     }
 
     public void onHover() {
     }
 
-    public boolean isMouseOver(double mouseX, double mouseY, double x, double y, double width, double height) {
-        return mouseX >= x && mouseY >= y && mouseX < x + width && mouseY < y + height;
-    }
-
     @Override
     public boolean isMouseOver(double mouseX, double mouseY) {
-        return insideBounds(mouseX, mouseY);
-    }
-
-    @Override
-    public void setFocused(boolean focused) {
-        this.hovered = true;
-    }
-
-    @Override
-    public boolean isFocused() {
-        return this.hovered;
-    }
-
-    @Nullable
-    @Override
-    public GuiNavigationPath getFocusedPath() {
-        return super.getFocusedPath();
-    }
-
-    @Override
-    public ScreenRect getNavigationFocus() {
-        return super.getNavigationFocus();
-    }
-
-    public boolean insideBounds(double mouseX, double mouseY) {
-        return mouseX >= (double) this.x && mouseY >= (double) this.y && mouseX < (double) (this.x + this.width) && mouseY < (double) (this.y + this.height);
-    }
-
-    public Text getMessage() {
-        return this.message;
-    }
-
-    public void setMessage(String message) {
-        this.message = Text.literal(message);
-    }
-
-    public void setMessage(Text message) {
-        this.message = message;
+        if (!this.active) {
+            return false;
+        }
+        return isMouseOver(mouseX, mouseY, this.x, this.y, this.width, this.height);
     }
 
     public void renderSlider(DrawContext context, int mouseX, int mouseY) {
@@ -190,81 +172,43 @@ public class WidgetBase extends AbstractWidget implements Widget {
 
     public void renderCenteredText(DrawContext context, Text text, int x, int y) {
         String message = truncateString(text.getString());
-        context.drawCenteredTextWithShadow(textRenderer, Text.literal(message).fillStyle(this.getMessage().getStyle()), x, y, 16777215);
+        context.drawCenteredTextWithShadow(textRenderer, Text.literal(message).fillStyle(this.getMessage().getStyle()), x, y, ColorUtils.WHITE);
+    }
+
+    public boolean isTruncatable(Text text) {
+        return textRenderer.getWidth(text) > textRenderer.getWidth(this.truncateString(text.getString()));
     }
 
     public String truncateString(String string) {
-        String result = string;
-        boolean firstIter = true;
+        return truncateString(string, this.truncateWidth);
+    }
 
-        while (textRenderer.getWidth(result) > this.width - 8) {
-            result = result.substring(0, Math.max(result.length() - (firstIter ? 2 : 5), 0)).trim();
+    public String truncateString(String string, int truncateWidth) {
+        String result = string;
+
+        while (textRenderer.getWidth(result) > this.width - truncateWidth) {
+            result = result.substring(0, result.length() - 5).trim();
             result += "...";
-            firstIter = false;
         }
 
         return result;
     }
 
-    @Override
-    public void setX(int x) {
-        this.x = x;
+    public interface PressAction extends WidgetUpdateCallback {
+
+        @Override
+        void onPress(WidgetBase widget);
     }
 
-    @Override
-    public void setY(int y) {
-        this.y = y;
-    }
+    public interface WidgetUpdateCallback {
 
-    @Override
-    public int getX() {
-        return x;
-    }
+        default void onPress(WidgetBase widget) {
+        }
 
-    @Override
-    public int getY() {
-        return y;
-    }
+        default void onPositionUpdate(int x, int y) {
+        }
 
-    @Override
-    public int getWidth() {
-        return width;
-    }
-
-    @Override
-    public int getHeight() {
-        return height;
-    }
-
-    @Override
-    public void forEachChild(Consumer<ClickableWidget> consumer) {
-
-    }
-
-    @Environment(value = EnvType.CLIENT)
-    public interface PressAction {
-        void onPress(WidgetBase var1);
-    }
-
-    @Environment(value = EnvType.CLIENT)
-    public interface RenderAction {
-
-        void onRender(WidgetBase var1);
-    }
-
-    public List<OrderedText> getOrderedTooltip() {
-        return this.tooltip != null ? this.tooltip : ImmutableList.of();
-    }
-
-    public void setTooltip(Text tooltip) {
-        this.tooltip = wrapLines(client, tooltip);
-    }
-
-    public void setTooltip(List<OrderedText> tooltip) {
-        this.tooltip = tooltip;
-    }
-
-    public List<OrderedText> wrapLines(MinecraftClient client, Text text) {
-        return client.textRenderer.wrapLines(text, 200);
+        default void onSave() {
+        }
     }
 }

@@ -2,7 +2,6 @@ package evergoodteam.chassis.common.resourcepack;
 
 import com.google.common.base.Charsets;
 import evergoodteam.chassis.util.StringUtils;
-import lombok.extern.log4j.Log4j2;
 import net.fabricmc.fabric.impl.resource.loader.ModNioResourcePack;
 import net.minecraft.SharedConstants;
 import net.minecraft.resource.AbstractFileResourcePack;
@@ -26,10 +25,9 @@ import java.util.regex.Pattern;
 import static evergoodteam.chassis.util.Reference.CMI;
 import static org.slf4j.LoggerFactory.getLogger;
 
-@Log4j2
 public class FileResourcePack extends AbstractFileResourcePack {
 
-    private static final Logger LOGGER = getLogger(CMI + "/R/Builder");
+    private static final Logger LOGGER = getLogger(CMI + "/R/File");
     private static final Pattern RESOURCEPACK_PATH = Pattern.compile("[a-z0-9-_]+");
     public static final List<FileResourcePack> BUILT = new ArrayList<>();
 
@@ -122,9 +120,7 @@ public class FileResourcePack extends AbstractFileResourcePack {
 
     @Override
     public Set<String> getNamespaces(ResourceType type) {
-
         if (this.namespaces == null) {
-
             Path file = getPath(type.getDirectory());
 
             if (file == null) LOGGER.error("Invalid Path");

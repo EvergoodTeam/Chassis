@@ -23,8 +23,8 @@ public class ResourcePackRoot {
         this.resources = resourcePack.getRootPath().resolve("resources");
         this.assets = this.resources.resolve("assets");
         this.data = this.resources.resolve("data");
-        this.assetsNamespace = this.assets.resolve(resourcePack.getNamespace());
-        this.dataNamespace = this.data.resolve(resourcePack.getNamespace());
+        this.assetsNamespace = this.assets.resolve(resourcePack.getName());
+        this.dataNamespace = this.data.resolve(resourcePack.getName());
         this.blockstates = this.assetsNamespace.resolve("blockstates");
         this.lang = this.assetsNamespace.resolve("lang");
         this.models = this.assetsNamespace.resolve("models");
@@ -36,6 +36,6 @@ public class ResourcePackRoot {
         DirectoryUtils.clean(resourcePack.getRootPath());
         DirectoryUtils.create(resources);
         DirectoryUtils.create(resources, new String[]{"assets", "data"});
-        if(resourcePack.noProviders) resourcePack.getLock().setValue(true);
+        if (resourcePack.noProviders) resourcePack.getLock().setValue(true);
     }
 }

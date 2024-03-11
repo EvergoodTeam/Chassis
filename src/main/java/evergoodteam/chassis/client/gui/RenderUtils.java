@@ -33,7 +33,7 @@ public class RenderUtils {
      * Get the entity the provided entity is looking at.
      *
      * @author maruohon, taken from <a href="https://github.com/maruohon/tweakeroo/blob/pre-rewrite/fabric/1.20.x/src/main/java/fi/dy/masa/tweakeroo/util/RayTraceUtils.java">RayTraceUtils.java</a>,
-     * with minor changes done to variable names and the for loop.
+     * with minor changes done to variable names and the for loop
      * @see <a href="https://github.com/maruohon/tweakeroo">Tweakeroo</a>
      */
     @NotNull

@@ -27,7 +27,7 @@ public class FontManagerMixin implements GradientTextRendererGetter {
     private FontStorage missingStorage;
 
     @Override
-    public Optional<GradientTextRenderer> createGradientTextRenderer() {
+    public Optional<GradientTextRenderer> chassisCreateGradientTextRenderer() {
         TextRenderer clientRenderer = MinecraftClient.getInstance().textRenderer;
         return Optional.of(new GradientTextRenderer((id) ->
                 fontStorages.getOrDefault(idOverrides.getOrDefault(id, id), missingStorage),

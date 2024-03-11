@@ -2,7 +2,7 @@ package evergoodteam.chassis;
 
 import com.terraformersmc.modmenu.api.ConfigScreenFactory;
 import com.terraformersmc.modmenu.api.ModMenuApi;
-import evergoodteam.chassis.config.screen.ConfigScreen;
+import evergoodteam.chassis.client.gui.screen.ConfigScreen;
 import evergoodteam.chassis.util.Reference;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;

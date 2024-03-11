@@ -22,7 +22,7 @@ public class BlockBase extends Block {
         super(blockSettings);
     }
 
-    public BlockBase setTransparent(){
+    public BlockBase setTransparent() {
         RegistryHandler.addTransparentBlock(this);
         return this;
     }

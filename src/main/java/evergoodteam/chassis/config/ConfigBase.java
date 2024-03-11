@@ -1,133 +1,129 @@
 package evergoodteam.chassis.config;
 
-import evergoodteam.chassis.common.resourcepack.ResourcePackBase;
 import evergoodteam.chassis.config.option.*;
-import evergoodteam.chassis.util.FileUtils;
 import evergoodteam.chassis.util.StringUtils;
-import evergoodteam.chassis.util.DirectoryUtils;
 import evergoodteam.chassis.util.handlers.RegistryHandler;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.text.Text;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.Util;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 
 import java.io.File;
 import java.nio.file.Path;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Optional;
 
 import static evergoodteam.chassis.util.Reference.CMI;
 import static org.slf4j.LoggerFactory.getLogger;
 
+// TODO: use getters
 public class ConfigBase {
 
     private final Logger LOGGER = getLogger(CMI + "/Config");
-    private final Path CONFIG_DIR = FabricLoader.getInstance().getConfigDir();
-
-    // TODO: switch to getters
-    public final String modid;
+    private final Path configDir = FabricLoader.getInstance().getConfigDir();
+    private final Identifier identifier;
     public final Path dirPath;
     public final Path propertiesPath;
     public final File propertiesFile;
-    private Text title;
-    public final BooleanOption configLocked; // Part of default set of options
-    public final Map<String, BooleanOption> resourcesLocked; // Part of default set of options
+    private Text displayName;
+    private final BooleanOption configLocked; // Part of default set of options
     private OptionStorage optionStorage;
     private ConfigHandler handler;
-    private ConfigWriter writer;
-    public final ConfigNetworking networking;
-    public Boolean strictVersion = true;
+    private final ConfigWriter configWriter;
+    private final ConfigNetworking networking;
+    private boolean strictVersion = true;
 
     /**
-     * Object from which Configs will be generated
-     *
-     * @param modid name of your Configs
+     * Gets the configs associated to the provided modid
      */
-    // TODO: use modContainer?
-    public ConfigBase(String modid) {
-        this.modid = modid;
-        this.dirPath = CONFIG_DIR.resolve(modid);
-        this.propertiesPath = this.dirPath.resolve(modid + ".properties");
-        this.propertiesFile = new File(this.propertiesPath.toString());
-        this.title = Text.literal(StringUtils.capitalize(modid));
-        this.configLocked = new BooleanOption(modid + "ConfigLocked", false)
-                .setComment("Lock " + StringUtils.capitalize(modid) + " configs from being regenerated");
-        this.resourcesLocked = new HashMap<>();
-        this.optionStorage = new OptionStorage(this);
-        this.handler = new ConfigHandler(this);
-        this.writer = new ConfigWriter(this);
-        this.networking = new ConfigNetworking(this);
-
-        RegistryHandler.registerConfiguration(modid, this);
-        this.handler.readOptions();  // Looks for existing values
-        if (!this.configLocked.getValue() || handler.versionUpdated()) { // Resets if versions are mismatched (and strict versioning is enabled)
-            this.configLocked.setValue(true);
-            this.createDefaults();
-        } else LOGGER.info("Configs for \"{}\" already exist, skipping first generation", this.modid);
+    public static @Nullable ConfigBase getConfig(Identifier identifier) {
+        return RegistryHandler.getConfigurations().getOrDefault(identifier, null);
     }
 
-    //region Getters
+    public ConfigBase(Identifier identifier) {
+        this.identifier = identifier;
+        this.dirPath = !identifier.getNamespace().equals(identifier.getPath()) ?
+                configDir.resolve("%s/%s".formatted(identifier.getNamespace(), identifier.getPath())) :
+                configDir.resolve(identifier.getPath());
+        this.propertiesPath = this.dirPath.resolve(identifier.getPath() + ".properties");
+        this.propertiesFile = new File(this.propertiesPath.toString());
+        this.displayName = Text.literal(StringUtils.capitalize(identifier.toString()));
 
-    public Text getTitle() {
-        return this.title;
+        String configFriendlyName = StringUtils.replaceWithCapital(identifier.toString(), ":+(.)?", "/+(.)?");
+
+        this.configLocked = new BooleanOption(configFriendlyName + "ConfigLocked", false).getBuilder()
+                .setComment("Lock " + configFriendlyName + " configs from being regenerated").build();
+        this.optionStorage = new OptionStorage(this);
+        optionStorage.getConfigLockCat().addBooleanOption(configLocked);
+
+        this.configWriter = new ConfigWriter(this);
+        this.handler = new ConfigHandler(this);
+        this.networking = new ConfigNetworking(this);
+
+        handler.setup(); // Reads, updates stored, resets if lock off
+        RegistryHandler.registerConfiguration(this);
+    }
+
+    public Identifier getIdentifier() {
+        return this.identifier;
+    }
+
+    /**
+     * Returns a boolean that specifies if version checks are done for this {@link ConfigBase}; these checks look for mismatches between the mod version
+     * and the written version in the config file. If a mismatch is found, the config file will be regenerated with the default values.
+     *
+     * @see ConfigHandler#setup()
+     */
+    // TODO: version mismatch doesnt take into account the possibility that mod was just updated, aka nothing is broken
+    public boolean isStrictVersioningEnabled() {
+        return this.strictVersion;
+    }
+
+    public ConfigBase setStrictVersioning(boolean strictVersion) {
+        this.strictVersion = strictVersion;
+        return this;
+    }
+
+    public Text getDisplayTitle() {
+        return this.displayName;
     }
 
     public OptionStorage getOptionStorage() {
         return optionStorage;
     }
 
-    public ConfigHandler getHandler(){
+    public ConfigHandler getHandler() {
         return handler;
     }
 
+    public ConfigNetworking getNetworkHandler() {
+        return this.networking;
+    }
+
     public ConfigWriter getWriter() {
-        return writer;
+        return configWriter;
     }
 
-    /**
-     * Gets the configs associated to the provided modid
-     *
-     * @param modid name of the configs
-     */
-    public static @Nullable ConfigBase getConfig(String modid) {
-        return RegistryHandler.getConfigurations().getOrDefault(modid, null);
-    }
-
-    public BooleanOption getLock(){
+    public BooleanOption getLock() {
         return configLocked;
     }
 
-    public boolean isLocked(){
+    public boolean isLocked() {
         return configLocked.getValue();
     }
-    //endregion
 
-    //region Setters
+    public Optional<String> getWrittenValue(AbstractOption<?> option) {
+        if (configWriter.getSerializer().getMappedWrittenOptions().get(option.getName()) == null)
+            return Optional.empty();
+        return Optional.of(configWriter.getSerializer().getMappedWrittenOptions().get(option.getName()));
+    }
+
 
     public ConfigBase setDisplayTitle(Text title) {
-        this.title = title;
+        this.displayName = title;
         return this;
     }
-    //endregion
-
-    //region Root creation
-
-    /**
-     * Creates all the needed dirs and the .properties config file with the required default variables
-     */
-    private void createDefaults() {
-        // Regenerate everything
-        FileUtils.delete(this.propertiesPath);
-        DirectoryUtils.create(this.dirPath);
-        FileUtils.createFile(this.propertiesPath);
-        writer.empty();
-        writer.writeDefaults();
-        writer.overwrite();
-
-        LOGGER.info("Generated Configs for \"{}\"", this.modid);
-    }
-    //endregion
 
     //region User content
 
@@ -140,87 +136,44 @@ public class ConfigBase {
     }
 
     /**
-     * Adds a generic boolean property from the provided {@link BooleanOption} <p>
-     * e.g. you can add {@link ResourcePackBase#getHideResourcePackProperty()} to let users hide your ResourcePack
+     * Adds a boolean option to the generic category (nameless).
      */
     public ConfigBase addBooleanProperty(BooleanOption booleanOption) {
-        this.getOptionStorage().getGenericCategory().addBooleanProperty(booleanOption);
+        this.getOptionStorage().getGenericCategory().addBooleanOption(booleanOption);
         return this;
     }
 
     /**
-     * Adds a generic double property from the provided {@link DoubleSliderOption} <p>
-     * e.g. {@code range: 3.0 ~ 8.0, default: 4.5}
+     * Adds a double option to the generic category (nameless).
      */
     public ConfigBase addDoubleProperty(DoubleSliderOption doubleOption) {
-        this.getOptionStorage().getGenericCategory().addDoubleProperty(doubleOption);
+        this.getOptionStorage().getGenericCategory().addDoubleOption(doubleOption);
         return this;
     }
 
     /**
-     * Adds a generic integer property from the provided {@link IntegerSliderOption} <p>
-     * e.g. {@code range: 3 ~ 8, default: 5}
+     * Adds an integer option to the generic category (nameless).
      */
     public ConfigBase addIntegerSliderProperty(IntegerSliderOption option) {
-        this.getOptionStorage().getGenericCategory().addIntegerSliderProperty(option);
+        this.getOptionStorage().getGenericCategory().addIntegerOption(option);
         return this;
     }
 
     /**
-     * Adds a generic string set property from the provided {@link StringSetOption} <p>
-     * e.g. {@code values: apple, banana, orange, default: orange}
+     * Adds a string option to the generic category (nameless).
      */
     public ConfigBase addStringProperty(StringSetOption option) {
-        this.getOptionStorage().getGenericCategory().addStringProperty(option);
+        this.getOptionStorage().getGenericCategory().addStringSetOption(option);
         return this;
     }
 
     /**
-     * Writes the added properties to the .properties config file <p>
-     * NOTE: call only after you added all your properties!
+     * FILE SHOULD ALREADY EXIST. Writes user options to the config file.
      */
     public void registerProperties() {
-        if (!handler.readOptions()) {
-            this.writer.writeAddons();
-            writer.overwrite();
-        }
-    }
-
-    /**
-     * Returns the value of the option with the specified name from the .properties config file
-     */
-    public @Nullable String getWrittenValue(String name) {
-        return handler.getOptionValue(name);
-    }
-
-    /**
-     * Writes an option's value to the specified one if it is different from the original
-     *
-     * @param option   your property
-     * @param newValue property's new value
-     */
-    public <T> void setWrittenValue(AbstractOption<T> option, T newValue) {
-        overwrite(option.getName(), String.valueOf(newValue));
-    }
-
-    /**
-     * Writes an option's value to the specified one if it is different from the original
-     *
-     * @param name     name of your property
-     * @param newValue property's new value
-     */
-    public <T> void setWrittenValue(String name, T newValue) {
-        overwrite(name, String.valueOf(newValue));
-    }
-
-    /**
-     * Overwrites the option specified by the provided name with the provided value
-     *
-     * @param name     name of your property
-     * @param newValue property's new value
-     */
-    private void overwrite(String name, String newValue) {
-        writer.overwrite(name, newValue);
+        //log.info("REGISTERING PROPERTIES");
+        configWriter.updateStoredUserFromWritten();
+        configWriter.overwriteWithStored();
     }
     //endregion
 

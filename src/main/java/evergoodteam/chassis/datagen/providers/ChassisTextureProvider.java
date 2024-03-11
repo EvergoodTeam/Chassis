@@ -63,14 +63,25 @@ public class ChassisTextureProvider implements DataProvider, FabricDataGenerator
 
     @Override
     public CompletableFuture<?> run(DataWriter writer) {
-        for (Path path : textures.keySet()) {
-            try (InputStream in = new URL(textures.get(path)).openStream()) {
-                return ChassisGenericProvider.writeToPath(writer, path, in.readAllBytes());
+
+        Map<Path, byte[]> mappedData = new HashMap<>();
+
+        textures.forEach((path, url) -> {
+            InputStream in;
+            try {
+                in = new URL(textures.get(path)).openStream();
+                mappedData.put(path, in.readAllBytes());
             } catch (IOException e) {
                 LOGGER.error("Error on creating a texture .png file", e);
+                throw new RuntimeException(e);
             }
+        });
+
+        try {
+            return AbstractResourceProvider.writeToPath(writer, mappedData);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
-        return null;
     }
 
     @Override

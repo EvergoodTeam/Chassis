@@ -1,7 +1,9 @@
 package evergoodteam.chassis.config.option;
 
+import com.google.common.collect.ImmutableSet;
 import evergoodteam.chassis.client.gui.widget.CyclingWidget;
 import evergoodteam.chassis.client.gui.widget.WidgetBase;
+import evergoodteam.chassis.client.gui.widget.interfaces.ConfigWidgetEntry;
 import evergoodteam.chassis.config.ConfigBase;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -9,6 +11,7 @@ import net.minecraft.client.gui.DrawContext;
 import net.minecraft.text.Text;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 public class StringSetOption extends AbstractOption<String> {
@@ -23,21 +26,25 @@ public class StringSetOption extends AbstractOption<String> {
         this(name, defaultValue, values, displayName, Text.empty());
     }
 
-
     public StringSetOption(String name, String defaultValue, Set<String> values, Text displayName, Text tooltip) {
         super(name, defaultValue, displayName, tooltip);
         this.bounds = values;
     }
 
     @Override
-    public Set<String> getValues() {
-        return bounds;
+    public Builder<String, ? extends StringSetOption> getBuilder() {
+        return new Builder<>(this);
+    }
+
+    @Override
+    public ImmutableSet<String> getValues() {
+        return ImmutableSet.copyOf(bounds);
     }
 
     @Override
     public String getWrittenValue(ConfigBase config) {
-        String written = config.getWrittenValue(this.getName());
-        return written != null ? written : getDefaultValue();
+        Optional<String> op = config.getWrittenValue(this);
+        return op.orElseGet(this::getDefaultValue);
     }
 
     @Environment(value = EnvType.CLIENT)
@@ -47,62 +54,37 @@ public class StringSetOption extends AbstractOption<String> {
     }
 
     @Override
-    public StringSetOption setEnvType(EnvType type) {
-        super.setEnvType(type);
-        return this;
-    }
-
-    @Override
-    public StringSetOption setComment(String comment) {
-        super.setComment(comment);
-        return this;
-    }
-
-    @Override
-    public StringSetOption setDisplayName(Text displayName) {
-        super.setDisplayName(displayName);
-        return this;
-    }
-
-    @Override
-    public StringSetOption setTooltip(Text tooltip) {
-        super.setTooltip(tooltip);
-        return this;
-    }
-
-    @Override
-    public void updateValueFromString(String newValue) {
+    public void setValueFromString(String newValue) {
         this.setValue(newValue);
     }
 
-    @Override
-    public StringSetOption hideDefault(Boolean bool) {
-        super.hideDefault(bool);
-        return this;
-    }
-
     @Environment(value = EnvType.CLIENT)
-    public static class StringConfigWidget extends CyclingWidget<String> {
+    public static class StringConfigWidget extends CyclingWidget<String> implements ConfigWidgetEntry {
 
         public final StringSetOption option;
 
         public StringConfigWidget(StringSetOption option, int width) {
-            super(width, List.copyOf(option.bounds), new CyclingWidget.UpdateOptionValue<>(option));
-            this.initially(option.getValue()).setTooltip(option.getTooltip());
+            super(width, List.copyOf(option.bounds));
+            this.initially(option.getValue()).setOrderedTooltip(option.getTooltip());
+            this.setAddedY(2);
             this.option = option;
+            option.addUpdateCallback(new OptionUpdateCallback<>() {
+                @Override
+                public void onUpdate(String newValue) {
+                    initially(newValue);
+                }
+            });
+        }
+
+        @Override
+        public void onValueUpdate(String value) {
+            option.setValue(value);
         }
 
         @Override
         public void renderCenteredText(DrawContext context) {
             super.renderCenteredText(context);
-            context.drawTextWithShadow(textRenderer, this.option.getDisplayName(), this.x - 142, y + (this.height - 8) / 2, 16777215);
-        }
-
-        @Override
-        public void renderBackground(DrawContext context, int mouseX, int mouseY) {
-            if (this.isMouseOver(mouseX, mouseY, this.x - 150, this.y - 2, 300, 24)) {
-                this.drawRectWithOutline(context, this.x - 150, this.y - 2, 300, 24, 0x2B_FFFFFF);
-            }
+            context.drawTextWithShadow(textRenderer, option.getDisplayName(), this.x - 142, y + (this.height - 8) / 2, 16777215);
         }
     }
 }

@@ -15,6 +15,7 @@ import net.minecraft.registry.Registries;
 import net.minecraft.registry.RegistryBuilder;
 import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.text.Text;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.Util;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -32,12 +33,12 @@ import static org.slf4j.LoggerFactory.getLogger;
 public class ResourcePackBase {
 
     private static final Logger LOGGER = getLogger(CMI + "/Resource");
-    private static final Map<String, List<ResourcePackBase>> RESOURCE_PACKS = new HashMap<>();
+    private static final Map<Identifier, List<ResourcePackBase>> RESOURCE_PACKS = new HashMap<>();
     private static final Map<String, BooleanOption> HIDDEN = new HashMap<>(); // Requires capitalized namespaces
     private static final Set<String> DEFAULT_ICON = new HashSet<>();
 
     private ConfigBase config;
-    private final String namespace;
+    private final String name;
     private String displayName;
     private final Path path;
     private final ResourcePackRoot root;
@@ -52,66 +53,55 @@ public class ResourcePackBase {
     public boolean noProviders = false;
 
     /**
-     * Object from which a ResourcePack is generated
-     *
-     * @param config    {@link ConfigBase} to which assign the ResourcePack; determines the root dir
-     * @param namespace name of your ResourcePack
-     * @param iconUrl   valid URL
-     * @param hexColor  hex color value used for the description text in the GUI
-     * @deprecated as of release 1.2.3, replaced by {@link #setIcon(String)} & {@link #setColor(String)}
-     */
-    @Deprecated
-    public ResourcePackBase(@NotNull ConfigBase config, @NotNull String namespace, @NotNull String iconUrl, @NotNull String hexColor) {
-        this(config, namespace);
-        this.setIcon(iconUrl).setColor(hexColor);
-    }
-
-    /**
      * Object from which a ResourcePack without a custom icon is generated
      *
-     * @param config    {@link ConfigBase} to which assign the ResourcePack; determines the root dir
-     * @param namespace name of your ResourcePack
+     * @param config {@link ConfigBase} to which assign the ResourcePack; determines the root dir
+     * @param name   name of your ResourcePack
      */
-    public ResourcePackBase(ConfigBase config, String namespace) {
-        this(config, namespace, StringUtils.capitalize(namespace));
+    public ResourcePackBase(ConfigBase config, String name) {
+        this(config, name, StringUtils.capitalize(name));
     }
 
     /**
      * Object from which a ResourcePack is generated with strictValidation
      *
      * @param config      {@link ConfigBase} to which assign the ResourcePack; determines the root dir
-     * @param namespace   name of your ResourcePack
+     * @param name        name of your ResourcePack
      * @param displayName name to display in the GUI
      */
-    public ResourcePackBase(ConfigBase config, String namespace, String displayName) {
-        this(config, namespace, displayName, true);
+    public ResourcePackBase(ConfigBase config, String name, String displayName) {
+        this(config, name, displayName, true);
     }
 
-    public FabricDataGenerator.Pack pack;
     public FabricDataOutput output;
     public CompletableFuture<RegistryWrapper.WrapperLookup> future;
+    public FabricDataGenerator.Pack pack;
 
     /**
      * Object from which a ResourcePack is generated
      *
      * @param config           {@link ConfigBase} to which assign the ResourcePack; determines the root dir
-     * @param namespace        name of your ResourcePack
+     * @param name             name of your ResourcePack
      * @param displayName      name to display in the GUI
      * @param strictValidation if a cache should be generated and checked each time providers are run
      */
-    public ResourcePackBase(ConfigBase config, String namespace, String displayName, boolean strictValidation) {
+    public ResourcePackBase(ConfigBase config, String name, String displayName, boolean strictValidation) {
         this.config = config;
-        this.namespace = namespace;
+        this.name = name;
         this.displayName = displayName;
-        this.path = Paths.get(config.dirPath.toString(), "resourcepacks/" + namespace.toLowerCase()); // Root
+        this.path = Paths.get(config.dirPath.toString(), "resourcepacks/" + name.toLowerCase()); // Root
         this.root = new ResourcePackRoot(this);
-        this.metadataKey = namespace + ".metadata.description";
-        this.locked = new BooleanOption(namespace + "ResourceLocked", false)
-                .setComment("Lock %s resources from being regenerated".formatted(displayName));
-        this.hidden = new BooleanOption("hideResourcePack", false, Text.translatable("config." + namespace + ".hideResourcePack"), Text.translatable("config." + namespace + ".hideResourcePack.tooltip", displayName))
+        this.metadataKey = name + ".metadata.description";
+        this.locked = new BooleanOption(name + "ResourceLocked", false).getBuilder() // Added to default category later
+                .setComment("Lock %s resources from being regenerated".formatted(displayName)).build();
+
+        this.hidden = new BooleanOption("hideResourcePack", false,
+                Text.translatable("config." + name + ".hideResourcePack"),
+                Text.translatable("config." + name + ".hideResourcePack.tooltip",
+                        displayName)).getBuilder()
                 .setEnvType(EnvType.CLIENT)
-                .setComment("Hide the %s ResourcePack from the GUI".formatted(displayName));
-        this.modContainer = FabricLoader.getInstance().getModContainer(namespace).get();
+                .setComment("Hide the %s ResourcePack from the GUI".formatted(displayName)).build();
+        this.modContainer = FabricLoader.getInstance().getModContainer(name).get();
 
         this.output = new FabricDataOutput(modContainer, this.root.resources, strictValidation);
         this.future = runInternal();
@@ -121,7 +111,7 @@ public class ResourcePackBase {
         this.configInit();
         this.useDefaultIcon();
         HIDDEN.put(displayName, this.hidden);
-        RESOURCE_PACKS.computeIfAbsent(config.modid, k -> new ArrayList<>()).add(this);
+        RESOURCE_PACKS.computeIfAbsent(config.getIdentifier(), k -> new ArrayList<>()).add(this);
     }
 
     private CompletableFuture<RegistryWrapper.WrapperLookup> runInternal() {
@@ -138,8 +128,8 @@ public class ResourcePackBase {
         return this.config;
     }
 
-    public String getNamespace() {
-        return this.namespace;
+    public String getName() {
+        return this.name;
     }
 
     public Path getRootPath() {
@@ -186,7 +176,7 @@ public class ResourcePackBase {
 
         int index = -1;
         for (ResourcePackBase pack : baseList) {
-            if (name.toLowerCase().equals(pack.namespace)) {
+            if (name.toLowerCase().equals(pack.name)) {
                 index = baseList.indexOf(pack);
             }
         }
@@ -197,7 +187,7 @@ public class ResourcePackBase {
     /**
      * Returns all the existing ResourcePacks created through {@link ResourcePackBase}
      */
-    public static Map<String, List<ResourcePackBase>> getResourcePacks() {
+    public static Map<Identifier, List<ResourcePackBase>> getResourcePacks() {
         return RESOURCE_PACKS;
     }
 
@@ -211,7 +201,7 @@ public class ResourcePackBase {
     /**
      * Returns all the ResourcePack namespaces that use default icons
      */
-    public static Set<String> getDefaultIconNamespaces() {
+    public static Set<String> getResourcesWithDefaultIcon() {
         return DEFAULT_ICON;
     }
     //endregion
@@ -265,21 +255,16 @@ public class ResourcePackBase {
 
     //region Configs
     private void configInit() {
-        config.resourcesLocked.put(namespace, locked);
-        config.getHandler().readOptions();
+        config.getOptionStorage().getResourceLockCat().addBooleanOption(locked);
+        config.getHandler().readLocks();
 
-        if ((config.getHandler().getOptionValue(locked.getName())) == null) {
+        if (!locked.getValue()) {
             root.createRoot();
-            config.getWriter().writeResources();
-            config.getWriter().overwrite();
-
-            LOGGER.info("Generated resources for \"{}\"", this.namespace);
-        } else if (!locked.getWrittenValue(config)) {
-            root.createRoot();
-
-            LOGGER.info("Regenerated resources for \"{}\"", namespace);
+            //locked.setValue(true);
+            config.getHandler().writeResourceLocks();
+            LOGGER.info("Generated resources for \"{}\"", this.name);
         } else {
-            LOGGER.info("Resources for \"{}\" already exist, skipping first generation", namespace);
+            LOGGER.info("Resources for \"{}\" already exist, skipping first generation", name);
         }
     }
     //endregion
@@ -297,19 +282,6 @@ public class ResourcePackBase {
     }
 
     /**
-     * Interface used for declaring, initializing and adding providers. Any sort of provider task should be done
-     * inside {@link #registerProviders()}, a method that is only called {@link evergoodteam.chassis.mixin.ResourcePackManagerMixin when resources are reloaded}
-     * <p><i>Why?</i>
-     * <p> Check out <a href="https://github.com/DaFuqs/Spectrum/issues/190">this issue</a>: trying to load the
-     * {@link net.minecraft.predicate.item.ItemPredicate ItemPredicate} class (needed for loot tables)
-     * will trigger all the associated mixins, which can include stuff that isn't initialized
-     */
-    public interface ProviderRegistry {
-
-        void registerProviders();
-    }
-
-    /**
      * Runs the added providers, must be called for the providers to actually be used. <p>
      * Recommended procedure is calling it inside of {@link ProviderRegistry#registerProviders()} after adding all the providers.
      */
@@ -318,13 +290,26 @@ public class ResourcePackBase {
             if (!locked.getValue()) {
                 generator.run();
                 locked.setValue(true);
-                config.setWrittenValue(locked, true);
-                LOGGER.info("Providers for {} done", namespace);
-            } else LOGGER.error("Couldn't run providers for {} because the resource is locked", namespace);
+                config.getHandler().writeResourceLocks();
+                LOGGER.info("Providers for {} done", name);
+            } else LOGGER.error("Couldn't run providers for {} because the resource is locked", name);
             providersDone = true;
         } catch (IOException e) {
-            LOGGER.error("An error occurred while running providers for {}: {}", namespace, e);
+            LOGGER.error("An error occurred while running providers for {}: {}", name, e);
         }
+    }
+
+    /**
+     * Interface used for declaring, initializing and adding providers. Any sort of provider task should be done
+     * inside {@link #registerProviders()}, a method that is only called {@link evergoodteam.chassis.mixin.ResourcePackManagerMixin when resources are reloaded}.
+     * <p><i>Why?</i>
+     * <p> Check out <a href="https://github.com/DaFuqs/Spectrum/issues/190">this issue</a>: trying to load the
+     * {@link net.minecraft.predicate.item.ItemPredicate ItemPredicate} class (needed for loot tables)
+     * will trigger all the associated mixins, which can include stuff that isn't initialized.
+     */
+    public interface ProviderRegistry {
+
+        void registerProviders();
     }
     //endregion
 }

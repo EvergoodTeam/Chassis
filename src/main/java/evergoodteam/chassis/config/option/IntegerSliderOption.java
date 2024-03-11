@@ -1,7 +1,9 @@
 package evergoodteam.chassis.config.option;
 
+import com.google.common.collect.ImmutableList;
 import evergoodteam.chassis.client.gui.widget.SliderWidget;
 import evergoodteam.chassis.client.gui.widget.WidgetBase;
+import evergoodteam.chassis.client.gui.widget.interfaces.ConfigWidgetEntry;
 import evergoodteam.chassis.config.ConfigBase;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -9,8 +11,7 @@ import net.minecraft.client.gui.DrawContext;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.MathHelper;
 
-import java.util.Collection;
-import java.util.List;
+import java.util.Optional;
 
 public class IntegerSliderOption extends AbstractOption<Integer> implements AbstractOption.Interval<Integer> {
 
@@ -52,14 +53,19 @@ public class IntegerSliderOption extends AbstractOption<Integer> implements Abst
     }
 
     @Override
-    public Collection<Integer> getValues() {
-        return List.of(min, max);
+    public Builder<Integer, IntegerSliderOption> getBuilder() {
+        return new Builder<>(this);
+    }
+
+    @Override
+    public ImmutableList<Integer> getValues() {
+        return ImmutableList.of(min, max);
     }
 
     @Override
     public Integer getWrittenValue(ConfigBase config) {
-        String written = config.getWrittenValue(this.getName());
-        return written != null ? Integer.valueOf(written) : getDefaultValue();
+        Optional<String> op = config.getWrittenValue(this);
+        return op.map(Integer::valueOf).orElseGet(this::getDefaultValue);
     }
 
     @Environment(value = EnvType.CLIENT)
@@ -69,42 +75,12 @@ public class IntegerSliderOption extends AbstractOption<Integer> implements Abst
     }
 
     @Override
-    public IntegerSliderOption setEnvType(EnvType type) {
-        super.setEnvType(type);
-        return this;
-    }
-
-    @Override
-    public IntegerSliderOption setComment(String comment) {
-        super.setComment(comment);
-        return this;
-    }
-
-    @Override
-    public IntegerSliderOption setDisplayName(Text displayName) {
-        super.setDisplayName(displayName);
-        return this;
-    }
-
-    @Override
-    public IntegerSliderOption setTooltip(Text tooltip) {
-        super.setTooltip(tooltip);
-        return this;
-    }
-
-    @Override
-    public void updateValueFromString(String newValue) {
+    public void setValueFromString(String newValue) {
         this.setValue(Integer.valueOf(newValue));
     }
 
-    @Override
-    public IntegerSliderOption hideDefault(Boolean bool) {
-        super.hideDefault(bool);
-        return this;
-    }
-
     @Environment(value = EnvType.CLIENT)
-    public static class IntConfigSlider extends SliderWidget {
+    public static class IntConfigSlider extends SliderWidget implements ConfigWidgetEntry {
 
         public final IntegerSliderOption option;
 
@@ -116,8 +92,14 @@ public class IntegerSliderOption extends AbstractOption<Integer> implements Abst
             super(x, y, width, height, Text.literal(String.valueOf(option.getValue())),
                     convertFromBounds(option.getValue(), option.getMin(), option.getMax()),
                     option.getMin(), option.getMax());
+            this.setAddedY(2);
             this.option = option;
-            this.setTooltip(option.getTooltip());
+            this.setOrderedTooltip(option.getTooltip());
+        }
+
+        @Override
+        public void onReset() {
+            setValueSilently(convertFromBounds(option.getValue(), this.min, this.max));
         }
 
         @Override
@@ -127,21 +109,13 @@ public class IntegerSliderOption extends AbstractOption<Integer> implements Abst
         }
 
         @Override
-        public void onValueUpdate() {
-            Integer result = MathHelper.floor(convertToBounds(this.value, this.min, this.max));
-            this.option.setValue(result);
+        public void onValueUpdate(double newValue) {
+            option.setValue(MathHelper.floor(newValue));
         }
 
         public void updateMessage() {
             Integer result = MathHelper.floor(convertToBounds(this.value, this.min, this.max));
             this.setMessage(String.valueOf(result));
-        }
-
-        @Override
-        public void renderBackground(DrawContext context, int mouseX, int mouseY) {
-            if (this.isMouseOver(mouseX, mouseY, this.x - 150, this.y - 2, 300, 24)) {
-                this.drawRectWithOutline(context, this.x - 150, this.y - 2, 300, 24, 0x2B_FFFFFF);
-            }
         }
     }
 }

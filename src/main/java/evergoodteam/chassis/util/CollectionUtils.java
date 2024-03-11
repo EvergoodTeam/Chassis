@@ -1,6 +1,8 @@
 package evergoodteam.chassis.util;
 
+import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class CollectionUtils {
 
@@ -14,5 +16,10 @@ public class CollectionUtils {
             result++;
         }
         return -1;
+    }
+
+    public static <K, V> Map<K, V> matchMapKeys(Map<K, V> left, Map<K, V> toMatch){
+        return left.keySet().stream().filter(toMatch::containsKey)
+                .collect(Collectors.toMap(key -> key, left::get, (a, b) -> b));
     }
 }

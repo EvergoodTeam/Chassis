@@ -22,5 +22,4 @@ public class InGameHudMixin {
     private void postRender(DrawContext context, float partialTicks, CallbackInfo ci) {
         RenderEventHandler.getInstance().onPostRender(this.client, context, partialTicks);
     }
-
 }

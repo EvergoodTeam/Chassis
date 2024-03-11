@@ -26,7 +26,7 @@ public class PillarBase extends PillarBlock {
         super(settings);
     }
 
-    public PillarBase setTransparent(){
+    public PillarBase setTransparent() {
         RegistryHandler.addTransparentBlock(this);
         return this;
     }

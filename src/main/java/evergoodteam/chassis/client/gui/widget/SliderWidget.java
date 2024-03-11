@@ -13,10 +13,14 @@ import java.math.RoundingMode;
 
 public class SliderWidget extends WidgetBase {
 
-    private static final Identifier TEXTURE = new Identifier("textures/gui/slider.png");
+    protected static final Identifier TEXTURE = new Identifier("widget/slider");
+    protected static final Identifier HANDLE_TEXTURE = new Identifier("widget/slider_handle");
+    protected static final Identifier HANDLE_HIGHLIGHTED_TEXTURE = new Identifier("widget/slider_handle_highlighted");
     public Double value;
     public Double min;
     public Double max;
+    public int sliderWidth = 8;
+    public int sliderHeight = 20;
 
     public SliderWidget(int x, int y, int width, int height, Text message, double value, double min, double max) {
         super(x, y, width, height, message);
@@ -31,14 +35,23 @@ public class SliderWidget extends WidgetBase {
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
         RenderSystem.enableDepthTest();
-        context.drawTexture(TEXTURE, this.getX(), this.getY(), this.getWidth(), this.getHeight(), 20, 4, 200, 20, 0, this.getYImage(isFocused()));
-        context.drawTexture(TEXTURE, this.getX() + (int) (this.value * (double) (this.width - 8)), this.getY(), 8, 20, 20, 4, 200, 20, 0, getTextureV());
+        context.drawGuiTexture(this.getTexture(), this.getX(), this.getY(), this.getWidth(), this.getHeight());
+
+        this.renderBack(context, mouseX, mouseY);
+
+        context.drawGuiTexture(this.getHandleTexture(), this.getX() + (int) (this.value * (double) (this.width - 8)), this.getY(), sliderWidth, sliderHeight);
         context.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
     }
 
-    private int getTextureV() {
-        int i = this.hovered ? 3 : 2;
-        return i * 20;
+    public void renderBack(DrawContext context, int mouseX, int mouseY) {
+    }
+
+    public Identifier getTexture() {
+        return TEXTURE;
+    }
+
+    public Identifier getHandleTexture() {
+        return this.isFocused() ? HANDLE_HIGHLIGHTED_TEXTURE : HANDLE_TEXTURE;
     }
 
     @Override
@@ -67,23 +80,32 @@ public class SliderWidget extends WidgetBase {
     }
 
     public void setValueFromMouse(double mouseX) {
-        this.setValue((mouseX - (double) (this.x + 4)) / (double) (this.width - 8));
+        this.setValue((mouseX - (double) (this.x + 4)) / (double) (this.width - sliderWidth));
+    }
+
+    public void setValueFromMouseY(double mouseY) {
+        this.setValue((mouseY - this.y) / this.height);
     }
 
     public void setValue(double value) {
         double old = this.value;
         this.value = MathHelper.clamp(value, 0.0, 1.0);
         if (old != this.value) {
-            this.onValueUpdate();
+            this.onValueUpdate(convertToBounds(this.value, this.min, this.max));
         }
         this.updateMessage();
     }
 
-    public void updateMessage() {
-        this.setMessage(twoDecimalPlaces(convertToBounds(this.value, this.min, this.max)));
+    public void setValueSilently(double value) {
+        this.value = MathHelper.clamp(value, 0.0, 1.0);
+        this.updateMessage();
     }
 
-    public void onValueUpdate() {
+    public void updateMessage() {
+        this.setMessage(twoDecimalPlaces(convertToBounds(this.value, this.min, this.max)).toString());
+    }
+
+    public void onValueUpdate(double value) {
     }
 
     /**
@@ -108,7 +130,7 @@ public class SliderWidget extends WidgetBase {
         return MathHelper.map(value, 0.0f, 1.0f, min, max);
     }
 
-    public static String twoDecimalPlaces(double value) {
-        return new BigDecimal(value).setScale(1, RoundingMode.HALF_UP).toString();
+    public static BigDecimal twoDecimalPlaces(double value) {
+        return new BigDecimal(value).setScale(1, RoundingMode.HALF_UP);
     }
 }

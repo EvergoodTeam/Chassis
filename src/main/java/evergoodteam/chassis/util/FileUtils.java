@@ -35,7 +35,7 @@ public class FileUtils {
         return Lists.newArrayList(toString(path).split("\\r?\\n"));
     }
 
-    public static String toString(Path path){
+    public static String toString(Path path) {
         try {
             return Files.readString(path, Charsets.UTF_8);
         } catch (IOException e) {
@@ -107,8 +107,7 @@ public class FileUtils {
             } catch (IOException e) {
                 LOGGER.error("Error on creating File at {}", path, e);
             }
-        }
-        else LOGGER.warn("Unable to create file as it already exists at {}", path);
+        } else LOGGER.warn("Unable to create file as it already exists at {}", path);
     }
 
     /**

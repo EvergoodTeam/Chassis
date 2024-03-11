@@ -1,27 +1,37 @@
 package evergoodteam.chassis.client.gui.screen;
 
-import evergoodteam.chassis.client.gui.widget.OverlayWidget;
+import evergoodteam.chassis.client.gui.widget.WidgetBase;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.text.Text;
+import net.minecraft.util.Identifier;
 import org.lwjgl.glfw.GLFW;
 
+// TODO: [NU] shouldn't be a screen, only a Drawable, see SplashOverlay (not really, see ChatScreen)
 @Environment(value = EnvType.CLIENT)
 public class OverlayScreen extends Screen implements Element {
 
-    public OverlayWidget overlayWidget;
+    protected static final Identifier ICONS = new Identifier("textures/gui/icons.png");
+    private WidgetBase overlayWidget;
+    private Screen parent;
 
-    public OverlayScreen(OverlayWidget overlay) {
+    public OverlayScreen(Screen parent, WidgetBase widget) {
+        this(widget);
+        this.parent = parent;
+    }
+
+    public OverlayScreen(WidgetBase widget) {
         super(Text.literal("Overlay"));
-        this.overlayWidget = overlay;
+        this.overlayWidget = widget;
     }
 
     @Override
     public void render(DrawContext context, int mouseX, int mouseY, float delta) {
         this.renderBackground(context, mouseX, mouseY, delta);
+
         super.render(context, mouseX, mouseY, delta);
         overlayWidget.render(context, mouseX, mouseY, delta);
     }
@@ -36,11 +46,12 @@ public class OverlayScreen extends Screen implements Element {
             overlayWidget.x = (int) (mouseX + deltaX - distanceX);
             overlayWidget.y = (int) (mouseY + deltaY - distanceY);
 
-            overlayWidget.getUpdateCallback().onUpdate(overlayWidget.x, overlayWidget.y);
+            if (overlayWidget.hasUpdateCallback())
+                overlayWidget.getWidgetUpdateCallback().onPositionUpdate(overlayWidget.x, overlayWidget.y);
 
             return true;
         }
-        return false;
+        return super.mouseDragged(mouseX, mouseY, button, deltaX, deltaY);
     }
 
     public boolean insideOverlay(double mouseX, double mouseY) {
@@ -64,8 +75,9 @@ public class OverlayScreen extends Screen implements Element {
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
         if (keyCode == GLFW.GLFW_KEY_ESCAPE) {
-            overlayWidget.getUpdateCallback().onSave();
-            client.setScreen(null);
+            if (overlayWidget.hasUpdateCallback()) overlayWidget.getWidgetUpdateCallback().onSave();
+            if (parent != null) client.setScreen(parent);
+            else client.setScreen(null);
             return true;
         }
         return super.keyPressed(keyCode, scanCode, modifiers);
