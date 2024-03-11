@@ -147,11 +147,11 @@ public class ChassisTestFeatures {
         CHASSIS_CONFIGS.getNetworkHandler().registerServerReceiver();
 
         CategoryOption EMPTY = new CategoryOption(CHASSIS_CONFIGS, "Empty Category", "").getBuilder()
-                .useFrame(false)
+                .useFrame(true)
                 .setDisplayName(Text.literal("Empty Category Red").setStyle(Style.EMPTY.withColor(Formatting.RED))).build();
 
         CategoryOption GENERAL = new CategoryOption(CHASSIS_CONFIGS, "Lorem ipsum dolor sit amet, consectetur adipiscing elit and some other long stuff.", "General Options").getBuilder()
-                .useFrame(false)
+                .useFrame(true)
                 .setBackgroundColor(0x2B_aedcff)
                 .setOutlineColor(0xB6_fe9443)
                 .setDisplayName(GradientText.copyOf(Text.literal("Lorem ipsum dolor sit amet, consectetur adipiscing elit long long long stuff"))
