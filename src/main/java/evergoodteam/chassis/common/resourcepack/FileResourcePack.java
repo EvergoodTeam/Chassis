@@ -50,6 +50,9 @@ public class FileResourcePack extends AbstractFileResourcePack {
         BUILT.add(this);
     }
 
+    /**
+     * Will return null if {@code resourcepacks\{namespace}\resources\assets} doesn't exist
+     */
     private Path getPath(String filename) {
         Path childPath = basePath.resolve(filename.replace("/", separator));
         if (childPath.startsWith(basePath) && Files.exists(childPath)) return childPath;
@@ -61,7 +64,6 @@ public class FileResourcePack extends AbstractFileResourcePack {
      */
     @Override
     public void findResources(ResourceType type, String namespace, String path, ResultConsumer visitor) {
-
         String separator = basePath.getFileSystem().getSeparator();
         Path nsPath = basePath.resolve(type.getDirectory()).resolve(namespace);
         Path searchPath = nsPath.resolve(path.replace("/", separator)).normalize();
@@ -132,7 +134,7 @@ public class FileResourcePack extends AbstractFileResourcePack {
         if (this.namespaces == null) {
             Path file = getPath(type.getDirectory());
 
-            if (file == null) LOGGER.error("Invalid Path");
+            if (file == null) LOGGER.error("Invalid path, the ResourcePack folder may not exist");
 
             if (!Files.isDirectory(file)) {
                 return Collections.emptySet();

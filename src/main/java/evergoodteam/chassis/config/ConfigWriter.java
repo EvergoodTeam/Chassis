@@ -134,6 +134,19 @@ public class ConfigWriter {
         //log.error("UPDATING WRITER USER WITH STORED");
     }
 
+    public void overwriteLocksWithStored(){
+        if(serializer.getMappedWrittenResourceLock().equals(serializer.getMappedStoredResourceLock())) return;
+
+        updateInternalHeader();
+        try {
+            overwriteFile(getAllWithWrittenUser());
+            //log.error("OVERRIDING");
+        } catch (IOException e) {
+            LOGGER.error("There was an error writing to the config file: %s".formatted(e));
+            //throw new RuntimeException(e);
+        }
+    }
+
     public void overwriteWithStored() {
         if (serializer.getMappedWrittenOptions().equals(serializer.getMappedStoredOptions())) return;
 
@@ -149,6 +162,17 @@ public class ConfigWriter {
 
     private List<String> getAllLinesWithoutHeader() {
         return Stream.of(configLock, resourceLock, user).flatMap(Collection::stream).collect(Collectors.toList());
+    }
+
+    /**
+     * Returns a list with all the stored header/lock lines and the written user option lines
+     */
+    private List<String> getAllWithWrittenUser(){
+        return Stream.of(getAllLockLines(), serializer.getWrittenUserSection()).flatMap(Collection::stream).collect(Collectors.toList());
+    }
+
+    private List<String> getAllLockLines() {
+        return Stream.of(header, configLock, resourceLock).flatMap(Collection::stream).collect(Collectors.toList());
     }
 
     private List<String> getAllLines() {

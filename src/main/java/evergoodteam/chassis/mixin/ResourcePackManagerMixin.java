@@ -76,6 +76,7 @@ public class ResourcePackManagerMixin {
                     if (resourcePack.providerRegistry != null && !resourcePack.areProvidersDone())
                         resourcePack.providerRegistry.registerProviders();
                     if (finalClient) {
+                        //LOGGER.warn("CLIENT PROVIDER FOR %s AT PATH %s".formatted(identifier, friendlyPath));
                         providersCopy.add(new ClientResourcePackProvider(friendlyPath, resourcePack.getName(), resourcePack.getDisplayName(), resourcePack.getMetadataKey(), resourcePack.getHexColor()));
                         //LOGGER.info("Injected our ClientProvider into providers: {}", this.providers);
                     } else {

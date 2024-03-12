@@ -270,12 +270,14 @@ public class ResourcePackBase {
         config.getOptionStorage().getResourceLockCat().addBooleanOption(locked);
         config.getHandler().readLocks();
 
-        // Prevents overriding configs' stored options with an empty array when there are no providers to be run, meaning that later there are no stored user options to match written ones
-        if (noProviders) locked.setValue(true);
-
         if (!locked.getValue()) {
             root.createRoot();
+
+            // Prevents overriding configs' stored options with an empty array when there are no providers to be run, meaning that later there are no stored user options to match written ones
+            // Also prevented resource folders from generating the first time. Fixed with overwriting only the locks and keeping old written user options
+            if(noProviders) locked.setValue(true);
             //locked.setValue(true);
+
             config.getHandler().writeResourceLocks();
             LOGGER.info("Generated resources for \"{}\"", this.name);
         } else {
@@ -302,6 +304,8 @@ public class ResourcePackBase {
      */
     public void runProviders() {
         try {
+            if(noProviders) return;
+
             if (!locked.getValue()) {
                 generator.run();
                 locked.setValue(true);

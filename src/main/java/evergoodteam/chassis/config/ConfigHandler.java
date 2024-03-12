@@ -26,8 +26,9 @@ public class ConfigHandler {
 
     public void writeResourceLocks() {
         config.getWriter().updateInternalResourceLockFromStored();
-        // TODO: find better way: if resource is unlocked and providers arent run, the resource stays unlocked => stored options (no options are stored this early) are written. Currently has a fix at configInit in ResourcePackBase
-        config.getWriter().overwriteWithStored();
+        // If resource is unlocked and providers arent run, the resource stays unlocked => stored options (no options are stored this early) are written.
+        //config.getWriter().overwriteWithStored();
+        config.getWriter().overwriteLocksWithStored();
     }
 
     /**
