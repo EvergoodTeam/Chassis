@@ -4,15 +4,11 @@ import evergoodteam.chassis.common.resourcepack.ResourcePackBase;
 import net.minecraft.client.gui.screen.pack.PackListWidget;
 import net.minecraft.client.gui.screen.pack.PackScreen;
 import net.minecraft.client.gui.screen.pack.ResourcePackOrganizer;
-import net.minecraft.client.texture.TextureManager;
-import net.minecraft.resource.ResourcePackProfile;
-import net.minecraft.util.Identifier;
 import org.slf4j.Logger;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -27,9 +23,10 @@ public class PackScreenMixin {
 
     private static final Logger LOGGER = getLogger(CMI + "/R/Screen");
 
-    /**
-     * Fixes random selection of icon when icon is missing
+    /*
+      Fixes random selection of icon when icon is missing. No longer needed, check {@link evergoodteam.chassis.common.resourcepack.FileResourcePack#openRoot(String...)}
      */
+    /*
     @Inject(at = @At("HEAD"), method = "loadPackIcon(Lnet/minecraft/client/texture/TextureManager;Lnet/minecraft/resource/ResourcePackProfile;)Lnet/minecraft/util/Identifier;", cancellable = true)
     public void injectLoadPackIcon(TextureManager textureManager, ResourcePackProfile resourcePackProfile, CallbackInfoReturnable<Identifier> cir) {
         if (ResourcePackBase.getResourcesWithDefaultIcon().contains(resourcePackProfile.getDisplayName().getString())) {
@@ -37,6 +34,7 @@ public class PackScreenMixin {
             cir.setReturnValue(new Identifier("textures/misc/unknown_pack.png"));
         }
     }
+    */
 
     /**
      * Hides ResourcePack from GUI

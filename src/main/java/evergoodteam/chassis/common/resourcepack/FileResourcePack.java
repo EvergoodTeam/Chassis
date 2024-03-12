@@ -3,6 +3,7 @@ package evergoodteam.chassis.common.resourcepack;
 import com.google.common.base.Charsets;
 import evergoodteam.chassis.util.StringUtils;
 import net.fabricmc.fabric.impl.resource.loader.ModNioResourcePack;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.SharedConstants;
 import net.minecraft.resource.AbstractFileResourcePack;
 import net.minecraft.resource.InputSupplier;
@@ -101,7 +102,15 @@ public class FileResourcePack extends AbstractFileResourcePack {
             String pack = String.format("{\"pack\":{\"pack_format\":" + SharedConstants.getGameVersion().getResourceVersion(resourceType) + ",\"description\":{\"translate\":\"%s\",\"fallback\":\"%s.\"}}}", description, fallback);
             return () -> IOUtils.toInputStream(pack, Charsets.UTF_8);
         } else if ("pack.png".equals(fileName)) {
-            return InputSupplier.create(basePath.resolve("pack.png"));
+            // Account for provider-generated icon
+            Path generated = basePath.resolve("pack.png");
+            if(generated.toFile().exists()) return InputSupplier.create(generated);
+
+            // If null, uses "textures/misc/unknown_pack.png"
+            return FabricLoader.getInstance().getModContainer(id)
+                    .flatMap(container -> container.findPath("pack.png"))
+                    .map(path -> (InputSupplier<InputStream>) (() -> Files.newInputStream(path)))
+                    .orElse(null);
         }
 
         return null;
