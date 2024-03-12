@@ -7,6 +7,7 @@ import net.minecraft.resource.*;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 
 import java.util.function.Consumer;
 import java.util.function.UnaryOperator;
@@ -34,8 +35,8 @@ public class ClientResourcePackProvider implements ResourcePackProvider {
     public ClientResourcePackProvider(String namespace, String path, String metadataKey, String hexDescColor) {
         this(namespace, path, metadataKey);
 
-        MutableText text = Text.translatable("pack.source." + namespace);
-        UnaryOperator<Text> unaryOperator = name -> Text.translatable("pack.nameAndSource", name, text).setStyle(Style.EMPTY.withColor(ColorUtils.RGB.getIntFromHexRGB(hexDescColor)));
+        UnaryOperator<Text> unaryOperator = name -> Text.translatable("pack.nameAndSource", Text.translatable(metadataKey), Text.translatable("pack.source.chassis"))
+                .setStyle(Style.EMPTY.withColor(ColorUtils.RGB.getIntFromHexRGB(hexDescColor)));
 
         this.resourcePackSource = ResourcePackSource.create(unaryOperator, true);
     }

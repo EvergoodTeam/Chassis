@@ -9,7 +9,7 @@
   "config.chassis.ahsb.hue": "Hue",
   "config.chassis.ahsb.alpha": "Alpha",
   "chassis.metadata.description": "Chassis' Resources",
-  "pack.source.chassis": "Chassis' Resources",
+  "pack.source.chassis": "chassis-built",
   "config.chassis.hideResourcePack": "Hide ResourcePack",
   "config.chassis.hideResourcePack.tooltip": "Hide the %s ResourcePack from the GUI"
 }

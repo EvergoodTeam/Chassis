@@ -1,9 +1,11 @@
 package evergoodteam.chassis.common.resourcepack.providers;
 
 import evergoodteam.chassis.common.resourcepack.FileResourcePack;
+import evergoodteam.chassis.util.gui.ColorUtils;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.resource.*;
 import net.minecraft.text.MutableText;
+import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 
 import java.util.function.Consumer;
@@ -24,8 +26,7 @@ public class ServerResourcePackProvider implements ResourcePackProvider {
     public ServerResourcePackProvider(String namespace, String path, String metadataKey) {
         this.namespace = namespace;
         this.path = path;
-        MutableText text = Text.translatable("pack.source." + namespace);
-        UnaryOperator<Text> unaryOperator = name -> Text.translatable("pack.nameAndSource", name, text);
+        UnaryOperator<Text> unaryOperator = name -> Text.translatable("pack.nameAndSource", Text.translatable(metadataKey), Text.translatable("pack.source.chassis"));
         this.resourcePack = new FileResourcePack(path, metadataKey, ResourceType.SERVER_DATA, FabricLoader.getInstance().getConfigDir().resolve(namespace + "/resourcepacks").toAbsolutePath().normalize());
         this.resourcePackSource = ResourcePackSource.create(unaryOperator, true);
     }
