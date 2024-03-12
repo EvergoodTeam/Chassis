@@ -40,7 +40,8 @@ public class ConfigNetworking {
                 String request = buf.readString();
 
                 client.execute(() -> {
-                    String raw = ConfigBase.getConfig(requestIdentifier).getWriter().getSerializer().getMappedStoredUserOptions().toString();
+                    // TODO: account for user changing the option to desired but the option needs a restart: add a flag to options that turns on when a restart is needed and
+                    String raw = ConfigBase.getConfig(requestIdentifier).getWriter().getSerializer().getMappedStoredServerUserOptions().toString();
                     //LOGGER.info("RAW: {}", raw);
                     //LOGGER.info("RECEIVED: {}", request);
 
@@ -54,11 +55,11 @@ public class ConfigNetworking {
 
     public void registerJoinListener() {
         if (enabled) ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
-            //LOGGER.info("Server sent config handshake for " + this.namespace + " to " + handler.player.getName().getString());
+            //LOGGER.info("Server sent config handshake for " + this.identifier + " to " + handler.player.getName().getString());
             ServerPlayNetworking.send(handler.player, this.identifier.withSuffixedPath("sync"),
                     PacketByteBufs.create()
                             .writeString(this.identifier.toString())
-                            .writeString(this.config.getWriter().getSerializer().getMappedStoredUserOptions().toString()));
+                            .writeString(this.config.getWriter().getSerializer().getMappedStoredServerUserOptions().toString()));
         });
     }
 

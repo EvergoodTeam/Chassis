@@ -99,7 +99,6 @@ public class ResourcePackBase {
                 Text.translatable("config." + name + ".hideResourcePack"),
                 Text.translatable("config." + name + ".hideResourcePack.tooltip",
                         displayName)).getBuilder()
-                .setEnvType(EnvType.CLIENT)
                 .setComment("Hide the %s ResourcePack from the GUI".formatted(displayName)).build();
         this.modContainer = FabricLoader.getInstance().getModContainer(name).get();
 

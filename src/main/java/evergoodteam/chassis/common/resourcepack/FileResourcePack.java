@@ -134,7 +134,7 @@ public class FileResourcePack extends AbstractFileResourcePack {
         if (this.namespaces == null) {
             Path file = getPath(type.getDirectory());
 
-            if (file == null) LOGGER.error("Invalid path, the ResourcePack folder may not exist");
+            if (file == null) LOGGER.error("Invalid path, the ResourcePack folder may not exist for \"%s\"".formatted(id));
 
             if (!Files.isDirectory(file)) {
                 return Collections.emptySet();

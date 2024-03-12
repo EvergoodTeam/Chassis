@@ -44,7 +44,7 @@ public abstract class AbstractOption<T> {
         this.tooltip = tooltip;
     }
 
-    public EnvType getType() {
+    public EnvType getEnvType() {
         return this.envType;
     }
 

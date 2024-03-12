@@ -6,6 +6,8 @@ import evergoodteam.chassis.config.option.CategoryOption;
 import evergoodteam.chassis.util.CollectionUtils;
 import evergoodteam.chassis.util.FileUtils;
 import evergoodteam.chassis.util.StringUtils;
+import lombok.extern.log4j.Log4j2;
+import net.fabricmc.api.EnvType;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
 import org.slf4j.Logger;
@@ -218,6 +220,15 @@ public class ConfigSerializer {
     }
 
     // -------------------------------------------------------------------------------
+
+    public Map<String, String> getMappedStoredServerUserOptions(){
+        Map<String, String> cfg = getMappedStoredConfigLock();
+        Map<String, String> resource = getMappedStoredResourceLock();
+
+        // Filter out locks too, even though they're client sided
+        return config.getOptionStorage().getOptions().stream().filter(option -> option.getEnvType().equals(EnvType.SERVER) && !cfg.containsKey(option.getName()) && !resource.containsKey(option.getName()))
+                .collect(Collectors.toMap(AbstractOption::getName, option -> String.valueOf(option.getValue()), (a, b) -> b));
+    }
 
     public Map<String, String> getMappedStoredUserOptions() {
         //log.error("SCRAPED STORED USER");
