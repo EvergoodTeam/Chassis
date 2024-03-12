@@ -4,67 +4,48 @@ import evergoodteam.chassis.common.resourcepack.FileResourcePack;
 import evergoodteam.chassis.util.gui.ColorUtils;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.resource.*;
-import net.minecraft.text.MutableText;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
 
 import java.util.function.Consumer;
-import java.util.function.UnaryOperator;
 
 public class ClientResourcePackProvider implements ResourcePackProvider {
 
-    public FileResourcePack groupResourcePack;
-    public String namespace;
-    public String path;
-
-    /**
-     * @see net.minecraft.text.Style
-     */
     private ResourcePackSource resourcePackSource;
+    private FileResourcePack fileResourcePack;
+    private String namespace;
+    private Text displayName;
+    private String path;
 
     /**
      * Provider responsible for the ResourcePackProfile, which displays your ResourcePack in the GUI with a description
      * that you can modify with a lang file at {@code pack.source.<namespace>}
      *
-     * @param namespace    name of the Config Folder, root of all the Resources
+     * @param namespace    name of the config that is root of the resources
      * @param path         name of your ResourcePack
-     * @param hexDescColor hex color value used for the description text in the GUI
+     * @param displayName  translation key for the displayed name
+     * @param metadataKey  translation key for the description
+     * @param hexDescColor hex color value used for coloring the description
      * @see evergoodteam.chassis.mixin.ResourcePackManagerMixin
      */
-    public ClientResourcePackProvider(String namespace, String path, String metadataKey, String hexDescColor) {
-        this(namespace, path, metadataKey);
-
-        UnaryOperator<Text> unaryOperator = name -> Text.translatable("pack.nameAndSource", Text.translatable(metadataKey), Text.translatable("pack.source.chassis"))
-                .setStyle(Style.EMPTY.withColor(ColorUtils.RGB.getIntFromHexRGB(hexDescColor)));
-
-        this.resourcePackSource = ResourcePackSource.create(unaryOperator, true);
-    }
-
-    /**
-     * Provider responsible for the ResourcePackProfile, which displays your ResourcePack in the GUI with a description
-     * provided with {@link MutableText}
-     *
-     * @param namespace   name of the Config Folder, root of all the Resources
-     * @param path        name of your ResourcePack
-     * @param description description of the resources to be displayed in the GUI
-     * @see evergoodteam.chassis.mixin.ResourcePackManagerMixin
-     */
-    public ClientResourcePackProvider(String namespace, String path, String metadataKey, MutableText description) {
-        this(namespace, path, metadataKey);
+    public ClientResourcePackProvider(String namespace, String path, String displayName, String metadataKey, String hexDescColor) {
+        this(namespace, path, Text.translatable(displayName), Text.translatable("pack.nameAndSource", Text.translatable(metadataKey), Text.translatable("pack.source." + namespace))
+                .setStyle(Style.EMPTY.withColor(ColorUtils.RGB.getIntFromHexRGB(hexDescColor))));
     }
 
     /**
      * Provider responsible for the ResourcePackProfile, which displays your ResourcePack in the GUI with a description
      * that you can modify with a lang file at {@code pack.source.<namespace>}
      *
-     * @param namespace name of the Config Folder, root of all the Resources
+     * @param namespace name of the config that is root of the resources
      * @param path      name of your ResourcePack
      * @see evergoodteam.chassis.mixin.ResourcePackManagerMixin
      */
-    public ClientResourcePackProvider(String namespace, String path, String metadataKey) {
-        this.groupResourcePack = new FileResourcePack(path, metadataKey, ResourceType.CLIENT_RESOURCES, FabricLoader.getInstance().getConfigDir().resolve(namespace + "/resourcepacks").toAbsolutePath().normalize());
+    public ClientResourcePackProvider(String namespace, String path, Text displayName, Text description) {
+        this.resourcePackSource = ResourcePackSource.create(name -> description, true);
+        this.fileResourcePack = new FileResourcePack(path, description, ResourceType.CLIENT_RESOURCES, FabricLoader.getInstance().getConfigDir().resolve(namespace + "/resourcepacks").toAbsolutePath().normalize());
         this.namespace = namespace;
+        this.displayName = displayName;
         this.path = path;
     }
 
@@ -73,17 +54,17 @@ public class ClientResourcePackProvider implements ResourcePackProvider {
 
         ResourcePackProfile profile = ResourcePackProfile.create(
                 namespace,
-                Text.literal(namespace),
+                displayName,
                 true,
                 new ResourcePackProfile.PackFactory() {
                     @Override
                     public ResourcePack open(String name) {
-                        return groupResourcePack;
+                        return fileResourcePack;
                     }
 
                     @Override
                     public ResourcePack openWithOverlays(String name, ResourcePackProfile.Metadata metadata) {
-                        return groupResourcePack;
+                        return fileResourcePack;
                     }
                 },
                 ResourceType.CLIENT_RESOURCES,

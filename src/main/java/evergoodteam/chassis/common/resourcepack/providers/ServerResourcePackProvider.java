@@ -1,11 +1,8 @@
 package evergoodteam.chassis.common.resourcepack.providers;
 
 import evergoodteam.chassis.common.resourcepack.FileResourcePack;
-import evergoodteam.chassis.util.gui.ColorUtils;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.resource.*;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 
 import java.util.function.Consumer;
@@ -13,22 +10,28 @@ import java.util.function.UnaryOperator;
 
 public class ServerResourcePackProvider implements ResourcePackProvider {
 
-    public String namespace;
-    public String path;
-    public FileResourcePack resourcePack;
     private ResourcePackSource resourcePackSource;
+    private FileResourcePack fileResourcePack;
+    private String namespace;
+    private Text displayName;
+    private String path;
 
     /**
-     * @param namespace name of your {@link evergoodteam.chassis.config.ConfigBase ConfigBase}
-     * @param path      name of your ResourcePack
+     * @param namespace    name of the config that is root of the resources
+     * @param path         name of your ResourcePack
+     * @param displayName  translation key for the displayed name
+     * @param metadataKey  translation key for the description
      * @see evergoodteam.chassis.mixin.ResourcePackManagerMixin
      */
-    public ServerResourcePackProvider(String namespace, String path, String metadataKey) {
-        this.namespace = namespace;
-        this.path = path;
-        UnaryOperator<Text> unaryOperator = name -> Text.translatable("pack.nameAndSource", Text.translatable(metadataKey), Text.translatable("pack.source.chassis"));
-        this.resourcePack = new FileResourcePack(path, metadataKey, ResourceType.SERVER_DATA, FabricLoader.getInstance().getConfigDir().resolve(namespace + "/resourcepacks").toAbsolutePath().normalize());
+    public ServerResourcePackProvider(String namespace, String path, String displayName, String metadataKey) {
+        Text description = Text.translatable("pack.nameAndSource", Text.translatable(metadataKey), Text.translatable("pack.source." + namespace));
+        UnaryOperator<Text> unaryOperator = name -> description;
+
         this.resourcePackSource = ResourcePackSource.create(unaryOperator, true);
+        this.fileResourcePack = new FileResourcePack(path, description, ResourceType.SERVER_DATA, FabricLoader.getInstance().getConfigDir().resolve(namespace + "/resourcepacks").toAbsolutePath().normalize());
+        this.namespace = namespace;
+        this.displayName = Text.translatable(displayName);
+        this.path = path;
     }
 
     @Override
@@ -36,17 +39,17 @@ public class ServerResourcePackProvider implements ResourcePackProvider {
 
         ResourcePackProfile profile = ResourcePackProfile.create(
                 namespace,
-                Text.literal(namespace),
+                displayName,
                 true,
                 new ResourcePackProfile.PackFactory() {
                     @Override
                     public ResourcePack open(String name) {
-                        return resourcePack;
+                        return fileResourcePack;
                     }
 
                     @Override
                     public ResourcePack openWithOverlays(String name, ResourcePackProfile.Metadata metadata) {
-                        return resourcePack;
+                        return fileResourcePack;
                     }
                 },
                 ResourceType.SERVER_DATA,

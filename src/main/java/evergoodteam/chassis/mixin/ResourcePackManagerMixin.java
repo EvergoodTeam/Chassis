@@ -76,10 +76,10 @@ public class ResourcePackManagerMixin {
                     if (resourcePack.providerRegistry != null && !resourcePack.areProvidersDone())
                         resourcePack.providerRegistry.registerProviders();
                     if (finalClient) {
-                        providersCopy.add(new ClientResourcePackProvider(friendlyPath, resourcePack.getName(), resourcePack.getMetadataKey(), resourcePack.getHexColor()));
+                        providersCopy.add(new ClientResourcePackProvider(friendlyPath, resourcePack.getName(), resourcePack.getDisplayName(), resourcePack.getMetadataKey(), resourcePack.getHexColor()));
                         //LOGGER.info("Injected our ClientProvider into providers: {}", this.providers);
                     } else {
-                        providersCopy.add(new ServerResourcePackProvider(friendlyPath, resourcePack.getName(), resourcePack.getMetadataKey()));
+                        providersCopy.add(new ServerResourcePackProvider(friendlyPath, resourcePack.getName(), resourcePack.getDisplayName(), resourcePack.getMetadataKey()));
                         //LOGGER.info("Injected our ServerProvider into providers: {}", this.providers);
                     }
                 });

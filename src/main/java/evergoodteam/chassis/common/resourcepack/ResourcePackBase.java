@@ -134,6 +134,10 @@ public class ResourcePackBase {
         return this.name;
     }
 
+    public String getDisplayName(){
+        return this.displayName;
+    }
+
     public Path getRootPath() {
         return path;
     }
