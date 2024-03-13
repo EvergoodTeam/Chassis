@@ -92,9 +92,9 @@ public class IntegerSliderOption extends AbstractOption<Integer> implements Abst
             super(x, y, width, height, Text.literal(String.valueOf(option.getValue())),
                     convertFromBounds(option.getValue(), option.getMin(), option.getMax()),
                     option.getMin(), option.getMax());
-            this.setAddedY(2);
+            this.setAddedHeight(2);
             this.option = option;
-            this.setOrderedTooltip(option.getTooltip());
+            this.setOrderedTooltip(option.getTooltip(), this.getEntryWidth());
         }
 
         @Override

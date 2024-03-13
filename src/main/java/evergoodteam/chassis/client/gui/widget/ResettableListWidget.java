@@ -208,13 +208,13 @@ public class ResettableListWidget extends ElementListWidget<ResettableListWidget
         }
 
         /**
-         * <p>Adds extra height to the entry to accommodate for things like hover highlighting, specified with {@link ConfigWidgetEntry#hasExtendedHeight()} and {@link ConfigWidgetEntry#getExtendedHeight()}. </p>
-         * <p>NOTE: this extra vertical space can to be accounted for in the main widget with {@link WidgetBase#setAddedY(int)}</p>
+         * <p>Adds extra height to the entry to accommodate for things like hover highlighting, specified with {@link ConfigWidgetEntry#hasExtendedHeight()} and {@link ConfigWidgetEntry#getEntryExtendedHeight()}. </p>
+         * <p>NOTE: this extra vertical space can to be accounted for in the main widget with {@link WidgetBase#setAddedHeight(int)}</p>
          */
         public void setHeight() {
             this.height = this.mainButton.getHeight();
             if (this.mainButton instanceof ConfigWidgetEntry configWidget && configWidget.hasExtendedHeight())
-                this.height += configWidget.getExtendedHeight();
+                this.height += configWidget.getEntryExtendedHeight();
         }
 
         public void setButtonChildren(AbstractOption<?> option) {
@@ -241,8 +241,8 @@ public class ResettableListWidget extends ElementListWidget<ResettableListWidget
         }
 
         public int getResetWidgetAddY() {
-            if (this.mainButton instanceof ConfigWidgetEntry configWidget) return configWidget.getResetWidgetAddY();
-            return this.mainButton.getAddedY();
+            if (this.mainButton instanceof ConfigWidgetEntry configWidget) return configWidget.getResetWidgetAddedHeight();
+            return this.mainButton.getAddedHeight();
         }
 
         @Override
@@ -253,7 +253,7 @@ public class ResettableListWidget extends ElementListWidget<ResettableListWidget
 
             this.children.forEach((button) -> {
                 if (button == null) return;
-                button.setY(y + button.getAddedY());
+                button.setY(y + button.getAddedHeight());
                 button.render(context, mouseX, mouseY, tickDelta);
             });
         }
@@ -312,7 +312,7 @@ public class ResettableListWidget extends ElementListWidget<ResettableListWidget
 
         public ResetWidget(AbstractOption<?> option, PressAction onPress, int width, int addY) {
             super(onPress, width / 2 + 102, 0, 40, 20, ChassisScreenTexts.RESET);
-            this.setAddedY(addY);
+            this.setAddedHeight(addY);
             this.option = option;
         }
 

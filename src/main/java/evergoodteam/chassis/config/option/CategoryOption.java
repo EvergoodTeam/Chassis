@@ -135,7 +135,7 @@ public class CategoryOption extends AbstractOption<String> {
         }
 
         @Override
-        public int getExtendedHeight() {
+        public int getEntryExtendedHeight() {
             return 0;
         }
 

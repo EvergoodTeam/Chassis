@@ -28,12 +28,12 @@ public class ColorPickerWidget extends DropdownWidget {
 
     public void initChildren(int color) {
         this.textField = new TextFieldWidget(x + width / 2, 0, 100, 20, Text.empty());
-        this.textField.setAddedY(2);
+        this.textField.setAddedHeight(2);
         this.textField.setOrderedTooltip(ChassisScreenTexts.ARGB);
         this.addToWhitelist(textField);
 
         this.colorPicker = new AHSBWidget(x + space, color);
-        this.colorPicker.setAddedY(2 + 20 + space);
+        this.colorPicker.setAddedHeight(2 + 20 + space);
         this.colorPicker.setOrder(colorPicker.sbPicker, colorPicker.hueSlider, colorPicker.alphaSlider);
 
         this.children.add(textField);

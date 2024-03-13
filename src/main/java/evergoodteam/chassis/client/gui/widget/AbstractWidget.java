@@ -31,7 +31,7 @@ public abstract class AbstractWidget extends DrawingUtils implements Drawable, E
 
     public int x;
     public int y;
-    public int addedY = 0;
+    public int addedHeight = 0;
     public int width;
     public int height;
     public static final int space = 8;
@@ -114,12 +114,12 @@ public abstract class AbstractWidget extends DrawingUtils implements Drawable, E
      * Additional height to be used for rendering and mouse detection when the widget is used in lists, such as {@link ResettableListWidget},
      * where the Y coordinate is updated constantly.
      */
-    public void setAddedY(int addedY) {
-        this.addedY = addedY;
+    public void setAddedHeight(int addedHeight) {
+        this.addedHeight = addedHeight;
     }
 
-    public int getAddedY() {
-        return this.addedY;
+    public int getAddedHeight() {
+        return this.addedHeight;
     }
 
     public boolean isEnabled() {

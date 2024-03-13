@@ -61,8 +61,9 @@ public class BooleanOption extends AbstractOption<Boolean> {
 
         public BooleanConfigWidget(BooleanOption option, int width) {
             super(width, List.of(Boolean.TRUE, Boolean.FALSE), value -> value ? ChassisScreenTexts.ON : ChassisScreenTexts.OFF);
-            this.initially(option.getValue()).setOrderedTooltip(option.getTooltip());
-            this.setAddedY(2);
+            this.initially(option.getValue())
+                    .setOrderedTooltip(option.getTooltip(), this.getEntryWidth());
+            this.setAddedHeight(2);
             this.option = option;
             option.addUpdateCallback(new OptionUpdateCallback<>() {
                 @Override

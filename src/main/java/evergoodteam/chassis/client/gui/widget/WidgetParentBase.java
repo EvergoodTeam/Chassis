@@ -30,9 +30,9 @@ public class WidgetParentBase extends WidgetBase implements ParentElement {
     }
 
     @Override
-    public void setAddedY(int addedY) {
-        super.setAddedY(addedY);
-        this.getChildren().forEach(widget -> widget.setAddedY(addedY));
+    public void setAddedHeight(int addedHeight) {
+        super.setAddedHeight(addedHeight);
+        this.getChildren().forEach(widget -> widget.setAddedHeight(addedHeight));
     }
 
     @Override

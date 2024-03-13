@@ -65,8 +65,9 @@ public class StringSetOption extends AbstractOption<String> {
 
         public StringConfigWidget(StringSetOption option, int width) {
             super(width, List.copyOf(option.bounds));
-            this.initially(option.getValue()).setOrderedTooltip(option.getTooltip());
-            this.setAddedY(2);
+            this.initially(option.getValue())
+                    .setOrderedTooltip(option.getTooltip(), this.getEntryWidth());
+            this.setAddedHeight(2);
             this.option = option;
             option.addUpdateCallback(new OptionUpdateCallback<>() {
                 @Override

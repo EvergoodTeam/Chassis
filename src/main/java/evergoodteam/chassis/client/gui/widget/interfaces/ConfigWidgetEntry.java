@@ -21,7 +21,11 @@ public interface ConfigWidgetEntry {
         return true;
     }
 
-    default int getExtendedHeight() {
+    default int getEntryWidth() {
+        return buttonsWidth;
+    }
+
+    default int getEntryExtendedHeight() {
         return verticalSpace * 2;
     }
 
@@ -30,7 +34,7 @@ public interface ConfigWidgetEntry {
         widget.drawRectWithOutline(context, centerX - halfWidth, y, cfgWidth, cfgHeight, ColorUtils.TWHITE);
     }
 
-    default int getResetWidgetAddY() {
+    default int getResetWidgetAddedHeight() {
         return verticalSpace;
     }
 
