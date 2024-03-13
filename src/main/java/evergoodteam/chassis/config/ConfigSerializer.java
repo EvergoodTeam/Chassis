@@ -6,7 +6,6 @@ import evergoodteam.chassis.config.option.CategoryOption;
 import evergoodteam.chassis.util.CollectionUtils;
 import evergoodteam.chassis.util.FileUtils;
 import evergoodteam.chassis.util.StringUtils;
-import lombok.extern.log4j.Log4j2;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
