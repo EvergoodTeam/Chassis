@@ -28,7 +28,7 @@ public class SquarePickerWidget extends SliderWidget {
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
         RenderSystem.enableDepthTest();
-        context.drawGuiTexture(TEXTURE, this.getX(), this.getY(), this.getWidth(), this.getHeight());
+        context.drawNineSlicedTexture(TEXTURE, this.getX(), this.getY(), this.getWidth(), this.getHeight(), 8, 20, 20, 4, 200, 20, 0, getTextureV());
         context.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
     }
 

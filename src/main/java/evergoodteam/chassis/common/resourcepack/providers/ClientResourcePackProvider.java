@@ -56,17 +56,7 @@ public class ClientResourcePackProvider implements ResourcePackProvider {
                 namespace,
                 displayName,
                 true,
-                new ResourcePackProfile.PackFactory() {
-                    @Override
-                    public ResourcePack open(String name) {
-                        return fileResourcePack;
-                    }
-
-                    @Override
-                    public ResourcePack openWithOverlays(String name, ResourcePackProfile.Metadata metadata) {
-                        return fileResourcePack;
-                    }
-                },
+                factory -> fileResourcePack,
                 ResourceType.CLIENT_RESOURCES,
                 ResourcePackProfile.InsertionPosition.BOTTOM,
                 resourcePackSource);

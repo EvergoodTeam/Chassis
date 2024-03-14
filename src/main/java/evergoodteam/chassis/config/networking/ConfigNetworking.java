@@ -2,10 +2,10 @@ package evergoodteam.chassis.config.networking;
 
 import evergoodteam.chassis.common.Result;
 import evergoodteam.chassis.config.ConfigBase;
-import net.fabricmc.fabric.api.client.networking.v1.ClientConfigurationNetworking;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
-import net.fabricmc.fabric.api.networking.v1.ServerConfigurationConnectionEvents;
-import net.fabricmc.fabric.api.networking.v1.ServerConfigurationNetworking;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import org.slf4j.Logger;
@@ -35,7 +35,7 @@ public class ConfigNetworking {
 
     public void registerClientReceiverAndResponse() {
         if (enabled) {
-            ClientConfigurationNetworking.registerGlobalReceiver(this.identifier.withSuffixedPath("sync"), (client, handler, buf, responseSender) -> {
+            ClientPlayNetworking.registerGlobalReceiver(this.identifier.withSuffixedPath("sync"), (client, handler, buf, responseSender) -> {
 
                 Identifier requestIdentifier = Identifier.tryParse(buf.readString());
                 String request = buf.readString();
@@ -44,19 +44,21 @@ public class ConfigNetworking {
                 //LOGGER.info("RAW: {}", raw);
                 //LOGGER.info("RECEIVED: {}", request);
 
-                if (!request.equals(raw))
-                    responseSender.sendPacket(requestIdentifier.withSuffixedPath("handshake"), PacketByteBufs.create().writeEnumConstant(Result.FAILURE));
-                else
-                    responseSender.sendPacket(requestIdentifier.withSuffixedPath("handshake"), PacketByteBufs.create().writeEnumConstant(Result.SUCCESS));
+                client.execute(() -> {
+                    if (!request.equals(raw))
+                        responseSender.sendPacket(requestIdentifier.withSuffixedPath("handshake"), PacketByteBufs.create().writeEnumConstant(Result.FAILURE));
+                    else
+                        responseSender.sendPacket(requestIdentifier.withSuffixedPath("handshake"), PacketByteBufs.create().writeEnumConstant(Result.SUCCESS));
+                });
             });
         }
     }
 
     public void registerServerConnectionListener() {
         if (enabled) {
-            ServerConfigurationConnectionEvents.CONFIGURE.register((handler, server) -> {
+            ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
                 //LOGGER.info("Server sent config handshake for " + this.identifier);
-                ServerConfigurationNetworking.send(handler, this.identifier.withSuffixedPath("sync"),
+                ServerPlayNetworking.send(handler.player, this.identifier.withSuffixedPath("sync"),
                         PacketByteBufs.create()
                                 .writeString(this.identifier.toString())
                                 .writeString(this.config.getWriter().getSerializer().getMappedStoredServerUserOptions().toString()));
@@ -66,24 +68,27 @@ public class ConfigNetworking {
 
     public void registerHandshakeReceiver() {
         if (enabled) {
-            ServerConfigurationNetworking.registerGlobalReceiver(this.identifier.withSuffixedPath("handshake"), (player, handler, buf, responseSender) -> {
+            ServerPlayNetworking.registerGlobalReceiver(this.identifier.withSuffixedPath("handshake"), (server, player, handler, buf, responseSender) -> {
                 Result result = buf.readEnumConstant(Result.class);
-                switch (result) {
+                server.execute(() -> {
+                    switch (result) {
 
-                    case FAILURE -> {
-                        handler.disconnect(Text.of("Config is mismatched between server and client!"));
-                        LOGGER.warn("Config mismatch for {}, disconnecting", this.identifier);
-                    }
+                        case FAILURE -> {
+                            handler.disconnect(Text.of("Config is mismatched between server and client!"));
+                            LOGGER.warn("Config mismatch for {}, disconnecting", this.identifier);
+                        }
 
-                    case ERROR -> {
-                        handler.disconnect(Text.of("Unable to complete config handshake"));
-                        LOGGER.error("Handshake failed due to error");
-                    }
+                        case ERROR -> {
+                            handler.disconnect(Text.of("Unable to complete config handshake"));
+                            LOGGER.error("Handshake failed due to error");
+                        }
 
-                    case SUCCESS -> {
-                        //LOGGER.info("Handshake succeeded with no issues");
+                        case SUCCESS -> {
+                            //LOGGER.info("Handshake succeeded with no issues");
+                        }
                     }
-                }
+                });
+
             });
         }
     }

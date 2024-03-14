@@ -54,18 +54,15 @@ public class ConfigScreen extends ConfigOptionsScreen {
 
     @Override
     public void render(DrawContext context, int mouseX, int mouseY, float delta) {
-        super.render(context, mouseX, mouseY, delta);
+        this.renderBackground(context);
         this.list.render(context, mouseX, mouseY, delta);
 
         if (this.title instanceof GradientText) ((GradientText) this.title).scroll();
         this.drawCenteredGradientTitle(context);
 
-        this.renderTooltip(context, this.list, mouseX, mouseY);
-    }
+        super.render(context, mouseX, mouseY, delta);
 
-    @Override
-    public void renderBackground(DrawContext context, int mouseX, int mouseY, float delta) {
-        this.renderBackgroundTexture(context);
+        this.renderTooltip(context, this.list, mouseX, mouseY);
     }
 
     @Override

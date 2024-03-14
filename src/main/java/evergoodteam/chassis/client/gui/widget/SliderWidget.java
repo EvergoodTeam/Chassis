@@ -13,9 +13,7 @@ import java.math.RoundingMode;
 
 public class SliderWidget extends WidgetBase {
 
-    protected static final Identifier TEXTURE = new Identifier("widget/slider");
-    protected static final Identifier HANDLE_TEXTURE = new Identifier("widget/slider_handle");
-    protected static final Identifier HANDLE_HIGHLIGHTED_TEXTURE = new Identifier("widget/slider_handle_highlighted");
+    protected static final Identifier TEXTURE = new Identifier("textures/gui/slider.png");
     public Double value;
     public Double min;
     public Double max;
@@ -35,23 +33,20 @@ public class SliderWidget extends WidgetBase {
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
         RenderSystem.enableDepthTest();
-        context.drawGuiTexture(this.getTexture(), this.getX(), this.getY(), this.getWidth(), this.getHeight());
+        context.drawNineSlicedTexture(TEXTURE, this.getX(), this.getY(), this.getWidth(), this.getHeight(), 20, 4, 200, 20, 0, this.getYImage(isFocused()));
 
         this.renderBack(context, mouseX, mouseY);
 
-        context.drawGuiTexture(this.getHandleTexture(), this.getX() + (int) (this.value * (double) (this.width - 8)), this.getY(), sliderWidth, sliderHeight);
+        context.drawNineSlicedTexture(TEXTURE, this.getX() + (int) (this.value * (double) (this.width - 8)), this.getY(), 8, 20, 20, 4, 200, 20, 0, getTextureV());
         context.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
     }
 
+    protected int getTextureV() {
+        int i = this.hovered ? 3 : 2;
+        return i * 20;
+    }
+
     public void renderBack(DrawContext context, int mouseX, int mouseY) {
-    }
-
-    public Identifier getTexture() {
-        return TEXTURE;
-    }
-
-    public Identifier getHandleTexture() {
-        return this.isFocused() ? HANDLE_HIGHLIGHTED_TEXTURE : HANDLE_TEXTURE;
     }
 
     @Override

@@ -90,7 +90,7 @@ public class ResettableListWidget extends ElementListWidget<ResettableListWidget
 
 
     @Override
-    public boolean mouseScrolled(double mouseX, double mouseY, double horizontalAmount, double verticalAmount) {
+    public boolean mouseScrolled(double mouseX, double mouseY, double verticalAmount) {
         // Using itemHeight as scroll velocity
         this.setScrollAmount(this.getScrollAmount() - verticalAmount * this.itemHeight / 2.0);
         return true;

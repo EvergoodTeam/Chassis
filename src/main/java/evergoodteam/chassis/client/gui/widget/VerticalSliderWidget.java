@@ -18,11 +18,11 @@ public class VerticalSliderWidget extends SliderWidget {
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
         RenderSystem.enableDepthTest();
-        context.drawGuiTexture(this.getTexture(), this.getX(), this.getY(), this.getWidth(), this.getHeight());
+        context.drawNineSlicedTexture(TEXTURE, this.getX(), this.getY(), this.getWidth(), this.getHeight(), 20, 4, 200, 20, 0, this.getYImage(isFocused()));
 
         this.renderBack(context, mouseX, mouseY);
 
-        context.drawGuiTexture(this.getHandleTexture(), this.getX(), this.getY() + (int) (this.value * (double) (this.height - sliderHeight)), sliderWidth, sliderHeight);
+        context.drawNineSlicedTexture(TEXTURE, this.getX(), this.getY() + (int) (this.value * (double) (this.height - sliderHeight)), sliderWidth, sliderHeight, 20, 4, 200, 20, 0, getTextureV());
         context.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
     }
 

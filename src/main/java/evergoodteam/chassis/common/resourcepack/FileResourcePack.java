@@ -43,7 +43,7 @@ public class FileResourcePack extends AbstractFileResourcePack {
         super(namespace, true);
         this.id = namespace;
         this.resourceType = resourceType;
-        this.packMetadata = new PackResourceMetadata(description, SharedConstants.getGameVersion().getResourceVersion(ResourceType.CLIENT_RESOURCES), Optional.empty());
+        this.packMetadata = new PackResourceMetadata(description, SharedConstants.getGameVersion().getResourceVersion(ResourceType.CLIENT_RESOURCES));
         this.basePath = basePath.resolve(namespace).resolve("resources").toAbsolutePath().normalize();
         this.separator = basePath.getFileSystem().getSeparator();
 

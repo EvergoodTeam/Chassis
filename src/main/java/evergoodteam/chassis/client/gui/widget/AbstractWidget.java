@@ -53,7 +53,7 @@ public abstract class AbstractWidget extends DrawingUtils implements Drawable, E
         context.setShaderColor(1.0F, 1.0F, 1.0F, this.alpha);
         RenderSystem.enableBlend();
         RenderSystem.enableDepthTest();
-        context.drawGuiTexture(PressableWidget.TEXTURES.get(this.active, this.getType() != SelectionType.NONE), x, y, width, height);
+        context.drawNineSlicedTexture(ClickableWidget.WIDGETS_TEXTURE, x, y, width, height, 20, 4, 200, 20, 0, this.getTextureY());
         context.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
     }
 
@@ -159,8 +159,8 @@ public abstract class AbstractWidget extends DrawingUtils implements Drawable, E
     }
 
     @Override
-    public boolean mouseScrolled(double mouseX, double mouseY, double horizontalAmount, double verticalAmount) {
-        return Element.super.mouseScrolled(mouseX, mouseY, horizontalAmount, verticalAmount);
+    public boolean mouseScrolled(double mouseX, double mouseY, double verticalAmount) {
+        return Element.super.mouseScrolled(mouseX, mouseY, verticalAmount);
     }
 
     @Override

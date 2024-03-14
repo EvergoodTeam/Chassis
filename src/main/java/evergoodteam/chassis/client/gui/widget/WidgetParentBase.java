@@ -55,8 +55,8 @@ public class WidgetParentBase extends WidgetBase implements ParentElement {
     }
 
     @Override
-    public boolean mouseScrolled(double mouseX, double mouseY, double horizontalAmount, double verticalAmount) {
-        return ParentElement.super.mouseScrolled(mouseX, mouseY, horizontalAmount, verticalAmount);
+    public boolean mouseScrolled(double mouseX, double mouseY, double verticalAmount) {
+        return ParentElement.super.mouseScrolled(mouseX, mouseY, verticalAmount);
     }
 
     @Override

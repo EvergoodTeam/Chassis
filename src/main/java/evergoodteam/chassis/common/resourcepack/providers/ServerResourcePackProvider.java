@@ -41,17 +41,7 @@ public class ServerResourcePackProvider implements ResourcePackProvider {
                 namespace,
                 displayName,
                 true,
-                new ResourcePackProfile.PackFactory() {
-                    @Override
-                    public ResourcePack open(String name) {
-                        return fileResourcePack;
-                    }
-
-                    @Override
-                    public ResourcePack openWithOverlays(String name, ResourcePackProfile.Metadata metadata) {
-                        return fileResourcePack;
-                    }
-                },
+                factory -> fileResourcePack,
                 ResourceType.SERVER_DATA,
                 ResourcePackProfile.InsertionPosition.BOTTOM,
                 resourcePackSource);
