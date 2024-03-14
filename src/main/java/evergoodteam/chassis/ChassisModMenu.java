@@ -12,6 +12,7 @@ public class ChassisModMenu implements ModMenuApi {
 
     @Override
     public ConfigScreenFactory<?> getModConfigScreenFactory() {
-        return parent -> new ConfigScreen(parent, Reference.CHASSIS_CONFIGS);
+        //return parent -> new ConfigScreen(parent, Reference.CHASSIS_CONFIGS);
+        return parent -> parent;
     }
 }

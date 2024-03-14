@@ -1,5 +1,5 @@
 package evergoodteam.chassis;
-
+/*
 import evergoodteam.chassis.client.gui.text.GradientText;
 import evergoodteam.chassis.common.block.BlockBase;
 import evergoodteam.chassis.common.block.PillarBase;
@@ -44,9 +44,9 @@ import java.util.List;
 import java.util.Set;
 
 import static evergoodteam.chassis.util.Reference.*;
-
+*/
 public class ChassisTestFeatures {
-
+/*
     private static final Logger LOGGER = LoggerFactory.getLogger(CMI + "/Testing");
     static final List<Block> BLOCKS = new ArrayList<>();
     static final List<Item> ITEMS = new ArrayList<>();
@@ -204,5 +204,5 @@ public class ChassisTestFeatures {
         registryHandler.addToItemGroup(TEST_ITEM, TEST_GROUP);
         registryHandler.addToItemGroup(BIRCH.asItem(), TEST_GROUP);
     }
-
+*/
 }

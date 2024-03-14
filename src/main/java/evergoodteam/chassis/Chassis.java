@@ -14,7 +14,7 @@ public class Chassis implements ModInitializer {
     public void onInitialize() {
         LOGGER.info("Initializing Chassis");
 
-        ChassisTestFeatures.init();
-        ChassisTestFeatures.initProviderRegistry();
+        //ChassisTestFeatures.init();
+        //ChassisTestFeatures.initProviderRegistry();
     }
 }
