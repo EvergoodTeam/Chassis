@@ -1,5 +1,6 @@
 package evergoodteam.chassis.config;
 
+import evergoodteam.chassis.config.networking.ConfigNetworking;
 import evergoodteam.chassis.config.option.*;
 import evergoodteam.chassis.util.StringUtils;
 import evergoodteam.chassis.util.handlers.RegistryHandler;

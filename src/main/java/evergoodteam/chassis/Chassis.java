@@ -14,8 +14,6 @@ public class Chassis implements ModInitializer {
     public void onInitialize() {
         LOGGER.info("Initializing Chassis");
 
-        //NetworkHandler.getInstance().getServerReceivers().forEach(ServerPlayNetworking::registerGlobalReceiver);
-
         ChassisTestFeatures.init();
         ChassisTestFeatures.initProviderRegistry();
     }

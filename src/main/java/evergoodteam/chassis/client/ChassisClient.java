@@ -27,7 +27,7 @@ public class ChassisClient implements ClientModInitializer {
     public void onInitializeClient() {
         LOGGER.info("Chassis client initialization");
 
-        RegistryHandler.getConfigurations().forEach((string, config) -> config.getNetworkHandler().registerClientReceiver());
+        RegistryHandler.getConfigurations().forEach((string, config) -> config.getNetworkHandler().registerClientReceiverAndResponse());
 
         for (Block block : RegistryHandler.getTransparentBlocks()) {
             BlockRenderLayerMap.INSTANCE.putBlock(block, RenderLayer.getCutout());

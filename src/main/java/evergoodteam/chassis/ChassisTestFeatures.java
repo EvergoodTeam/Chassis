@@ -143,8 +143,8 @@ public class ChassisTestFeatures {
         CHASSIS_CONFIGS.setDisplayTitle(GradientText.copyOf(Text.literal("Chassis"))
                 .setColorPoints(50, "264653", "2a9d8f", "e9c46a", "f4a261", "e76f51", "264653")
                 .setScrollDelay(4));
-        CHASSIS_CONFIGS.getNetworkHandler().registerJoinListener();
-        CHASSIS_CONFIGS.getNetworkHandler().registerServerReceiver();
+        CHASSIS_CONFIGS.getNetworkHandler().registerServerConnectionListener();
+        CHASSIS_CONFIGS.getNetworkHandler().registerHandshakeReceiver();
 
         CategoryOption EMPTY = new CategoryOption(CHASSIS_CONFIGS, "Empty Category", "").getBuilder()
                 .useFrame(true)
@@ -167,6 +167,7 @@ public class ChassisTestFeatures {
 
         CHASSIS_CONFIGS.addCategory(EMPTY)
                 .addStringProperty(new ColorOption("color", "ff000000").getBuilder()
+                        .setEnvType(EnvType.SERVER)
                         .setDisplayName(Text.literal("Test Colour")).build())
                 .addBooleanProperty(
                         new BooleanOption("genericBoolean", false, Text.literal("Boolean"), Text.literal("Tooltip0")).getBuilder()
@@ -203,4 +204,5 @@ public class ChassisTestFeatures {
         registryHandler.addToItemGroup(TEST_ITEM, TEST_GROUP);
         registryHandler.addToItemGroup(BIRCH.asItem(), TEST_GROUP);
     }
+
 }
