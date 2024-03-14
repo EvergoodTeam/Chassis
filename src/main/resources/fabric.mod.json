@@ -19,7 +19,6 @@
     "fabric-datagen": [
     ],
     "modmenu": [
-      "evergoodteam.chassis.ChassisModMenu"
     ],
     "client": [
       "evergoodteam.chassis.client.ChassisClient"
