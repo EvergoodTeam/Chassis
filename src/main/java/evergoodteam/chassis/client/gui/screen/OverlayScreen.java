@@ -1,5 +1,7 @@
 package evergoodteam.chassis.client.gui.screen;
 
+import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import evergoodteam.chassis.client.gui.widget.WidgetBase;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -14,7 +16,7 @@ import org.lwjgl.glfw.GLFW;
 @Environment(value = EnvType.CLIENT)
 public class OverlayScreen extends Screen implements Element {
 
-    protected static final Identifier ICONS = new Identifier("textures/gui/icons.png");
+    protected static final Identifier CROSSHAIR = new Identifier("hud/crosshair");
     private WidgetBase overlayWidget;
     private Screen parent;
 
@@ -34,6 +36,14 @@ public class OverlayScreen extends Screen implements Element {
 
         super.render(context, mouseX, mouseY, delta);
         overlayWidget.render(context, mouseX, mouseY, delta);
+    }
+
+    public void drawCrosshair(DrawContext context) {
+        RenderSystem.blendFuncSeparate(
+                GlStateManager.SrcFactor.ONE_MINUS_DST_COLOR, GlStateManager.DstFactor.ONE_MINUS_SRC_COLOR, GlStateManager.SrcFactor.ONE, GlStateManager.DstFactor.ZERO
+        );
+        context.drawGuiTexture(CROSSHAIR, (context.getScaledWindowWidth() - 15) / 2, (context.getScaledWindowHeight() - 15) / 2, 15, 15);
+        RenderSystem.defaultBlendFunc();
     }
 
     @Override
