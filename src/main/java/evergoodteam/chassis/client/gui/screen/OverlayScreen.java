@@ -1,5 +1,7 @@
 package evergoodteam.chassis.client.gui.screen;
 
+import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import evergoodteam.chassis.client.gui.widget.WidgetBase;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -28,12 +30,21 @@ public class OverlayScreen extends Screen implements Element {
         this.overlayWidget = widget;
     }
 
+
     @Override
     public void render(DrawContext context, int mouseX, int mouseY, float delta) {
         this.renderBackground(context);
 
         super.render(context, mouseX, mouseY, delta);
         overlayWidget.render(context, mouseX, mouseY, delta);
+    }
+
+    public void drawCrosshair(DrawContext context) {
+        RenderSystem.blendFuncSeparate(
+                GlStateManager.SrcFactor.ONE_MINUS_DST_COLOR, GlStateManager.DstFactor.ONE_MINUS_SRC_COLOR, GlStateManager.SrcFactor.ONE, GlStateManager.DstFactor.ZERO
+        );
+        context.drawTexture(ICONS, (context.getScaledWindowWidth() - 15) / 2, (context.getScaledWindowHeight() - 15) / 2, 0, 0, 15, 15);
+        RenderSystem.defaultBlendFunc();
     }
 
     @Override
